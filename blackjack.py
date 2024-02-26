@@ -1,4 +1,38 @@
 import random;
+from colorama import Fore, Back, Style
+import time
+import random
+import sys
+
+def type(*words):
+    str = ''
+    for item in words:
+        str = str + item
+    # str += "\n"
+    for char in str:
+        time.sleep(random.choice([
+          0.03, 0.05, 0.04, 0.02,
+          0.05, 0.03, 0.02, 0.05, 0.04, 0.01
+        ]))
+        sys.stdout.write(char)
+        sys.stdout.flush()
+
+def slowtype(*words):
+    str = ''
+    for item in words:
+        str = str + item
+    # str += "\n"
+    for char in str:
+        time.sleep(random.choice([
+        0.06, 0.05, 0.03, 0.03,
+        0.05, 0.03, 0.04, 0.05, 0.06, 0.04
+        ]))
+        sys.stdout.write(char)
+        sys.stdout.flush()
+        if (char == ".") or (char == "!"):
+            time.sleep(0.7)
+        if char == ",":
+            time.sleep(0.4)
 
 class Blackjack:
     __slots__=["__bet", "__deck", "__hand", "__dealer_hand", "__hand_value", "__dealer_hand_value"]
