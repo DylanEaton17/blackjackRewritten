@@ -125,14 +125,31 @@ class Blackjack:
                type(red("I didn't quite catch that."))
                print("\n")
 
-    def status(self):
+    def is_game_over(self, dealer_standing):
         player_value = self.__hand.value()
         dealer_value = self.__dealer_hand.value()
         if(player_value>21):
-            self.end_round("Player Bust")
-        elif()
+            return self.end_round("Player Bust")
+        elif(dealer_value>21):
+            return self.end_round("Dealer Bust")
+        elif(player_value==21)&(dealer_value==21):
+            return self.end_round("Tie Blackjack")
+        elif(player_value==21):
+            return self.end_round("Player Blackjack")
+        elif(dealer_value==21):
+            return self.end_round("Dealer Blackjack")
+        elif(player_value>dealer_value)&(dealer_standing):
+            return self.end_round("Player Wins")
+        elif(player_value==dealer_value)&(dealer_standing):
+            return self.end_round("Tie")
+        elif(player_value<dealer_value)&(dealer_standing):
+            return self.end_round("Dealer Wins")
+        else:
+            return False
 
+        
     def end_round(self, status):
+        return True
 
 
     def hit(self):
