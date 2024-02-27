@@ -78,6 +78,8 @@ class Blackjack:
                 if(self.is_game_over(False)):
                     break
 
+                # Main loop for player hitting their hand
+                # will continue until they choose to stand or is_game_over detects their hand's value >= 21
                 player_standing = False
                 while(not player_standing):
                     player_standing = self.hit_or_stand()
@@ -97,6 +99,9 @@ class Blackjack:
                 type(str(self.__dealer_hand))
                 print()
 
+                # The loop that has the dealer hit until their value is >= 17
+                # At that point, they stand, or the game ends
+                # regardless, is_game_over will be true after this loop
                 dealer_standing = False
                 while(not dealer_standing):
                     dealer_standing = self.dealer_hit()
@@ -170,6 +175,7 @@ class Blackjack:
             print("\n")
 
     def hit(self):
+        # Hits a player's hand, then types their hand's value
         print()
         card = self.draw(self.__hand)
         self.print_draw("Player", "next", card)
@@ -179,6 +185,7 @@ class Blackjack:
 
     def dealer_hit(self):
         # Checks if the dealer has a hand that can be hit (value less than 17)
+        # if it can, the hand will be hit, and the value will be typed
         if(self.__dealer_hand.value()>=17):
             self.__dealer_hand.get_final_value()
             print()
@@ -206,6 +213,8 @@ class Blackjack:
         return False
 
     def is_game_over(self, dealer_standing):
+        # Checks if the game is over
+        # If true, passes a string to end_round explaining the method of victory/defeat
         player_value = self.__hand.value()
         if(self.__hand.possible_hands==2):
             player_value = self.__hand.ace_value()
@@ -245,6 +254,8 @@ class Blackjack:
         return card
     
     def print_draw(self, name, position, card):
+        # Prints the drawn card, for either the player or dealer
+        # Can specify first, second, or next card drawn (could be any word)
         if name == "Player":
             if((card.value()==1) or card.value()==8):
                 type("Your " + position + " card is an " + bright(magenta(str(card))))
@@ -258,8 +269,14 @@ class Blackjack:
                 type(red("The Dealer's " + position + " card is a " + bright(str(card))))
     
     def reset(self):
+        # Resets hands
         self.__hand = Hand("Player")
         self.__dealer_hand = Hand("Dealer")
+
+    def hard_reset(self):
+        # Resets hands, deck, and possibly anything else I can think of
+        self.reset()
+        self.__deck = deckOfCards.Deck()
 
 
 
