@@ -61,9 +61,10 @@ def bright(text):
 
 
 class Blackjack:
-    __slots__=["__deck", "__hand", "__dealer_hand"]
+    __slots__=["__balance", "__bet", "__deck", "__hand", "__dealer_hand"]
 
     def __init__(self):
+        self.__balance = 50
         self.__deck = deckOfCards.Deck()
         self.__hand = Hand("Player")
         self.__dealer_hand = Hand("Dealer")
@@ -71,6 +72,14 @@ class Blackjack:
     def play_round(self, count):
         for _ in range(count):
             self.first_deal()
+            # Checks if either player was dealt blackjack
+            self.is_game_over(False)
+            player_standing = False
+            while(not self.is_game_over(False)) & (not player_standing):
+                player_standing = self.hit_or_stand()
+            self.print_draw("Dealer", "second", self.__dealer_hand.get_card(1))
+            
+            self.reset()
 
     def first_deal(self):
         # Deal first card to Player
@@ -91,7 +100,7 @@ class Blackjack:
         self.print_draw("Player", "second", card)
         print()
 
-        # Deal second card to Dealer
+        # Deal second card to Dealer, which might be face down, if value<21
         card = self.draw(self.__dealer_hand)
         if(self.__dealer_hand==21):
             self.print_draw("Dealer", "second", card)
@@ -99,35 +108,50 @@ class Blackjack:
             type(red("The dealer's second card is face down"))
         print("\n")
 
-        type(red("As of now, the dealer's cards have a known value of " + bright(str(known_value))))
+        # Prints Dealer's starting hand value. This is a special case (known value or 21 with a wink).
+        if((self.__dealer_hand.value()!=21) & (known_value==1)):
+            type(red("As of now, the dealer's cards have a known value of " + bright(str(1)) + ", or " + bright(str(11)) + ", since they have an ace"))
+        elif(self.__dealer_hand.value()==21):
+            type(red("The Dealer's cards have a value of " + bright(str(21)) + " ;)"))
+        else:
+            type(red("As of now, the dealer's cards have a known value of " + bright(str(known_value))))
 
         print()
 
+        # Prints player's starting hand value.
         type(str(self.__hand))
-
         print()
-
-        hit_or_stand()
-
-        self.reset()
-        
 
     def hit_or_stand(self):
-        while(True):
-            type("Would you like to hit or stand?")
-            hit_or_stand = input().lower()
-            if((hit_or_stand=="h")or(hit_or_stand=="hit")):
-                self.hit()
-            elif((hit_or_stand=="s")or(hit_or_stand=="stand")):
-                self.stand()
-            else:
-               print("\n")
-               type(red("I didn't quite catch that."))
-               print("\n")
+        type("Would you like to hit or stand? ")
+        hit_or_stand = input().lower()
+        if((hit_or_stand=="h")or(hit_or_stand=="hit")):
+            self.hit()
+            return False
+        elif((hit_or_stand=="s")or(hit_or_stand=="stand")):
+            return True
+        else:
+            print("\n")
+            type(red("I didn't quite catch that."))
+            print("\n")
+
+    def hit(self):
+        print()
+        card = self.draw(self.__hand)
+        self.print_draw("Player", "next", card)
+        print()
+        type(str(self.__hand))
+        print()
 
     def is_game_over(self, dealer_standing):
         player_value = self.__hand.value()
+        if(len(self.__hand)==2):
+            player_value = self.__hand.ace_value()
+
         dealer_value = self.__dealer_hand.value()
+        if(len(self.__hand)==2):
+            dealer_value = self.__dealer_hand.ace_value()
+
         if(player_value>21):
             return self.end_round("Player Bust")
         elif(dealer_value>21):
@@ -149,14 +173,9 @@ class Blackjack:
 
         
     def end_round(self, status):
+        print(status)
         return True
 
-
-    def hit(self):
-        pass
-
-    def stand(self):
-        pass
 
     def draw(self, hand):
         card = self.__deck.draw()
@@ -229,6 +248,8 @@ class Hand:
 
         self.__cards.append(card)
         self.__value[0] += card.value()
+        if(len(self)==2):
+            self.__value[1] += card.value()
 
         # If the card is an ace, and there's no other aces in the hand
         # This only happens if the hand's value is less than 12, as a
@@ -248,6 +269,9 @@ class Hand:
 
     def value(self):
         return self.__value[0]
+    
+    def get_card(self, index):
+        return self.__cards[index]
     
     def ace_value(self):
         if len(self.__value) == 2:
