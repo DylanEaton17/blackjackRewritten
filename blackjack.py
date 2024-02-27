@@ -21,6 +21,10 @@ def type(*words):
         ]))
         sys.stdout.write(char)
         sys.stdout.flush()
+        if (char == ".") or (char == "!") or (char == ":"):
+            time.sleep(0.5)
+            if char == ",":
+                time.sleep(0.4)
 
 def slowtype(*words):
     str = ''
@@ -34,7 +38,7 @@ def slowtype(*words):
         ]))
         sys.stdout.write(char)
         sys.stdout.flush()
-        if (char == ".") or (char == "!"):
+        if (char == ".") or (char == "!") or (char == ":") or (char == ";") or (char == "?"):
             time.sleep(0.7)
         if char == ",":
             time.sleep(0.4)
@@ -61,17 +65,30 @@ def bright(text):
 
 
 class Blackjack:
-    __slots__=["__balance", "__bet", "__deck", "__hand", "__dealer_hand"]
+    __slots__=["__balance", "__bet", "__min_bet", "__dealer_happiness", "__deck", "__hand", "__dealer_hand", "__player"]
 
-    def __init__(self):
+    def __init__(self, player):
         self.__balance = 50
+        self.__bet = 0
+        self.__min_bet = 1
+        self.__dealer_happiness = 50
         self.__deck = deckOfCards.Deck()
         self.__hand = Hand("Player")
         self.__dealer_hand = Hand("Dealer")
+        self.__player = player
+
+    def update_player(self, player):
+        self.__balance = player.get_balance()
 
     def play_round(self, count):
         for _ in range(count):
+            type("You have " + green(bright("$" + str(self.__balance))))
+            print()
             while(True):
+                player_betting = False
+                while(not player_betting):
+                    player_betting = self.bet()
+
                 self.first_deal()
 
                 # Checks if either player was dealt blackjack
@@ -113,8 +130,55 @@ class Blackjack:
                 if breakloop:
                     break
 
-            print("\nThe round has ended\n")
             self.reset()
+
+        # Prints a line after all rounds of blackjack have finished
+        print()
+
+    def anger_dealer(self, value):
+        if(self.__dealer_happiness - value <= 0):
+            self.__dealer_happiness = 0
+        else:
+            self.__dealer_happiness -= value
+
+    def dealer_calm_down(self, value):
+        if(self.__dealer_happiness + value >= 100):
+            self.__dealer_happiness = 100
+        else:
+            self.__dealer_happiness += value
+
+    def bet(self):
+        bet = None
+        while bet is None:
+            type("The Dealer expects you to bet at least " + green(bright("$" + str(self.__min_bet))))
+            print("")
+            type("How much would you like to bet? ")
+            try:
+                bet = int(input(""))
+            except ValueError:
+                print("")
+                type(red("The Dealer looks at you confused. Perhaps he didn't hear you."))
+                print("\n")
+
+        print("")
+
+        if(0<int(bet)<=self.__balance):
+            self.__bet = bet
+            return True
+        elif((int(bet) < self.__min_bet)):
+            if self.__dealer_happiness >= 30: type(red("The Dealer doesn't like that bet."))
+            elif self.__dealer_happiness >= 25: slowtype(red("The Dealer looks at you with an aggressive eye. Maybe try betting more cash!"))
+            elif self.__dealer_happiness >= 20: slowtype(red("The Dealer is infuriated. You've insulted him. You should bet more cash."))
+            elif self.__dealer_happiness >= 15: slowtype(red("The Dealer gets up from his chair and charges his relover. Bet more cash. You'll regret it if you don't."))
+            elif self.__dealer_happiness >= 0: 
+                slowtype(red("The Dealer fires three shots into your chest. You bleed out, and as you fade from reality, you see the Dealer reach into your pockets, and take every last penny from your lifeless body."))
+                self.__player.kill()
+            self.anger_dealer(5)
+            print("\n")
+
+        else:
+            type(red("The dealer looks at you confused. You don't have that much money."))
+            print("\n")
 
 
     def first_deal(self):
@@ -244,7 +308,77 @@ class Blackjack:
 
         
     def end_round(self, status):
-        print(status)
+        print()
+
+        match status:
+            case "Player Blackjack": 
+                type(yellow(bright("You got a Blackjack! You Win! Yay!")))
+                print()
+                type(yellow(bright("You had " + green("$" + str(self.__balance)) + yellow(", and with a bet of ") + green("$" + str(self.__bet)) + yellow(", you've tripled it!"))))
+                print("\n")
+                type(yellow(bright("Your new balance is " + green("$" + str(self.__balance) + " + $" + str(self.__bet*2) + " = $" + str(self.__balance+(2*self.__bet))))))
+                self.__balance += 2*self.__bet
+
+            case "Player Wins":
+                type(magenta(bright("Congrats! You Win! Get REKT, dealer!")))
+                print()
+                type(magenta(bright("You had " + green("$" + str(self.__balance)) + magenta(", and with a bet of ") + green("$" + str(self.__bet)) + magenta(", you've doubled it!"))))
+                print("\n")
+                type(magenta(bright("Your new balance is " + green("$" + str(self.__balance) + " + $" + str(self.__bet) + " = $" + str(self.__balance + self.__bet)))))
+                self.__balance += self.__bet
+
+
+            case "Dealer Bust":
+                type(magenta(bright("The dealer went over 21! Bust! You Win!")))
+                print()
+                type(magenta(bright("You had " + green("$" + str(self.__balance)) + magenta(", and with a bet of ") + green("$" + str(self.__bet)) + magenta(", you've doubled it!"))))
+                print("\n")
+                type(magenta(bright("Your new balance is " + green("$" + str(self.__balance) + " + $" + str(self.__bet) + " = $" + str(self.__balance + self.__bet)))))
+                self.__balance += self.__bet
+
+
+            case "Dealer Blackjack":
+                type(red(bright("The dealer gets a Blackjack and wins! Too bad! So sad! Get good, kiddo!")))
+                print()
+                type(red(bright("You had " + green("$" + str(self.__balance)) + red(" and lost your bet of ") + green("$" + str(self.__bet)))))
+                print("\n")
+                type(red(bright("Your new balance is " + green("$" + str(self.__balance) + red(" - $" + str(self.__bet)) + green(" = $" + str((self.__balance - self.__bet)))))))
+                self.__balance -= self.__bet
+
+            case "Dealer Wins":
+                type(red(bright("The dealer wins! Too bad! So sad! Stay mad!")))
+                print()
+                type(red(bright("You had " + green("$" + str(self.__balance)) + red(" and lost your bet of ") + green("$" + str(self.__bet)))))
+                print("\n")
+                type(red(bright("Your new balance is " + green("$" + str(self.__balance) + red(" - $" + str(self.__bet)) + green(" = $" + str((self.__balance - self.__bet)))))))
+                self.__balance -= self.__bet
+
+
+            case "Player Bust":
+                type(red(bright("Bust! The dealer wins! Too bad! So sad! You suuuuck!")))
+                print()
+                type(red(bright("You had " + green("$" + str(self.__balance)) + red(" and lost your bet of ") + green("$" + str(self.__bet)))))
+                print("\n")
+                type(red(bright("Your new balance is " + green("$" + str(self.__balance) + red(" - $" + str(self.__bet)) + green(" = $" + str((self.__balance - self.__bet)))))))
+                self.__balance -= self.__bet
+
+            case "Tie":
+                type(cyan(bright("Since you and the dealer have the same value, it's a draw. So, so very lame.")))
+                print()
+                type(cyan(bright("You had " + green("$" + str(self.__balance)) + cyan(", and you win back your bet of ") + green("$" + str(self.__bet)))))
+                print("\n")
+                type(cyan(bright("Your balance is still " + green("$" + str(self.__balance)))))
+
+            case "Tie Blackjack":
+                type(cyan(bright("You and the dealer both got a Blackjack. How boring.")))
+                print()
+                type(cyan(bright("You had " + green("$" + str(self.__balance)) + cyan(", and you win back your bet of ") + green("$" + str(self.__bet)))))
+                print("\n")
+                type(cyan(bright("Your balance is still " + green("$" + str(self.__balance)))))
+
+        self.__player.set_balance(self.__balance)
+        self.__player.status()
+        print()
         return True
 
 
@@ -277,8 +411,6 @@ class Blackjack:
         # Resets hands, deck, and possibly anything else I can think of
         self.reset()
         self.__deck = deckOfCards.Deck()
-
-
 
 
 
@@ -364,11 +496,3 @@ class Hand:
             return self.__value[1]
         else:
             return 0
-    
-
-def main():
-    blackjackGame = Blackjack()
-    blackjackGame.play_round(2)
-
-if __name__ == "__main__":
-    main()
