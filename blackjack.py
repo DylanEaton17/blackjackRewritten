@@ -77,10 +77,11 @@ class Blackjack:
         self.__dealer_hand = Hand("Dealer")
         self.__player = player
 
-    def update_player(self, player):
-        self.__balance = player.get_balance()
+    def update_player(self):
+        self.__balance = self.__player.get_balance()
 
     def play_round(self, count):
+        self.update_player()
         for _ in range(count):
             type("You have " + green(bright("$" + str(self.__balance))))
             print()
@@ -309,10 +310,15 @@ class Blackjack:
         
     def end_round(self, status):
         print()
+        message = random.randrange(5)
 
         match status:
             case "Player Blackjack": 
-                type(yellow(bright("You got a Blackjack! You Win! Yay!")))
+                if message==0: type(yellow(bright("You got a Blackjack! You Win! Yay!")))
+                if message==1: type(yellow(bright("Blackjack! What a moment! Mom, get the camera!")))
+                if message==2: type(yellow(bright("WOOOOOOO Blackjack!!! WOOOOOOOO!!!")))
+                if message==3: type(yellow(bright("You hit Blackjack! What's cooking, good looking?")))
+                if message==4: type(yellow(bright("Oh lord have mercy, you got a Blackjack!")))
                 print()
                 type(yellow(bright("You had " + green("$" + str(self.__balance)) + yellow(", and with a bet of ") + green("$" + str(self.__bet)) + yellow(", you've tripled it!"))))
                 print("\n")
@@ -320,7 +326,11 @@ class Blackjack:
                 self.__balance += 2*self.__bet
 
             case "Player Wins":
-                type(magenta(bright("Congrats! You Win! Get REKT, dealer!")))
+                if message==0: type(magenta(bright("Congrats! You Win! Get REKT, Dealer!")))
+                if message==1: type(magenta(bright("You topple the Dealer! Are we witnessing a heist?")))
+                if message==2: type(magenta(bright("You outplayed the Dealer to victory! Nice moves.")))
+                if message==3: type(magenta(bright("You win... this time.")))
+                if message==4: type(magenta(bright("Winner winner chicken dinner! Must be tasty.")))
                 print()
                 type(magenta(bright("You had " + green("$" + str(self.__balance)) + magenta(", and with a bet of ") + green("$" + str(self.__bet)) + magenta(", you've doubled it!"))))
                 print("\n")
@@ -329,7 +339,11 @@ class Blackjack:
 
 
             case "Dealer Bust":
-                type(magenta(bright("The dealer went over 21! Bust! You Win!")))
+                if message==0: type(magenta(bright("The Dealer went over 21! Bust! You Win!")))
+                if message==1: type(magenta(bright("Dealer's hand busts! Victory is yours!")))
+                if message==2: type(magenta(bright("Dealer goes kaboom! Were they trying to bake a number cake?")))
+                if message==3: type(magenta(bright("Dealer hand goes bust! You're one lucky lucy.")))
+                if message==4: type(magenta(bright("The Dealer's over 21, which means you are the winner! Dope.")))
                 print()
                 type(magenta(bright("You had " + green("$" + str(self.__balance)) + magenta(", and with a bet of ") + green("$" + str(self.__bet)) + magenta(", you've doubled it!"))))
                 print("\n")
@@ -338,7 +352,12 @@ class Blackjack:
 
 
             case "Dealer Blackjack":
-                type(red(bright("The dealer gets a Blackjack and wins! Too bad! So sad! Get good, kiddo!")))
+                if message==0: type(red(bright("The Dealer gets a Blackjack and wins! Too bad! So sad! Get good, kiddo!")))
+                if message==1: type(red(bright("Dealer secures Blackjack! Game over for you, loser!")))
+                if message==2: type(red(bright("Dealer's Blackjack! Well, butter my biscuit, what a surprise!")))
+                if message==3: type(red(bright("HAHA you suck buddy. Living infinite money glitch.")))
+                if message==4: type(red(bright("You just witnessed greatness. You only wish you were this good.")))
+
                 print()
                 type(red(bright("You had " + green("$" + str(self.__balance)) + red(" and lost your bet of ") + green("$" + str(self.__bet)))))
                 print("\n")
@@ -346,16 +365,23 @@ class Blackjack:
                 self.__balance -= self.__bet
 
             case "Dealer Wins":
-                type(red(bright("The dealer wins! Too bad! So sad! Stay mad!")))
+                if message==0: type(red(bright("The Dealer wins! Too bad! So sad! Stay mad!")))
+                if message==1: type(red(bright("Dealer wins with the higher hand! Not your day, huh?")))
+                if message==2: type(red(bright("You simply got outplayed on this one.")))
+                if message==3: type(red(bright("Your hand is inferrior to the dealer. Which means you lose.")))
+                if message==4: type(red(bright("Dealer's number is higher, so I guess you lost. Unfortunate.")))
                 print()
                 type(red(bright("You had " + green("$" + str(self.__balance)) + red(" and lost your bet of ") + green("$" + str(self.__bet)))))
                 print("\n")
                 type(red(bright("Your new balance is " + green("$" + str(self.__balance) + red(" - $" + str(self.__bet)) + green(" = $" + str((self.__balance - self.__bet)))))))
                 self.__balance -= self.__bet
 
-
             case "Player Bust":
-                type(red(bright("Bust! The dealer wins! Too bad! So sad! You suuuuck!")))
+                if message==0: type(red(bright("Bust! The Dealer wins! Too bad! So sad! You suuuuck!")))
+                if message==1: type(red(bright("Bust city! Did your cards get too excited?")))
+                if message==2: type(red(bright("Busted! Did you think this was a game of 'who can count the highest'?")))
+                if message==3: type(red(bright("Bust! Should've stopped while you were ahead.")))
+                if message==4: type(red(bright("You busted! How'd it feel?")))
                 print()
                 type(red(bright("You had " + green("$" + str(self.__balance)) + red(" and lost your bet of ") + green("$" + str(self.__bet)))))
                 print("\n")
@@ -363,14 +389,22 @@ class Blackjack:
                 self.__balance -= self.__bet
 
             case "Tie":
-                type(cyan(bright("Since you and the dealer have the same value, it's a draw. So, so very lame.")))
+                if message==0: type(cyan(bright("You and the Dealer have the same value. It's a draw. So, so very lame.")))
+                if message==1: type(cyan(bright("Standoff! Equal hands, no winner!")))
+                if message==2: type(cyan(bright("Twinsies! You and the Dealer are matchy-matchy!")))
+                if message==3: type(cyan(bright("Welp. Those numbers are the same. So much for that round.")))
+                if message==4: type(cyan(bright("The lamest outcome possible, and yet here we are.")))
                 print()
                 type(cyan(bright("You had " + green("$" + str(self.__balance)) + cyan(", and you win back your bet of ") + green("$" + str(self.__bet)))))
                 print("\n")
                 type(cyan(bright("Your balance is still " + green("$" + str(self.__balance)))))
 
             case "Tie Blackjack":
-                type(cyan(bright("You and the dealer both got a Blackjack. How boring.")))
+                if message==0: type(cyan(bright("You and the Dealer both got a Blackjack. How boring.")))
+                if message==1: type(cyan(bright("Stalemate with matching Blackjacks! Who coulda guessed?")))
+                if message==2: type(cyan(bright("Double Blackjacks! What are the odds? (Don't answer that.)")))
+                if message==3: type(cyan(bright("It's a Blackjack draw! Did you both use your one-time miracle for this?")))
+                if message==4: type(cyan(bright("21 = 21. Sorry.")))
                 print()
                 type(cyan(bright("You had " + green("$" + str(self.__balance)) + cyan(", and you win back your bet of ") + green("$" + str(self.__bet)))))
                 print("\n")

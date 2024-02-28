@@ -10,7 +10,6 @@ def main():
         blackjackGame.play_round(1)
         player.end_day()
         player.day_event()
-        blackjackGame.update_player(player)
         print("\n")
 
 
