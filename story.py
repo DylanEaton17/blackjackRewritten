@@ -58,11 +58,12 @@ def bright(text):
     return (Style.BRIGHT + text + Style.NORMAL)
 
 class Player:
-    __slots__ = ["__alive", "__status_effects", "__balance", "__previous_balance", "__rank", "__day", "__lists"]
+    __slots__ = ["__alive", "__status_effects", "__inventory", "__balance", "__previous_balance", "__rank", "__day", "__lists"]
 
     def __init__(self):
         self.__alive = True
         self.__status_effects = set()
+        self.__inventory = set()
         self.__balance = 50
         self.__previous_balance = 50
         self.__rank = 0

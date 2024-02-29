@@ -90,12 +90,15 @@ class Blackjack:
 
         # Updates the blackjack balance to match player's balance, then tells the player their balance.
         self.update_player()
-        type("You have " + green(bright("$" + str(self.__balance))))
+        type("You have " + green(bright("${:,}".format(self.__balance))))
 
         for _ in range(count):
             print()
             while(True):
-                print(self.__dealer_happiness) # DELETE
+                self.__player.status()
+                print("Dealer's current happiness: " + str(self.__dealer_happiness) + "%") # DELETE
+
+                self.set_min_bet()
                 player_betting = False
                 while(not player_betting):
                     player_betting = self.bet()
@@ -158,10 +161,23 @@ class Blackjack:
         else:
             self.__dealer_happiness += value
 
+    def set_min_bet(self):
+        balance_str = str(self.__balance)
+        balance_len = len(balance_str)
+        if balance_len == 1:
+            self.__min_bet = 1
+        elif balance_len  == 2:
+            self.__min_bet = int(balance_str[0])
+        else:
+            new_balance_str = balance_str[0] + balance_str[1]
+            for _ in range(balance_len-3):
+                new_balance_str += "0"
+            self.__min_bet = int(new_balance_str)
+
     def bet(self):
         bet = None
         while bet is None:
-            type("The Dealer expects you to bet at least " + green(bright("$" + str(self.__min_bet))))
+            type("The Dealer expects you to bet at least " + green(bright("${:,}".format(self.__min_bet))))
             print("")
             type("How much would you like to bet? ")
             try:
@@ -173,7 +189,7 @@ class Blackjack:
 
         print("")
 
-        if(0<int(bet)<=self.__balance):
+        if(self.__min_bet<=int(bet)<=self.__balance):
             self.__bet = bet
             return True
         elif((int(bet) < self.__min_bet)):
@@ -326,13 +342,13 @@ class Blackjack:
             case "Player Blackjack": 
                 if message==0: type(yellow(bright("You got a Blackjack! You Win! Yay!")))
                 if message==1: type(yellow(bright("Blackjack! What a moment! Mom, get the camera!")))
-                if message==2: type(yellow(bright("WOOOOOOO Blackjack!!! WOOOOOOOO!!!")))
+                if message==2: type(yellow(bright("WOOOOOOO!!! Blackjack!!! WOOOOOOOO!!!")))
                 if message==3: type(yellow(bright("You hit Blackjack! What's cooking, good looking?")))
                 if message==4: type(yellow(bright("Oh lord have mercy, you got a Blackjack!")))
                 print()
-                type(yellow(bright("You had " + green("$" + str(self.__balance)) + yellow(", and with a bet of ") + green("$" + str(self.__bet)) + yellow(", you've tripled it!"))))
+                type(yellow(bright("You had " + green("${:,}".format(self.__balance)) + yellow(", and with a bet of ") + green("${:,}".format(self.__bet)) + yellow(", you've tripled it!"))))
                 print("\n")
-                type(yellow(bright("Your new balance is " + green("$" + str(self.__balance) + " + $" + str(self.__bet*2) + " = $" + str(self.__balance+(2*self.__bet))))))
+                type(yellow(bright("Your new balance is " + green("${:,}".format(self.__balance) + " + ${:,}".format(self.__bet*2) + " = ${:,}".format(self.__balance+self.__bet*2)))))
                 self.end_round_dealer_happiness(status)
                 self.__balance += 2*self.__bet
 
@@ -343,9 +359,9 @@ class Blackjack:
                 if message==3: type(magenta(bright("You win... this time.")))
                 if message==4: type(magenta(bright("Winner winner chicken dinner! Must be tasty.")))
                 print()
-                type(magenta(bright("You had " + green("$" + str(self.__balance)) + magenta(", and with a bet of ") + green("$" + str(self.__bet)) + magenta(", you've doubled it!"))))
+                type(magenta(bright("You had " + green("${:,}".format(self.__balance)) + magenta(", and with a bet of ") + green("${:,}".format(self.__bet)) + magenta(", you've doubled it!"))))
                 print("\n")
-                type(magenta(bright("Your new balance is " + green("$" + str(self.__balance) + " + $" + str(self.__bet) + " = $" + str(self.__balance + self.__bet)))))
+                type(magenta(bright("Your new balance is " + green("${:,}".format(self.__balance) + " + ${:,}".format(self.__bet) + " = ${:,}".format(self.__balance+self.__bet)))))
                 self.end_round_dealer_happiness(status)
                 self.__balance += self.__bet
 
@@ -356,9 +372,9 @@ class Blackjack:
                 if message==3: type(magenta(bright("Dealer hand goes bust! You're one lucky lucy.")))
                 if message==4: type(magenta(bright("The Dealer's over 21, which means you are the winner! Dope.")))
                 print()
-                type(magenta(bright("You had " + green("$" + str(self.__balance)) + magenta(", and with a bet of ") + green("$" + str(self.__bet)) + magenta(", you've doubled it!"))))
+                type(magenta(bright("You had " + green("${:,}".format(self.__balance)) + magenta(", and with a bet of ") + green("${:,}".format(self.__bet)) + magenta(", you've doubled it!"))))
                 print("\n")
-                type(magenta(bright("Your new balance is " + green("$" + str(self.__balance) + " + $" + str(self.__bet) + " = $" + str(self.__balance + self.__bet)))))
+                type(magenta(bright("Your new balance is " + green("${:,}".format(self.__balance) + " + ${:,}".format(self.__bet) + " = ${:,}".format(self.__balance+self.__bet)))))
                 self.end_round_dealer_happiness(status)
                 self.__balance += self.__bet
 
@@ -369,9 +385,9 @@ class Blackjack:
                 if message==3: type(red(bright("HAHA you suck buddy. Living infinite money glitch.")))
                 if message==4: type(red(bright("You just witnessed greatness. You only wish you were this good.")))
                 print()
-                type(red(bright("You had " + green("$" + str(self.__balance)) + red(" and lost your bet of ") + green("$" + str(self.__bet)))))
+                type(red(bright("You had " + green("${:,}".format(self.__balance)) + red(" and lost your bet of ") + green("${:,}".format(self.__bet)))))
                 print("\n")
-                type(red(bright("Your new balance is " + green("$" + str(self.__balance) + red(" - $" + str(self.__bet)) + green(" = $" + str((self.__balance - self.__bet)))))))
+                type(red(bright("Your new balance is " + green("${:,}".format(self.__balance) + red(" - ${:,}".format(self.__bet)) + green(" = ${:,}".format(self.__balance-self.__bet))))))
                 self.end_round_dealer_happiness(status)
                 self.__balance -= self.__bet
 
@@ -382,9 +398,9 @@ class Blackjack:
                 if message==3: type(red(bright("Your hand is inferrior to the Dealer's. Which means you lose.")))
                 if message==4: type(red(bright("Dealer's number is higher, so I guess you lost. Unfortunate.")))
                 print()
-                type(red(bright("You had " + green("$" + str(self.__balance)) + red(" and lost your bet of ") + green("$" + str(self.__bet)))))
+                type(red(bright("You had " + green("${:,}".format(self.__balance)) + red(" and lost your bet of ") + green("${:,}".format(self.__bet)))))
                 print("\n")
-                type(red(bright("Your new balance is " + green("$" + str(self.__balance) + red(" - $" + str(self.__bet)) + green(" = $" + str((self.__balance - self.__bet)))))))
+                type(red(bright("Your new balance is " + green("${:,}".format(self.__balance) + red(" - ${:,}".format(self.__bet)) + green(" = ${:,}".format(self.__balance-self.__bet))))))
                 self.end_round_dealer_happiness(status)
                 self.__balance -= self.__bet
 
@@ -395,9 +411,9 @@ class Blackjack:
                 if message==3: type(red(bright("Bust! Should've stopped while you were ahead.")))
                 if message==4: type(red(bright("You busted! How'd it feel?")))
                 print()
-                type(red(bright("You had " + green("$" + str(self.__balance)) + red(" and lost your bet of ") + green("$" + str(self.__bet)))))
+                type(red(bright("You had " + green("${:,}".format(self.__balance)) + red(" and lost your bet of ") + green("${:,}".format(self.__bet)))))
                 print("\n")
-                type(red(bright("Your new balance is " + green("$" + str(self.__balance) + red(" - $" + str(self.__bet)) + green(" = $" + str((self.__balance - self.__bet)))))))
+                type(red(bright("Your new balance is " + green("${:,}".format(self.__balance) + red(" - ${:,}".format(self.__bet)) + green(" = ${:,}".format(self.__balance-self.__bet))))))
                 self.end_round_dealer_happiness(status)
                 self.__balance -= self.__bet
 
@@ -408,9 +424,9 @@ class Blackjack:
                 if message==3: type(cyan(bright("Welp. Those numbers are the same. So much for that round.")))
                 if message==4: type(cyan(bright("The lamest outcome possible, and yet here we are.")))
                 print()
-                type(cyan(bright("You had " + green("$" + str(self.__balance)) + cyan(", and you win back your bet of ") + green("$" + str(self.__bet)))))
+                type(cyan(bright("You had " + green("${:,}".format(self.__balance)) + cyan(", and you win back your bet of ") + green("${:,}".format(self.__bet)))))
                 print("\n")
-                type(cyan(bright("Your balance is still " + green("$" + str(self.__balance)))))
+                type(cyan(bright("Your balance is still " + green("${:,}".format(self.__balance)))))
                 self.end_round_dealer_happiness(status)
 
             case "Tie Blackjack":
@@ -420,9 +436,9 @@ class Blackjack:
                 if message==3: type(cyan(bright("It's a Blackjack draw! Did you both use your one-time miracle for this?")))
                 if message==4: type(cyan(bright("21 = 21. Sorry.")))
                 print()
-                type(cyan(bright("You had " + green("$" + str(self.__balance)) + cyan(", and you win back your bet of ") + green("$" + str(self.__bet)))))
+                type(cyan(bright("You had " + green("${:,}".format(self.__balance)) + cyan(", and you win back your bet of ") + green("${:,}".format(self.__bet)))))
                 print("\n")
-                type(cyan(bright("Your balance is still " + green("$" + str(self.__balance)))))
+                type(cyan(bright("Your balance is still " + green("${:,}".format(self.__balance)))))
                 self.end_round_dealer_happiness(status)
 
         self.__player.set_balance(self.__balance)
