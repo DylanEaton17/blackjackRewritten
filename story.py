@@ -67,7 +67,7 @@ class Player:
         self.__previous_balance = 50
         self.__rank = 0
         self.__day = 1
-        self.__lists = lists.Lists()
+        self.__lists = lists.Lists(self)
 
     def kill(self):
         self.__alive = False
@@ -269,6 +269,9 @@ class Player:
     # Nearly There Day Events (900,000 - 1,000,000)
 
 
-    def day_event(this):
-        dayEvent = getattr(this, this.__lists.get_poor_day_event())
+    def day_event(self):
+        if self.__rank==0:
+            dayEvent = getattr(self, self.__lists.get_poor_day_event())
+        elif self.__rank==1:
+            dayEvent = getattr(self, self.__lists.get_)
         dayEvent()

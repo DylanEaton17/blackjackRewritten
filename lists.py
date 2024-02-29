@@ -1,22 +1,145 @@
 import random
 
 class Lists:
-    def __init__(self):
+    def __init__(self, player):
+        self.__player = player
         self.__quote_list = self.make_quote_list()
         self.__cheers_list = self.make_cheers_list()
         self.__advice_list = self.make_advice_list()
         self.__quote_setup_list = self.make_quote_setup_list()
+        self.__quote_setup_list = self.make_quote_setup_list()
         self.__poor_day_events = self.make_poor_day_events_list()
+        self.__cheap_day_events = self.make_cheap_day_events_list()
 
+
+# This is a lot of similar code, but each list is a unique set of events
+# That happen in each rank.
+        
+# If the list is empty, it recreates the list.
+# Each event specifically has a chance of not triggering if certain
+# conditions arent met
+        
+# Poor Events
     def make_poor_day_events_list(self):
         a_list = []
         a_list.append("seat_cash")
+        return a_list
+    
+    def make_poor_night_events_list(self):
+        a_list = []
         return a_list
 
     def get_poor_day_event(self):
         if len(self.__poor_day_events)==0:
             self.__poor_day_events = self.make_poor_day_events_list()
         return self.__poor_day_events.pop()
+    
+    def get_poor_night_event(self):
+        if len(self.__poor_night_events)==0:
+            self.__poor_night_events = self.make_poor_night_events_list()
+        return self.__poor_night_events.pop()
+    
+
+# Cheap Events (1,000 - 10,000)
+    def make_cheap_day_events_list(self):
+        a_list = []
+        return a_list
+    
+    def make_cheap_night_events_list(self):
+        a_list = []
+        return a_list
+
+    def get_cheap_day_event(self):
+        if len(self.__cheap_day_events)==0:
+            self.__cheap_day_events = self.make_cheap_day_events_list()
+        return self.__cheap_day_events.pop()
+    
+    def get_cheap_night_event(self):
+        if len(self.__cheap_night_events)==0:
+            self.__cheap_night_events = self.make_cheap_night_events_list()
+        return self.__cheap_night_events.pop()
+
+    
+# Modest Events (10,000 - 100,000)
+    def make_modest_day_events_list(self):
+        a_list = []
+        return a_list
+    
+    def make_modest_night_events_list(self):
+        a_list = []
+        return a_list
+
+    def get_modest_day_event(self):
+        if len(self.__modest_day_events)==0:
+            self.__modest_day_events = self.make_modest_day_events_list()
+        return self.__modest_day_events.pop()
+    
+    def get_modest_night_event(self):
+        if len(self.__modest_night_events)==0:
+            self.__modest_night_events = self.make_modest_night_events_list()
+        return self.__modest_night_events.pop()
+    
+
+# Rich Events (100,000 - 500,000)
+    def make_rich_day_events_list(self):
+        a_list = []
+        return a_list
+    
+    def make_rich_night_events_list(self):
+        a_list = []
+        return a_list
+
+    def get_rich_day_event(self):
+        if len(self.__rich_day_events)==0:
+            self.__rich_day_events = self.make_rich_day_events_list()
+        return self.__rich_day_events.pop()
+    
+    def get_rich_night_event(self):
+        if len(self.__rich_night_events)==0:
+            self.__rich_night_events = self.make_rich_night_events_list()
+        return self.__rich_night_events.pop()
+
+
+# Doughman Events (500,000 - 900,000)
+    def make_doughman_day_events_list(self):
+        a_list = []
+        return a_list
+    
+    def make_doughman_night_events_list(self):
+        a_list = []
+        return a_list
+
+    def get_doughman_day_event(self):
+        if len(self.__doughman_day_events)==0:
+            self.__doughman_day_events = self.make_doughman_day_events_list()
+        return self.__doughman_day_events.pop()
+
+    def get_doughman_night_event(self):
+        if len(self.__doughman_night_events)==0:
+            self.__doughman_night_events = self.make_doughman_night_events_list()
+        return self.__doughman_night_events.pop()
+    
+
+# Nearly There Events (900,000 - 1,000,000)
+    def make_nearly_day_events_list(self):
+        a_list = []
+        return a_list
+    
+    def make_nearly_night_events_list(self):
+        a_list = []
+        return a_list
+
+    def get_nearly_day_event(self):
+        if len(self.__nearly_day_events)==0:
+            self.__nearly_day_events = self.make_nearly_day_events_list()
+        return self.__nearly_day_events.pop()
+    
+    def get_nearly_night_event(self):
+        if len(self.__nearly_night_events)==0:
+            self.__nearly_night_events = self.make_nearly_night_events_list()
+        return self.__nearly_night_events.pop()
+    
+
 
     def make_quote_list(self):
         a_list = []
