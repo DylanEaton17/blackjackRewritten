@@ -10,6 +10,18 @@ class Lists:
         self.__quote_setup_list = self.make_quote_setup_list()
         self.__poor_day_events = self.make_poor_day_events_list()
         self.__cheap_day_events = self.make_cheap_day_events_list()
+        self.__modest_day_events = self.make_modest_day_events_list()
+        self.__rich_day_events = self.make_rich_day_events_list()
+        self.__doughman_day_events = self.make_doughman_day_events_list()
+        self.__nearly_day_events = self.make_nearly_day_events_list()
+        self.__poor_night_events = self.make_poor_night_events_list()
+        self.__cheap_night_events = self.make_cheap_night_events_list()
+        self.__modest_night_events = self.make_modest_night_events_list()
+        self.__rich_night_events = self.make_rich_night_events_list()
+        self.__doughman_night_events = self.make_doughman_night_events_list()
+        self.__nearly_night_events = self.make_nearly_night_events_list()
+
+
 
 
 # This is a lot of similar code, but each list is a unique set of events

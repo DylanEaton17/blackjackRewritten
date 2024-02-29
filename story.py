@@ -273,5 +273,28 @@ class Player:
         if self.__rank==0:
             dayEvent = getattr(self, self.__lists.get_poor_day_event())
         elif self.__rank==1:
-            dayEvent = getattr(self, self.__lists.get_)
+            dayEvent = getattr(self, self.__lists.get_cheap_day_event())
+        elif self.__rank==2:
+            dayEvent = getattr(self, self.__lists.get_modest_day_event())
+        elif self.__rank==3:
+            dayEvent = getattr(self, self.__lists.get_rich_day_event())
+        elif self.__rank==4:
+            dayEvent = getattr(self, self.__lists.get_doughman_day_event())
+        elif self.__rank==5:
+            dayEvent = getattr(self, self.__lists.get_nearly_day_event())
         dayEvent()
+
+    def night_event(self):
+        if self.__rank==0:
+            nightEvent = getattr(self, self.__lists.get_poor_night_event())
+        elif self.__rank==1:
+            nightEvent = getattr(self, self.__lists.get_cheap_night_event())
+        elif self.__rank==2:
+            nightEvent = getattr(self, self.__lists.get_modest_night_event())
+        elif self.__rank==3:
+            nightEvent = getattr(self, self.__lists.get_rich_night_event())
+        elif self.__rank==4:
+            nightEvent = getattr(self, self.__lists.get_doughman_night_event())
+        elif self.__rank==5:
+            nightEvent = getattr(self, self.__lists.get_nearly_night_event())
+        nightEvent()
