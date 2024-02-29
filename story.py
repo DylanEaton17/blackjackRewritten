@@ -240,7 +240,7 @@ class Player:
     def end_day_1(self):
         slowtype("After playing a few rounds of Blackjack, the dealer points to the door. ")
         slowtype("Without questing his word, and with your winnings in hand, you scurry to the door, eager to get some sleep after such a long day. ")
-        slowtype("Making it back to your car, ditched on the side of the road, but no longer engulfed in smoke, you lay down, and close your eyes. It's time to rest.")
+        slowtype("Making it back to your car, ditched on the side of the road, but no longer engulfed in smoke, you lay down, and close your eyes. It's time to rest. ")
 
     def end_day_car(self):
         slowtype("After playing a few rounds of Blackjack, the dealer points to the door. ")

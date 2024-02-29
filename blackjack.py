@@ -81,9 +81,11 @@ class Blackjack:
         self.__balance = self.__player.get_balance()
 
     def play_round(self, count):
+        # Updates the blackjack balance to match player's balance, then tells the player their balance.
         self.update_player()
+        type("You have " + green(bright("$" + str(self.__balance))))
+
         for _ in range(count):
-            type("You have " + green(bright("$" + str(self.__balance))))
             print()
             while(True):
                 player_betting = False
