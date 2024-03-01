@@ -109,12 +109,15 @@ class Player:
         self.__balance = value
 
     def change_balance(self, value):
+        print("\n")
         if (self.__balance + value) <= 0:
             self.__balance = 0
             slowtype("Your new balance is " + red(bright("$0")))
         else:
             self.__balance += value
             slowtype("Your new balance is " + green(bright("$" + str(self.__balance))))
+        print("\n")
+
 
     def update_rank(self):
         if(1<=self.__balance<1000):
@@ -265,7 +268,7 @@ class Player:
         slowtype("Making it back to your car, ditched on the side of the road, you lay down, and close your eyes. It's time to rest.")
 
 
-    # Poor Day Events (0 - 1,000)
+    # Poor Day Events (1 - 1,000)
     def seat_cash(self):
         slowtype("You wake up in the front seat, covered in sweat. ")
         slowtype("As the sun shines through the car window, you notice a bright green bill tucked between the seat cushions. Must be your lucky day. ")
@@ -289,16 +292,126 @@ class Player:
     # Nearly There Day Events (900,000 - 1,000,000)
 
 
+
+    # Poor Night Events (1 - 1,000)
+
+    # Cheap Day Events (1,000 - 10,000)
+        
+    # Modest Day Events (10,000 - 100,000)
+        
+    # Rich Day Events (100,000 - 500,000)
+        
+    # Doughman Day Events (500,000 - 900,000)
+        
+    # Nearly There Day Events (900,000 - 1,000,000)
+
+
+
+    # Story Events
+    def trusty_tom(self):
+        slowtype("You wake up to a blaring engine, roaring down the road towards you. ")
+        slowtype("As you scratch your eyes awake, you read \'Tom the Trusty Mechanic\' painted on the hood of a bright gold truck. ")
+        slowtype("Waving the vehicle down, the truck slows, then halts, and an old, jolly man jumps out. ")
+        print("\n")
+        slowtype("\"Well, howdy! The name's Tom. It appears you've gotten yourself in a bit of a pickle, ya think?\" ")
+        slowtype("Tom pulls a big red wrench out of his pocket, and walks to the hood of your beaten down wagon. ")
+        i = random.randint(0, 4)
+        a_list = [100, 150, 200, 250, 300]
+        type("\"Yep, this things busted alright! Tell ya what, for, I don't know, " + green(bright(str(a_list[i]) + " bucks")) + ", I'll get this thing replaced for ya, good as new! Whaddya say?\" ")
+        while(True):
+            yes_or_no = input("").lower()
+            print()
+            if(yes_or_no == "n") or (yes_or_no == "no"):
+                slowtype("Really? No dice, huh. Yunno, I think you're makin' a mistake, but I ain't one to judge. You have a nice day now.\" ")
+                slowtype("Tom has a sad look in his eye. It's clear that he wanted to help you. ")
+                slowtype("You watch as his big golden truck stutters, starts, then drives away.")
+                print()
+                return
+            elif(((yes_or_no == "y") or (yes_or_no == "yes")) and (self.__balance < a_list[i])):
+                slowtype("\"Aww man, sorry to tell you, but you just don't got enough funds for this, yunno?\" ")
+                random_chance = random.randrange(2)
+                # Broke, and Tom offers discount
+                if random_chance == 0:
+                    print("\n")
+                    slowtype("\"You know what? I'm feelin' generous, and the shop's been doing well lately. ")
+                    slowtype("Tell ya what, I can take the offer down " + green(bright(str(50) + " dollars")) + " just for you. ")
+                    slowtype("Could ya do " + green(bright(str(a_list[i]-50) + " bucks")) + "?\" ")
+                    while True:
+                        yes_or_no_2 = input("").lower()
+                        print()
+                        # Declining Tom's second offer
+                        if(yes_or_no_2 == "n") or (yes_or_no_2=="no"):
+                            print()
+                            slowtype("Really? No dice, huh. Even with the discount? Yunno, I think you're makin' a mistake, but I ain't one to judge. You have a nice day now.\" ")
+                            slowtype("Tom has a dissapointed look in his eye. It's clear that he wanted to help you. ")
+                            slowtype("You watch as his big golden truck stutters, starts, then drives away.")
+                            print()
+                            return
+                        elif(((yes_or_no_2 == "y") or (yes_or_no_2 == "yes")) and (self.__balance < (a_list[i]-50))):
+                            print()
+                            slowtype("\"Still can't afford it? That's a real shame. I really wish there was something I could do. Best of luck my friend. Be seeing ya around, ya know?\" ")
+                            slowtype("And with that, you watch as his big golden truck stutters, starts, then drives away.")
+                            print()
+                            return
+                        elif (yes_or_no_2 == "y") or (yes_or_no_2 == "yes"):
+                            print()
+                            slowtype("\"Really? Awesome! I'll be the best dang mechanic this ol' automobile has ever seen!\" ")
+                            slowtype("You watch in awe, as Tom, a man who has clearly perfected his craft, fixes up your wagon in no time. Sweet. ")
+                            self.change_balance(-(a_list[i]-50))
+                            self.__inventory.add("Car")
+                            slowtype(magenta(bright("Your car has been fixed! You can now drive around!")))
+                            print("\n")
+                            slowtype("\"Well, gee, this has been fun. Be seein' you around, ya know?\" ")
+                            slowtype("And with that, you watch as his big golden truck stutters, starts, then drives away.")
+                            print()
+                            return
+                        else:
+                            slowtype("\"Whaddya say?\" ")
+
+                # Broke, and Tom can't offer discount
+                elif random_chance == 1:
+                    print("\n")
+                    slowtype("\"I really wish there was something I could do. Best of luck my friend. Be seeing ya around, ya know?\" ")
+                    slowtype("And with that, you watch as his big golden truck stutters, starts, then drives away.")
+                    print()
+                    return
+            # Accepting Tom's first offer
+            elif (yes_or_no == "y") or (yes_or_no == "yes"):
+                slowtype("\"Really? Awesome! I'll be the best dang mechanic this ol' automobile has ever seen!\" ")
+                slowtype("You watch in awe, as Tom, a man who has clearly perfected his craft, fixes up your wagon in no time. Sweet. ")
+                self.change_balance(-a_list[i])
+                self.__inventory.add("Car")
+                slowtype(magenta(bright("Your car has been fixed! You can now drive around!")))
+                print("\n")
+                slowtype("\"Well, gee, this has been fun. Be seein' you around, ya know?\" ")
+                slowtype("And with that, you watch as his big golden truck stutters, starts, then drives away.")
+                print()
+                return
+            else:
+                slowtype("\"Whaddya say?\" ")
+
+
     def day_event(self):
-        match self.__rank:
-            case 0: dayEvent = getattr(self, self.__lists.get_poor_day_event())
-            case 1: dayEvent = getattr(self, self.__lists.get_cheap_day_event())
-            case 2: dayEvent = getattr(self, self.__lists.get_modest_day_event())
-            case 3: dayEvent = getattr(self, self.__lists.get_rich_day_event())
-            case 4: dayEvent = getattr(self, self.__lists.get_doughman_day_event())
-            case 5: dayEvent = getattr(self, self.__lists.get_nearly_day_event())
-        dayEvent()
+        if("Car" not in self.__inventory) and (self.__balance>=200):
+            random_chance = random.randrange(3)
+            if random_chance==0:
+                self.trusty_tom()
+
+        else:
+            match self.__rank:
+                case 0: dayEvent = getattr(self, self.__lists.get_poor_day_event())
+                case 1: dayEvent = getattr(self, self.__lists.get_cheap_day_event())
+                case 2: dayEvent = getattr(self, self.__lists.get_modest_day_event())
+                case 3: dayEvent = getattr(self, self.__lists.get_rich_day_event())
+                case 4: dayEvent = getattr(self, self.__lists.get_doughman_day_event())
+                case 5: dayEvent = getattr(self, self.__lists.get_nearly_day_event())
+            dayEvent()
         self.update_rank()
+
+    def afternoon(self):
+        if "Car" in self.__inventory:
+            type("Would you like to spend your day driving somewhere? ")
+
 
     def night_event(self):
         match self.__rank:
