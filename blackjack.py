@@ -79,6 +79,7 @@ class Blackjack:
 
     def update_player(self):
         self.__balance = self.__player.get_balance()
+        self.__player.update_rank()
 
     def play_round(self, count):
         # Resets the deck

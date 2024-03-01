@@ -31,7 +31,7 @@ class Lists:
 # Each event specifically has a chance of not triggering if certain
 # conditions arent met
         
-# Poor Events
+# Poor Events (1 - 1,000)
     def make_poor_day_events_list(self):
         a_list = []
         a_list.append("seat_cash")

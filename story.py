@@ -109,12 +109,28 @@ class Player:
         self.__balance = value
 
     def change_balance(self, value):
-        if (self.__balance + value) == 0:
+        if (self.__balance + value) <= 0:
             self.__balance = 0
             slowtype("Your new balance is " + red(bright("$0")))
         else:
             self.__balance += value
             slowtype("Your new balance is " + green(bright("$" + str(self.__balance))))
+
+    def update_rank(self):
+        if(1<=self.__balance<1000):
+            self.__rank = 0
+        elif(1000<=self.__balance<10000):
+            self.__rank = 1
+        elif(10000<=self.__balance<100000):
+            self.__rank = 2
+        elif(100000<=self.__balance<500000):
+            self.__rank = 3
+        elif(500000<=self.__balance<900000):
+            self.__rank = 4
+        elif(900000<=self.__balance<1000000):
+            self.__rank = 5
+        else:
+            self.status()
     
     def end_day(self):
         if(self.__day==1):
@@ -251,15 +267,18 @@ class Player:
 
     # Poor Day Events (0 - 1,000)
     def seat_cash(self):
+        slowtype("You wake up in the front seat, covered in sweat. ")
         slowtype("As the sun shines through the car window, you notice a bright green bill tucked between the seat cushions. Must be your lucky day. ")
         print("\n")
-        x = random.randint(0, 4)
+        i = random.randint(0, 4)
         a_list = [5, 10, 20, 50, 100]
-        slowtype("That's another " + green(bright("$" + str(a_list[x]))) + " dollars")
+        slowtype("That's another " + green(bright("$" + str(a_list[i]))) + " dollars")
         print()
-        self.change_balance(a_list[x])
+        self.change_balance(a_list[i])
 
     # Cheap Day Events (1,000 - 10,000)
+    def big_bird(self):
+        pass
         
     # Modest Day Events (10,000 - 100,000)
         
@@ -271,31 +290,23 @@ class Player:
 
 
     def day_event(self):
-        if self.__rank==0:
-            dayEvent = getattr(self, self.__lists.get_poor_day_event())
-        elif self.__rank==1:
-            dayEvent = getattr(self, self.__lists.get_cheap_day_event())
-        elif self.__rank==2:
-            dayEvent = getattr(self, self.__lists.get_modest_day_event())
-        elif self.__rank==3:
-            dayEvent = getattr(self, self.__lists.get_rich_day_event())
-        elif self.__rank==4:
-            dayEvent = getattr(self, self.__lists.get_doughman_day_event())
-        elif self.__rank==5:
-            dayEvent = getattr(self, self.__lists.get_nearly_day_event())
+        match self.__rank:
+            case 0: dayEvent = getattr(self, self.__lists.get_poor_day_event())
+            case 1: dayEvent = getattr(self, self.__lists.get_cheap_day_event())
+            case 2: dayEvent = getattr(self, self.__lists.get_modest_day_event())
+            case 3: dayEvent = getattr(self, self.__lists.get_rich_day_event())
+            case 4: dayEvent = getattr(self, self.__lists.get_doughman_day_event())
+            case 5: dayEvent = getattr(self, self.__lists.get_nearly_day_event())
         dayEvent()
+        self.update_rank()
 
     def night_event(self):
-        if self.__rank==0:
-            nightEvent = getattr(self, self.__lists.get_poor_night_event())
-        elif self.__rank==1:
-            nightEvent = getattr(self, self.__lists.get_cheap_night_event())
-        elif self.__rank==2:
-            nightEvent = getattr(self, self.__lists.get_modest_night_event())
-        elif self.__rank==3:
-            nightEvent = getattr(self, self.__lists.get_rich_night_event())
-        elif self.__rank==4:
-            nightEvent = getattr(self, self.__lists.get_doughman_night_event())
-        elif self.__rank==5:
-            nightEvent = getattr(self, self.__lists.get_nearly_night_event())
+        match self.__rank:
+            case 0: nightEvent = getattr(self, self.__lists.get_poor_night_event())
+            case 1: nightEvent = getattr(self, self.__lists.get_cheap_night_event())
+            case 2: nightEvent = getattr(self, self.__lists.get_modest_night_event())
+            case 3: nightEvent = getattr(self, self.__lists.get_rich_night_event())
+            case 4: nightEvent = getattr(self, self.__lists.get_doughman_night_event())
+            case 5: nightEvent = getattr(self, self.__lists.get_nearly_night_event())
         nightEvent()
+        self.update_rank()
