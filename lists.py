@@ -270,7 +270,7 @@ class Lists:
         a_list.append("Oh, look at you, making small changes like you're actually going to finish something. Adorable.")
         a_list.append("Look at you, using your full potential — just kidding, but seriously, nice effort today.")
         a_list.append("You might not be winning the race, but at least you're in the running, right? Sort of?")
-        a_list.append("Your unique approach to life's challenges is so... inspiring? Yeah, let's go with that.")
+        a_list.append("Your unique approach to life's challenges is so...inspiring? Yeah, let's go with that.")
         random.shuffle(a_list)
         return a_list
 

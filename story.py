@@ -79,7 +79,8 @@ class Player:
             print("\n")
             slowtype("You have died!")
             print()
-            if self.__day == 1: slowtype("You lasted " + bright(yellow(str(self.__day) + " day")))
+            if self.__day == 1: slowtype("You didn't even last " + bright(yellow(str(self.__day) + " day") + ". That's embarrasing."))
+            if self.__day == 2: slowtype("You lasted " + bright(yellow(str(self.__day-1) + " day")))
             else: slowtype("You lasted " + bright(yellow(str(self.__day) + " days")))
             print()
             slowtype("You met your fate with a final balance of " + green(bright("$" + str(self.__balance))))
@@ -276,7 +277,6 @@ class Player:
         i = random.randint(0, 4)
         a_list = [5, 10, 20, 50, 100]
         slowtype("That's another " + green(bright("$" + str(a_list[i]))) + " dollars")
-        print()
         self.change_balance(a_list[i])
 
     # Cheap Day Events (1,000 - 10,000)
@@ -325,7 +325,7 @@ class Player:
                 slowtype("Really? No dice, huh. Yunno, I think you're makin' a mistake, but I ain't one to judge. You have a nice day now.\" ")
                 slowtype("Tom has a sad look in his eye. It's clear that he wanted to help you. ")
                 slowtype("You watch as his big golden truck stutters, starts, then drives away.")
-                print()
+                print("\n")
                 return
             elif(((yes_or_no == "y") or (yes_or_no == "yes")) and (self.__balance < a_list[i])):
                 slowtype("\"Aww man, sorry to tell you, but you just don't got enough funds for this, yunno?\" ")
@@ -345,13 +345,13 @@ class Player:
                             slowtype("Really? No dice, huh. Even with the discount? Yunno, I think you're makin' a mistake, but I ain't one to judge. You have a nice day now.\" ")
                             slowtype("Tom has a dissapointed look in his eye. It's clear that he wanted to help you. ")
                             slowtype("You watch as his big golden truck stutters, starts, then drives away.")
-                            print()
+                            print("\n")
                             return
                         elif(((yes_or_no_2 == "y") or (yes_or_no_2 == "yes")) and (self.__balance < (a_list[i]-50))):
                             print()
                             slowtype("\"Still can't afford it? That's a real shame. I really wish there was something I could do. Best of luck my friend. Be seeing ya around, ya know?\" ")
                             slowtype("And with that, you watch as his big golden truck stutters, starts, then drives away.")
-                            print()
+                            print("\n")
                             return
                         elif (yes_or_no_2 == "y") or (yes_or_no_2 == "yes"):
                             print()
@@ -363,7 +363,7 @@ class Player:
                             print("\n")
                             slowtype("\"Well, gee, this has been fun. Be seein' you around, ya know?\" ")
                             slowtype("And with that, you watch as his big golden truck stutters, starts, then drives away.")
-                            print()
+                            print("\n")
                             return
                         else:
                             slowtype("\"Whaddya say?\" ")
@@ -373,7 +373,7 @@ class Player:
                     print("\n")
                     slowtype("\"I really wish there was something I could do. Best of luck my friend. Be seeing ya around, ya know?\" ")
                     slowtype("And with that, you watch as his big golden truck stutters, starts, then drives away.")
-                    print()
+                    print("\n")
                     return
             # Accepting Tom's first offer
             elif (yes_or_no == "y") or (yes_or_no == "yes"):
@@ -385,19 +385,21 @@ class Player:
                 print("\n")
                 slowtype("\"Well, gee, this has been fun. Be seein' you around, ya know?\" ")
                 slowtype("And with that, you watch as his big golden truck stutters, starts, then drives away.")
-                print()
+                print("\n")
                 return
             else:
                 slowtype("\"Whaddya say?\" ")
 
 
     def day_event(self):
+        ranStoryEvent = False
+
         if("Car" not in self.__inventory) and (self.__balance>=200):
             random_chance = random.randrange(3)
             if random_chance==0:
                 self.trusty_tom()
-
-        else:
+                ranStoryEvent = True
+        if ranStoryEvent == False:
             match self.__rank:
                 case 0: dayEvent = getattr(self, self.__lists.get_poor_day_event())
                 case 1: dayEvent = getattr(self, self.__lists.get_cheap_day_event())

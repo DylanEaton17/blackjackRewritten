@@ -57,9 +57,9 @@ class Deck:
                     name = "King"
                 
                 if value > 10:
-                    value = 10
-
-                self.__deck.append((Card(name, suit, value)))
+                    self.__deck.append((Card(name, suit, 10)))
+                else:
+                    self.__deck.append((Card(name, suit, value)))
         # Calls shuffle function, then returns the deck (for initalization)   
         self.shuffle_deck()
         return self.__deck

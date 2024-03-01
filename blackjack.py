@@ -357,7 +357,7 @@ class Blackjack:
                 if message==0: type(magenta(bright("Congrats! You Win! Get REKT, Dealer!")))
                 if message==1: type(magenta(bright("You topple the Dealer! Are we witnessing a heist?")))
                 if message==2: type(magenta(bright("You outplayed the Dealer to victory! Nice moves.")))
-                if message==3: type(magenta(bright("You win... this time.")))
+                if message==3: type(magenta(bright("You win...this time.")))
                 if message==4: type(magenta(bright("Winner winner chicken dinner! Must be tasty.")))
                 print()
                 type(magenta(bright("You had " + green("${:,}".format(self.__balance)) + magenta(", and with a bet of ") + green("${:,}".format(self.__bet)) + magenta(", you've doubled it!"))))
@@ -493,9 +493,9 @@ class Blackjack:
 
             case "Dealer Wins":
                 if bet_ratio >= 0.9:
-                    self.calm_dealer(5)
+                    self.calm_dealer(10)
                 elif bet_ratio >= 0.6:
-                    self.calm_dealer(4)
+                    self.calm_dealer(6)
                 elif bet_ratio >= 0.3:
                     self.calm_dealer(3)
                 else:
@@ -503,13 +503,13 @@ class Blackjack:
 
             case "Player Bust":
                 if bet_ratio >= 0.9:
-                    self.calm_dealer(6)
+                    self.calm_dealer(12)
                 elif bet_ratio >= 0.6:
-                    self.calm_dealer(4)
+                    self.calm_dealer(7)
                 elif bet_ratio >= 0.3:
-                    self.calm_dealer(2)
+                    self.calm_dealer(3)
                 else:
-                    self.calm_dealer(1)
+                    self.calm_dealer(2)
 
             case "Tie":
                 if bet_ratio >= 0.9:
