@@ -33,7 +33,7 @@ def slowtype(*words):
         ]))
         sys.stdout.write(char)
         sys.stdout.flush()
-        if (char == ".") or (char == "!") or (char == ":") or (char == ";") or (char == "?"):
+        if (char == ".") or (char == "!") or (char == ";") or (char == "?"):
             time.sleep(0.7)
         if char == ",":
             time.sleep(0.4)
@@ -58,12 +58,13 @@ def bright(text):
     return (Style.BRIGHT + text + Style.NORMAL)
 
 class Player:
-    __slots__ = ["__alive", "__status_effects", "__inventory", "__balance", "__previous_balance", "__rank", "__day", "__lists"]
+    __slots__ = ["__alive", "__status_effects", "__inventory", "__met", "__balance", "__previous_balance", "__rank", "__day", "__lists"]
 
     def __init__(self):
         self.__alive = True
         self.__status_effects = set()
         self.__inventory = set()
+        self.__met = set()
         self.__balance = 50
         self.__previous_balance = 50
         self.__rank = 0
@@ -103,6 +104,24 @@ class Player:
             slowtype("u win lol look at u millionaire go girl")
             quit()
     
+    def add_status(self, status):
+        self.__status_effects.add(status)
+
+    def has_status(self, status):
+        return status in self.__status_effects
+
+    def add_item(self, item):
+        self.__inventory.add(item)
+
+    def has_item(self, item):
+        return item in self.__inventory
+    
+    def meet(self, person):
+        self.__met.add(person)
+
+    def has_met(self, person):
+        return person in self.__met
+
     def get_balance(self):
         return self.__balance
 
@@ -118,7 +137,6 @@ class Player:
             self.__balance += value
             slowtype("Your new balance is " + green(bright("$" + str(self.__balance))))
         print("\n")
-
 
     def update_rank(self):
         if(1<=self.__balance<1000):
@@ -238,8 +256,7 @@ class Player:
         slowtype("\"Ugh, not again,\" you spout as the old wagon shutters, then dies. ")
         slowtype("Stranded on the road again, but this time, your money has gone dry. ")
         slowtype("All but your 50 dollar bill that Grandma gave you on her last Christmas. ")
-        slowtype("You've been saving it for when you needed it most. ")
-        slowtype("But surely, it won't be enough.")
+        slowtype("You've been saving it for when you needed it most, but surely, it won't be enough.")
         print('\n')
         slowtype("The door creaks open, and you step out into the night sky, coughing up the smoke from your fried vehicle. ")
         slowtype("After pushing your car off the road and between the trees, there isn't much else left for you to do, ")
@@ -358,7 +375,7 @@ class Player:
                             slowtype("\"Really? Awesome! I'll be the best dang mechanic this ol' automobile has ever seen!\" ")
                             slowtype("You watch in awe, as Tom, a man who has clearly perfected his craft, fixes up your wagon in no time. Sweet. ")
                             self.change_balance(-(a_list[i]-50))
-                            self.__inventory.add("Car")
+                            self.add_item("Car")
                             slowtype(magenta(bright("Your car has been fixed! You can now drive around!")))
                             print("\n")
                             slowtype("\"Well, gee, this has been fun. Be seein' you around, ya know?\" ")
@@ -380,7 +397,7 @@ class Player:
                 slowtype("\"Really? Awesome! I'll be the best dang mechanic this ol' automobile has ever seen!\" ")
                 slowtype("You watch in awe, as Tom, a man who has clearly perfected his craft, fixes up your wagon in no time. Sweet. ")
                 self.change_balance(-a_list[i])
-                self.__inventory.add("Car")
+                self.add_item("Car")
                 slowtype(magenta(bright("Your car has been fixed! You can now drive around!")))
                 print("\n")
                 slowtype("\"Well, gee, this has been fun. Be seein' you around, ya know?\" ")
@@ -394,7 +411,7 @@ class Player:
     def day_event(self):
         ranStoryEvent = False
 
-        if("Car" not in self.__inventory) and (self.__balance>=200):
+        if(not self.has_item("Car")) and (self.__balance>=200):
             random_chance = random.randrange(3)
             if random_chance==0:
                 self.trusty_tom()
@@ -411,8 +428,69 @@ class Player:
         self.update_rank()
 
     def afternoon(self):
-        if "Car" in self.__inventory:
-            type("Would you like to spend your day driving somewhere? ")
+        if self.has_item("Car"):
+            choice = None
+            shops = self.__lists.make_shop_list()
+            slowtype("Would you like to spend your day driving somewhere? ")
+            print()
+            for i in range(len(shops)+1):
+                if(i<len(shops)):
+                    slowtype(str(i+1) + ". " + shops[i])
+                    time.sleep(0.5)
+                    print()
+                else:
+                    slowtype(str(i+1) + ". Stay Home")
+                    time.sleep(0.5)
+                    print()
+            slowtype("Choose a number: ")
+            while True:
+                while choice is None:
+                    try:
+                        choice = int(input())
+                    except ValueError:
+                        slowtype("Choose a number: ")
+                if(1<=choice<=len(shops)):
+                    shop = shops[choice-1]
+                    break
+                elif choice==len(shops)+1:
+                    shop = "Home"
+                    break
+                else:
+                    choice = None
+                    slowtype("That number's not a choice! ")
+                    print()
+                    slowtype("Choose a number: ")
+            print()
+
+            if shop == "Doctor's Office":
+                self.visit_doctor()
+                return
+            elif shop == "Witch Doctor's Tower":
+                self.visit_witch_doctor()
+                return
+            elif shop == "Convenience Store":
+                self.visit_convenience_store()
+                return
+            elif shop == "Marvin's Mystical Merchandise":
+                self.visit_marvin()
+                return
+            else:
+                self.night_event()
+                return
+
+            
+    def visit_doctor(self):
+        slowtype("You get in your car and drive to the Doctor's Office. ")
+
+    def visit_witch_doctor(self):
+        slowtype("You get in your car and drive to the Witch Doctor's Tower. ")
+
+    def visit_convenience_store(self):
+        slowtype("You get in your car and drive to the Convenience Store. ")
+
+    def visit_marvin(self):
+        slowtype("You get in your car and drive to Marvin's Mystical Merchandise. ")
+
 
 
     def night_event(self):

@@ -10,6 +10,7 @@ def main():
         blackjackGame.play_round(3)
         player.end_day()
         player.day_event()
+        player.afternoon()
 
 
 if __name__ == "__main__":

@@ -20,6 +20,7 @@ class Lists:
         self.__rich_night_events = self.make_rich_night_events_list()
         self.__doughman_night_events = self.make_doughman_night_events_list()
         self.__nearly_night_events = self.make_nearly_night_events_list()
+        self.__shop_list = self.make_shop_list()
 
 
 
@@ -151,7 +152,18 @@ class Lists:
             self.__nearly_night_events = self.make_nearly_night_events_list()
         return self.__nearly_night_events.pop()
     
+    def make_shop_list(self):
+        a_list = []
+        a_list.append("Doctor's Office")
+        if(self.__player.has_met("Witch")):
+            a_list.append("Witch Doctor's Tower")
+        a_list.append("Convenience Store")
+        if(self.__player.has_item("Map")):
+            a_list.append("Marvin's Mystical Merchandise")
+        return a_list
 
+    def get_shop(self, number):
+        return 
 
     def make_quote_list(self):
         a_list = []
