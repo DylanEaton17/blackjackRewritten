@@ -164,6 +164,43 @@ class Lists:
 
     def get_shop(self, number):
         return 
+    
+    def make_marvin_inventory(self):
+        a_list = []
+        random_chance = random.randrange(5)
+        if (random_chance<=1) and (not self.__player.has_item("Delight Indicator")):
+            a_list.append("Delight Indicator")
+
+        random_chance = random.randrange(5)
+        if (random_chance<=1) and (not self.__player.has_item("Health Indicator")):
+            a_list.append("Health Indicator")
+
+        random_chance = random.randrange(5)
+        if (random_chance<=1) and (not self.__player.has_item("Dirty Old Hat")):
+            a_list.append("Dirty Old Hat")
+        
+        random_chance = random.randrange(5)
+        if (random_chance<=1) and (not self.__player.has_item("Golden Watch")):
+            a_list.append("Golden Watch")
+
+        random_chance = random.randrange(5)
+        if (random_chance<=1) and (not self.__player.has_item("Faulty Insurance")):
+            a_list.append("Faulty Insurance")
+
+        random_chance = random.randrange(5)
+        if (random_chance<=1) and (not self.__player.has_item("Enchanting Silver Bar")):
+            a_list.append("Enchanting Silver Bar")
+
+        random_chance = random.randrange(5)
+        if (random_chance<=1) and (not self.__player.has_item("Sneaky Peeky Glasses")):
+            a_list.append("Sneaky Peeky Glasses")
+
+        random_chance = random.randrange(5)
+        if (random_chance<=1) and (not self.__player.has_item("Quiet Sneakers")):
+            a_list.append("Quiet Sneakers")
+
+        random.shuffle(a_list)
+        return a_list
 
     def make_quote_list(self):
         a_list = []

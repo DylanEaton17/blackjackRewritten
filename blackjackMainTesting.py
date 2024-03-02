@@ -5,7 +5,7 @@ def main():
     player = story.Player()
 
     # Set Custom Balance
-    player.set_balance(200)
+    player.set_balance(50000)
     print("Set Balance: " + str(player.get_balance()))
     player.add_item("Car")
     player.add_item("Map")

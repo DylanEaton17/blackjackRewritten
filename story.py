@@ -58,13 +58,14 @@ def bright(text):
     return (Style.BRIGHT + text + Style.NORMAL)
 
 class Player:
-    __slots__ = ["__alive", "__status_effects", "__inventory", "__met", "__balance", "__previous_balance", "__rank", "__day", "__lists"]
+    __slots__ = ["__alive", "__status_effects", "__inventory", "__met", "__health", "__balance", "__previous_balance", "__rank", "__day", "__lists"]
 
     def __init__(self):
         self.__alive = True
         self.__status_effects = set()
         self.__inventory = set()
         self.__met = set()
+        self.__health = 100
         self.__balance = 50
         self.__previous_balance = 50
         self.__rank = 0
@@ -74,6 +75,19 @@ class Player:
     def kill(self):
         self.__alive = False
         self.status()
+
+    def hurt(self, value):
+        if(self.__health - value <= 0):
+            self.__health = 0
+            self.kill()
+        else:
+            self.__health -= value
+
+    def heal(self, value):
+        if(self.__health + value >= 100):
+            self.__health = 100
+        else:
+            self.__health += value
 
     def status(self):
         if not self.__alive:
@@ -490,7 +504,107 @@ class Player:
 
     def visit_marvin(self):
         slowtype("You get in your car and drive to Marvin's Mystical Merchandise. ")
+        print("\n")
+        inventory = self.__lists.make_marvin_inventory()
+        if len(inventory) == 0:
+            slowtype("Sorry man, I've got no product for you tonight. Maybe try coming back another day. ")
+            return
 
+        for item_number in range(len(inventory)):
+            item = inventory[item_number]
+            if (item_number==0) and (len(inventory)==1):
+                slowtype("The only item I've got right now is: " + magenta(bright(item)))
+            elif (item_number==0):
+                slowtype("The first item I've got is: " + magenta(bright(item)))
+            elif item_number==len(inventory)-1:
+                slowtype("The last item I've got is: " + magenta(bright(item)))
+            else:
+                slowtype("The next item I've got is: " + magenta(bright(item)))
+
+            print()
+
+            if item == "Delight Indicator":
+                slowtype("With this little device, you can read how happy anyone is, just by pointing it at them! Could get you out of a lot of trouble.")
+                prices = [8500, 9500, 10000]
+                i = random.randrange(3)
+                price = prices[i]
+            elif item == "Health Indicator":
+                slowtype("This gadget lets you see how healthy you are at any given moment. It's great for knowing how imminent a trip to the ER is.")
+                prices = [8000, 8500, 9500]
+                i = random.randrange(3)
+                price = prices[i]
+            elif item == "Dirty Old Hat":
+                slowtype("By wearing this, you're telling the whole world \"I'm poor and I'm not afraid to show it!\" It's a foolproof way for people to take pity on you.")
+                prices = [25000, 28000, 30000]
+                i = random.randrange(3)
+                price = prices[i]
+            elif item == "Golden Watch":
+                slowtype("This watch was my grandfathers at one point. It's a beauty. If you're a gambling man, anyone in their right mind would wanna see you betting on their table.")
+                prices = [29000, 32000, 35000]
+                i = random.randrange(3)
+                price = prices[i]
+            elif item == "Faulty Insurance":
+                slowtype("I got this thing forged by a buddy of mine. It's a fake insurance card. I've used it to get out of so many hospital bills, and you could too!")
+                prices = [10000, 11000, 12000]
+                i = random.randrange(3)
+                price = prices[i]
+            elif item == "Enchanting Silver Bar":
+                slowtype("Listen, I know this silver bar looks a bit useless, but I swear, it's awesome. Look at the stock market, this thing is only gonna get more and more expensive. And if I sell it to you, you can sell it off later and make some money.")
+                price = 10000
+            elif item == "Sneaky Peeky Glasses":
+                slowtype("These aren't your ordinary pair of glasses. Put them on, and you'll catch glimpses that others can't see. But use them wisely; you only get one peek per night.")
+                prices = [35000, 38000, 40000]
+                i = random.randrange(3)
+                price = prices[i]
+            elif item == "Quiet Sneakers":
+                slowtype("Sometimes, the best move is to walk away. Use this when you feel trouble brewing, and avoid the day's misfortunes.")
+                prices = [15000, 18000, 20000]
+                i = random.randrange(3)
+                price = prices[i]
+
+            print()
+
+            slowtype("For " + green(bright("${:,}".format(price))) + ", it can be all yours. You buying? ")
+            while True:
+                yes_or_no = input("").lower()
+                if ((yes_or_no == "y") or (yes_or_no == "yes")) and (self.__balance<price):
+                    print()
+                    slowtype("Cmon man, you can't afford this.")
+                    print("\n")
+                    break
+                if (yes_or_no == "y") or (yes_or_no == "yes"):
+                    print()
+                    slowtype("Great! It's all yours.")
+                    self.change_balance(-price)
+                    self.add_item(item)
+                    slowtype("You got " + magenta(bright(item)) + "!")
+                    print()
+                    slowtype("Description: " + self.get_item_desc(item))
+                    print("\n")
+                    break
+                elif (yes_or_no == "n") or (yes_or_no == "no"):
+                    print()
+                    slowtype("Not your thing, huh? Well that's ok. ")
+                    break
+                else:
+                    print()
+                    slowtype("What was that? ")
+
+        slowtype("That's all I've got to sell you tonight. Maybe try coming back another day. ")
+
+    def get_item_desc(self, item):
+        if item == "Delight Indicator": return "A small gadget, with wires tangled around it, and a small meter that displays the Dealer's happiness before every round of blackjack."
+        elif item == "Health Indicator": return "A small gadget, with wires construed around it, and a small gauge that displays changes in your health. Your current health is " + str(self.__health) + "."
+        elif item == "Dirty Old Hat": return "A dark brown leather hat, covered in dirt and tears. It makes you look poor, and lowers the Dealer's minimum bet."
+        elif item == "Golden Watch": return "A bright gold watch that glistens in any light. It makes you look rich, and increases the number of Blackjack rounds the Dealer lets you play."
+        elif item == "Enchanting Silver Bar": return "A silver bar that slowly increases in worth every day. Sell this after 3 days to make a profit. Its current value is (value)."
+        elif item == "Sneaky Peeky Glasses": return "A pair of glasses that allow you to sneak a peek at the next card in the deck once per night."
+        elif item == "Quiet Sneakers": return "A pair of shoes that allows you to skip an unfavorable event during the day."
+        elif item == "Faulty Insurance": return "A plastic card, with the company \'Super Real Insurance\' written on it. This card can be brought to the doctor's office for a chance of lowering bill fees."
+
+    def update_silver_value(self):
+        if self.has_item("Enchanting Silver Bar"):
+            return 1000
 
 
     def night_event(self):
