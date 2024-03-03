@@ -220,8 +220,10 @@ class Player:
     def end_day(self):
         if(self.__day==1):
             self.end_day_1()
-        else:
+        elif(not self.has_item("Car")):
             self.end_day_car()
+        else:
+            self.end_day_car_fixed()
 
         print("\n")
 
@@ -343,12 +345,19 @@ class Player:
     def end_day_1(self):
         type.slowtype("After playing a few rounds of Blackjack, the dealer points to the door. ")
         type.slowtype("Without questing his word, and with your winnings in hand, you scurry to the door, eager to get some sleep after such a long day. ")
-        type.slowtype("Making it back to your car, ditched on the side of the road, but no longer engulfed in smoke, you lay down, and close your eyes. It's time to rest. ")
+        type.slowtype("Making it back to your car, ditched on the side of the road, but no longer engulfed in smoke, you lay down, and close your eyes. It's time to rest.")
 
     def end_day_car(self):
         type.slowtype("After playing a few rounds of Blackjack, the dealer points to the door. ")
         type.slowtype("Without questing his word, and with your winnings in hand, you scurry to the door, eager to get some sleep. ")
         type.slowtype("Making it back to your car, ditched on the side of the road, you lay down, and close your eyes. It's time to rest.")
+
+    def end_day_car_fixed(self):
+        type.slowtype("After playing a few rounds of Blackjack, the dealer points to the door. ")
+        type.slowtype("Without questing his word, and with your winnings in hand, you scurry to the door, eager to get some sleep. ")
+        type.slowtype("You make it to your car and drive away from the casino, and you park in a little alcove on the side of the road. You lay down, and close your eyes. It's time to rest.")
+
+
 
     def mark_spider_bite_day(self, day):
         self.__counting_days[0] = day
