@@ -36,6 +36,10 @@ class Lists:
     def make_poor_day_events_list(self):
         a_list = []
         a_list.append("seat_cash")
+        a_list.append("left_window_down")
+        a_list.append("spider_bite")
+        a_list.append("hungry_cockroach")
+        random.shuffle(a_list)
         return a_list
     
     def make_poor_night_events_list(self):
