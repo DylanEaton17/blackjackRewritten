@@ -173,9 +173,20 @@ class Lists:
         if(self.__player.has_item("Map")):
             a_list.append("Marvin's Mystical Merchandise")
         return a_list
-
-    def get_shop(self, number):
-        return 
+    
+    def make_convenience_store_inventory(self):
+        a_list = []
+        a_list.append(("Candy Bar", 5))
+        a_list.append(("Bag of Chips", 8))
+        a_list.append(("Turkey Sandwich", 15))
+        a_list.append(("Deck of Cards", 9))
+        a_list.append(("Pest Control", 25))
+        a_list.append(("LifeAlert", 120))
+        if self.__player.get_rank() == 1:
+            a_list.append(("Necronomicon", 666))
+        if self.__player.get_rank() == 2:
+            a_list.append(("Bag of Acorns", 10))
+        return a_list
     
     def make_marvin_inventory(self):
         a_list = []

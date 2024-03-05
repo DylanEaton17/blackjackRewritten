@@ -53,32 +53,33 @@ class Typing:
         str = ''
         for item in words:
             str = str + item
-        # str += "\n"
             for char in str:
-                if self.__type_speed =="Default":
+                if self.__type_speed == "Default":
                     time.sleep(random.choice([
                     0.06, 0.05, 0.03, 0.03,
                     0.05, 0.03, 0.04, 0.05, 0.06, 0.04
                     ]))
-                if self.__type_speed =="Fast":
+                if self.__type_speed == "Fast":
                     time.sleep(random.choice([
                     0.06, 0.05, 0.03, 0.03,
                     0.05, 0.03, 0.04, 0.05, 0.06, 0.04
                     ]) - 0.01)
-                if self.__type_speed =="Fastest":
+                if self.__type_speed == "Fastest":
                     time.sleep(random.choice([
                     0.06, 0.05, 0.03, 0.03,
                     0.05, 0.03, 0.04, 0.05, 0.06, 0.04
                     ]) - 0.02)
+                if self.__type_speed == "Print":
+                    time.sleep(0.001)
 
                 sys.stdout.write(char)
                 sys.stdout.flush()
 
-                if self.__type_speed =="Default" and ((char == ".") or (char == "!") or (char == ":") or (char == ";")):
+                if self.__type_speed =="Default" and ((char == ".") or (char == "!") or (char == ";")):
                     time.sleep(0.7)
-                elif self.__type_speed =="Fast" and ((char == ".") or (char == "!") or (char == ":") or (char == ";")):
+                elif self.__type_speed =="Fast" and ((char == ".") or (char == "!") or (char == ";")):
                     time.sleep(0.5)
-                elif self.__type_speed =="Fastest" and ((char == ".") or (char == "!") or (char == ":") or (char == ";")):
+                elif self.__type_speed =="Fastest" and ((char == ".") or (char == "!") or (char == ";")):
                     time.sleep(0.4)
 
                 if self.__type_speed =="Default" and (char == ","):
@@ -87,6 +88,13 @@ class Typing:
                     time.sleep(0.3)
                 elif self.__type_speed =="Fastest" and (char == ","):
                     time.sleep(0.2)
+
+                if self.__type_speed =="Default" and (char == "?") or (char == ":"):
+                    time.sleep(0.1)
+                elif self.__type_speed =="Fast" and (char == "?") or (char == ":"):
+                    time.sleep(0.1)
+                elif self.__type_speed =="Fastest" and (char == "?") or (char == ":"):
+                    time.sleep(0.1)
                 
                 self.cleanup()
 
@@ -99,6 +107,8 @@ class Typing:
                 self.__type_speed = "Fast"
             elif byte == b'/':
                 self.__type_speed = "Fastest"
+            elif byte == b'p':
+                self.__type_speed = "Print"
 
 
 type = Typing()
@@ -123,7 +133,7 @@ def bright(text):
     return (Style.BRIGHT + text + Style.NORMAL)
 
 class Player:
-    __slots__ = ["__alive", "__status_effects", "__inventory", "__dangers", "__met", "__health", "__balance", "__previous_balance", "__rank", "__day", "__counting_days", "__prereqs", "__prereqs_done", "__lists"]
+    __slots__ = ["__alive", "__status_effects", "__inventory", "__dangers", "__met", "__health", "__balance", "__previous_balance", "__rank", "__day", "__counting_days", "__prereqs", "__prereqs_done", "__convenience_store_inventory", "__lists"]
 
     def __init__(self):
         self.__alive = True
@@ -139,6 +149,7 @@ class Player:
         self.__counting_days = [0, 0, 0, 0, 0, 0, 0]
         self.__prereqs = [False, False, False, False, False]
         self.__prereqs_done = [False, False, False, False, False]
+        self.__convenience_store_inventory = []
         self.__lists = lists.Lists(self)
 
     def kill(self):
@@ -148,6 +159,7 @@ class Player:
     def hurt(self, value):
         if(self.__health - value <= 0):
             self.__health = 0
+            type.slow(red(bright("You have succumbed to your wounds.")))
             self.kill()
         else:
             self.__health -= value
@@ -240,6 +252,9 @@ class Player:
             type.type("Your new balance is " + green(bright("${:,}".format(self.__balance))))
         print("\n")
 
+    def get_rank(self):
+        return self.__rank
+
     def update_rank(self):
         if(1<=self.__balance<1000):
             self.__rank = 0
@@ -256,6 +271,9 @@ class Player:
         else:
             self.status()
     
+    def increment_day(self): # really just for testing
+        self.__day+=1
+
     def end_day(self):
         if(self.__day==1):
             self.end_day_1()
@@ -451,21 +469,18 @@ class Player:
                     self.remove_status("Spider Bite")
                     type.type("Your spider bite is starting to heal. ")
                 else:
-                    self.hurt(random.choice([2, 5, 7, 9, 11, 13, 15]))
+                    self.hurt(random.choice([7, 9, 11, 13, 15]))
                     type.type("Your spider bite is purple and pussing. A trip to the doctors might be a good idea. ")
             print("\n")
 
                 
-
-
-
     # Poor Day Events (1 - 1,000)
     def seat_cash(self):
         type.type("You wake up in the front seat, covered in sweat. ")
         type.type("As the sun shines through the car window, you notice a bright green bill tucked between the seat cushions. Must be your lucky day. ")
         print("\n")
         bill = random.choice([5, 10, 20, 50, 100])
-        type.type("That's another " + green(bright("$" + str(bill))) + " dollars")
+        type.type("That's another " + green(bright("$" + str(bill))) + " dollars.")
         self.change_balance(bill)
 
     def left_window_down(self):
@@ -481,7 +496,7 @@ class Player:
         print("\n")
 
     def spider_bite(self):
-        if self.has_danger("Spider"):
+        if self.has_danger("Spider") and not self.has_status("Spider Bite"):
             type.type("You wake up to a sharp pain on your arm! ")
             type.type("Swinging your arm to scratch the pain, you watch as a spider jumps to your dashboard. ")
             if self.has_item("Pest Control"):
@@ -552,7 +567,7 @@ class Player:
             worth = random.randint(65, 120)
         else:
             worth = random.randint(7, 50)
-        type.type("That's another " + green(bright("$" + str(worth))) + " dollars")
+        type.type("That's another " + green(bright("$" + str(worth))) + " dollars.")
         self.change_balance(worth)
 
     # Cheap Day Events (1,000 - 10,000)
@@ -767,7 +782,7 @@ class Player:
         if(self.__balance>=200):
             self.__prereqs[0] = True
         if self.has_item("Car"):
-            self.__prereqs_done[0] == True
+            self.__prereqs_done[0] = True
 
     def day_event(self):
         self.update_rank()
@@ -807,7 +822,7 @@ class Player:
 
     def afternoon(self):
         self.update_status()
-
+        self.update_convenience_store_inventory()
         if self.has_item("Car"):
             choice = None
             shops = self.__lists.make_shop_list()
@@ -842,30 +857,14 @@ class Player:
                     type.type("Choose a number: ")
             print()
 
-            if shop == "Doctor's Office":
-                self.visit_doctor()
-                return
-            elif shop == "Witch Doctor's Tower":
-                self.visit_witch_doctor()
-                return
-            elif shop == "Trusty Tom's Trucks and Tires":
-                self.visit_tom()
-                return
-            elif shop == "Filthy Frank's Flawless Fixtures":
-                self.visit_frank()
-                return
-            elif shop == "Oswald's Optimal Outoparts":
-                self.visit_oswald()
-                return
-            elif shop == "Convenience Store":
-                self.visit_convenience_store()
-                return
-            elif shop == "Marvin's Mystical Merchandise":
-                self.visit_marvin()
-                return
-            else:
-                self.night_event()
-                return
+            if shop == "Doctor's Office": self.visit_doctor()
+            elif shop == "Witch Doctor's Tower": self.visit_witch_doctor()
+            elif shop == "Trusty Tom's Trucks and Tires": self.visit_tom()
+            elif shop == "Filthy Frank's Flawless Fixtures": self.visit_frank()
+            elif shop == "Oswald's Optimal Outoparts": self.visit_oswald()
+            elif shop == "Convenience Store": self.visit_convenience_store()
+            elif shop == "Marvin's Mystical Merchandise": self.visit_marvin()
+            else: self.night_event()
             
         else:
             self.night_event()
@@ -924,31 +923,132 @@ class Player:
             self.start_night()
             return
 
+
     # Witch Doctor's shop and interactions
     def visit_witch_doctor(self):
         type.type("You get in your car and drive to the Witch Doctor's Tower. ")
         self.start_night()
 
-
+    # Tom's shop and interactions
     def visit_tom(self):
         type.type("You get in your car and drive to Tom's Trusty Trucks and Tires. ")
         self.start_night()
 
-
+    # Frank's shop and interactions
     def visit_frank(self):
         type.type("You get in your car and drive to Filthy Frank's Flawless Fixtures. ")
         self.start_night()
 
-
+    # Oswald's shop and interactions
     def visit_oswald(self):
         type.type("You get in your car and drive to Oswald's Optimal Outoparts. ")
         self.start_night()
 
+    def update_convenience_store_inventory(self):
+        if self.__day == 2: self.__convenience_store_inventory = self.__lists.make_convenience_store_inventory()
+        if (self.__day % 7) == 0:
+            self.__convenience_store_inventory = self.__lists.make_convenience_store_inventory()
 
     # Convenience Store
     def visit_convenience_store(self):
         type.type("You get in your car and drive to the Convenience Store. ")
-        self.start_night()
+        print("\n")
+        if(len(self.__convenience_store_inventory)==0):
+            type.type("As you walk up to the store, you see a white sign hanging on the front door. They're closed. Bummer. ")
+            print("\n")
+            self.start_night()
+            return
+        type.type("Sup. Name's Kyle. Got a one-item limit. Managers orders. I don't make the rules. ")
+        print("\n")
+        items_bought = 0
+        while True:
+            choice = None
+            items = self.__convenience_store_inventory
+            if items_bought == 0:
+                type.type("What do you want? ")
+            else:
+                type.type("What else you want? ")
+            print()
+            for i in range(len(items)+1):
+                if(i<len(items)):
+                    type.type(str(i+1) + ". " + items[i][0] + " - " + green(bright("${:,}".format(items[i][1]))))
+                    print()
+                else:
+                    type.type(str(i+1) + ". I'm not buying anything")
+                    time.sleep(0.5)
+                    print()
+            type.type("Choose a number: ")
+            while True:
+                while choice is None:
+                    try:
+                        choice = int(input())
+                    except ValueError:
+                        type.type("C'mon I don't have all day just pick something: ")
+                if(1<=choice<=len(items)):
+                    item = items[choice-1][0]
+                    price = items[choice-1][1]
+                    if(price<=self.__balance):
+                        break
+                    else:
+                        type.type("Dude, you obviously can't afford that. Try again, buddy: ")
+                elif choice==len(items)+1:
+                    item = "Home"
+                    break
+                else:
+                    choice = None
+                    type.type("We clearly don't have that in right now. ")
+                    print()
+                    type.type("It's not hard, just choose a number: ")
+            print()
+
+            if choice!=len(items)+1:
+                items.pop(choice-1)
+
+            if item == "Candy Bar":
+                self.add_item("Candy Bar")
+                type.type(bright(magenta("You got a Candy Bar!")))
+            elif item == "Bag of Chips":
+                self.add_item("")
+                type.type(bright(magenta("You got a Bag of Chips!")))
+            elif item == "Turkey Sandwich":
+                self.add_item("")
+                type.type(bright(magenta("You got a Turkey Sandwich!")))
+            elif item == "Deck of Cards":
+                self.add_item("Deck of Cards")
+                type.type(bright(magenta("You got a Deck of Cards!")))
+            elif item == "Pest Control":
+                self.add_item("Pest Control")
+                type.type(bright(magenta("You got Pest Control!")))
+            elif item == "LifeAlert":
+                type.type(bright(magenta("You got LifeAlert!")))
+            elif item == "Necronomicon":
+                type.type(bright(magenta("You got a ") + red("Necronomicon!")))
+            elif item == "Bag of Acorns":
+                type.type(bright(magenta("You got a Bag of Acorns!")))
+            elif item == "Home":
+                type.type("Suit yourself.")
+                self.start_night()
+                return
+            
+            items_bought+=1
+            print("\n")
+
+            if items_bought == 1:
+                random_chance = random.randrange(5)
+                if random_chance < 2:
+                    type.type("You know what? Rules are made to be broken. I mean, screw em! I hate my manager anyways. ")
+                    type.type("You can have one more item, just don't tell anyone I let you do this.")
+                    print("\n")
+                else:
+                    type.type("Welp. There you go. That's your item. Weird thing to buy, if you ask me. Now get lost, I'm going on break.")
+                    print("\n")
+                    self.start_night()
+                    return
+            else:
+                type.type("Welp. There you go. Two whole items. Wow. Now get lost. I've got a girl to text. She's super hot.")
+                print("\n")
+                self.start_night()
+                return
 
 
     # Marvin's Shop and interactions
