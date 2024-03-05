@@ -822,6 +822,7 @@ class Player:
 
     def afternoon(self):
         self.update_status()
+        self.update_rank()
         self.update_convenience_store_inventory()
         if self.has_item("Car"):
             choice = None
