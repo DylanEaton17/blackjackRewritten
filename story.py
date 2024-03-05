@@ -543,7 +543,7 @@ class Player:
 
 
     # Poor Night Events (1 - 1,000)
-    def wander_the_road(self):
+    def ditched_wallet(self):
         type.type("Bored out of your mind, you decide to wander along the side of the road, just to get a change of scenery from the dusty leather seats of your wagon. ")
         type.type("As you take step after step over the asphalt, you notice a ditched wallet, just laying there. I guess it's yours now. ")
         print("\n")

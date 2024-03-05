@@ -45,7 +45,7 @@ class Lists:
     
     def make_poor_night_events_list(self):
         a_list = []
-        a_list.append("wander_the_road")
+        a_list.append("ditched_wallet")
         return a_list
 
     def get_poor_day_event(self):
