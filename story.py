@@ -43,7 +43,7 @@ class Typing:
                 ]))
                 sys.stdout.write(char)
                 sys.stdout.flush()
-                if ((char == ".") or (char == "!") or (char == ":") or (char == ";") or (char == "?")):
+                if ((char == ".") or (char == "!") or (char == ":") or (char == ";")):
                     time.sleep(0.7)
                 if (char == ","):
                     time.sleep(0.4)
@@ -74,11 +74,11 @@ class Typing:
                 sys.stdout.write(char)
                 sys.stdout.flush()
 
-                if self.__type_speed =="Default" and ((char == ".") or (char == "!") or (char == ":") or (char == ";") or (char == "?")):
+                if self.__type_speed =="Default" and ((char == ".") or (char == "!") or (char == ":") or (char == ";")):
                     time.sleep(0.7)
-                elif self.__type_speed =="Fast" and ((char == ".") or (char == "!") or (char == ":") or (char == ";") or (char == "?")):
+                elif self.__type_speed =="Fast" and ((char == ".") or (char == "!") or (char == ":") or (char == ";")):
                     time.sleep(0.5)
-                elif self.__type_speed =="Fastest" and ((char == ".") or (char == "!") or (char == ":") or (char == ";") or (char == "?")):
+                elif self.__type_speed =="Fastest" and ((char == ".") or (char == "!") or (char == ":") or (char == ";")):
                     time.sleep(0.4)
 
                 if self.__type_speed =="Default" and (char == ","):
@@ -123,7 +123,7 @@ def bright(text):
     return (Style.BRIGHT + text + Style.NORMAL)
 
 class Player:
-    __slots__ = ["__alive", "__status_effects", "__inventory", "__dangers", "__met", "__health", "__balance", "__previous_balance", "__rank", "__day", "__counting_days", "__lists"]
+    __slots__ = ["__alive", "__status_effects", "__inventory", "__dangers", "__met", "__health", "__balance", "__previous_balance", "__rank", "__day", "__counting_days", "__prereqs", "__prereqs_done", "__lists"]
 
     def __init__(self):
         self.__alive = True
@@ -137,6 +137,8 @@ class Player:
         self.__rank = 0
         self.__day = 1
         self.__counting_days = [0, 0, 0, 0, 0, 0, 0]
+        self.__prereqs = [False, False, False, False, False]
+        self.__prereqs_done = [False, False, False, False, False]
         self.__lists = lists.Lists(self)
 
     def kill(self):
@@ -161,8 +163,8 @@ class Player:
             print("\n")
             type.slow("You have died!")
             print()
-            if self.__day == 1: type.slow("You didn't even last " + bright(yellow(str(self.__day) + " day") + ". That's embarrasing."))
-            if self.__day == 2: type.slow("You lasted " + bright(yellow(str(self.__day-1) + " day")) + ".")
+            if self.__day == 1: type.slow("You didn't even last " + bright(yellow(str(self.__day) + " day")) + ". That's embarrasing.")
+            elif self.__day == 2: type.slow("You lasted " + bright(yellow(str(self.__day-1) + " day")) + ".")
             else: type.slow("You lasted " + bright(yellow(str(self.__day) + " days")) + "!")
             print()
             type.slow("You met your fate with a final balance of " + green(bright("$" + str(self.__balance))))
@@ -173,8 +175,8 @@ class Player:
             print("\n")
             type.slow("You have run out of money!")
             print()
-            if self.__day == 1: type.slow("You didn't even last " + bright(yellow(str(self.__day) + " day") + ". That's absurdly sad."))
-            if self.__day == 2: type.slow("You lasted " + bright(yellow(str(self.__day-1) + " day")) + ".")
+            if self.__day == 1: type.slow("You didn't even last " + bright(yellow(str(self.__day) + " day")) + ". That's absurdly sad.")
+            elif self.__day == 2: type.slow("You lasted " + bright(yellow(str(self.__day-1) + " day")) + ".")
             else: type.slow("You lasted " + bright(yellow(str(self.__day) + " days")) + "!")
             print()
             type.slow("With no cash left to play Blackjack, your source of income has been rendered useless.")
@@ -376,6 +378,8 @@ class Player:
         print("\n")
         type.type("In a deep, and yet strained voice, the dealer, cloaked in darkness, poses a question to you.")
         print("\n")
+        self.start_night()
+
 
 
     # End Days
@@ -394,7 +398,34 @@ class Player:
         type.type("Without questing his word, and with your winnings in hand, you scurry to the door, eager to get some sleep. ")
         type.type("You make it to your car and drive away from the casino, and you park in a little alcove on the side of the road. You lay down, and close your eyes. It's time to rest.")
 
+    def start_night(self):
+        if(self.__day==1):
+            self.start_night_1()
+        elif(not self.has_item("Car")):
+            self.start_night_car()
+        else:
+            self.start_night_car_fixed()
 
+    def start_night_1(self):
+        type.slow(red("Would you like to play a game of Blackjack? "))
+        yes_or_no = input("").lower()
+        print()
+        if (yes_or_no == "n") or (yes_or_no == "no"):
+            type.slow(red(bright("Well that's just too bad isn't it. ")))
+            type.slow(red("The Dealer fires three shots into your chest. You bleed out, and as you fade from reality, you see the Dealer reach into your pockets, and take the last 50 dollars from your lifeless body."))
+            self.kill()
+
+    def start_night_car(self):
+        type.type("As the sun begins to set, and the stars light up in the night sky, you walk to the casino, eager to play more Blackjack. ")
+        print("\n")
+        type.slow(red(self.__lists.get_dealer_welcome()))
+        print("\n")
+
+    def start_night_car_fixed(self):
+        type.type("As the sun begins to set, and the stars light up in the night sky, you drive over to the casino, eager to play more Blackjack. ")
+        print("\n")
+        type.slow(red(self.__lists.get_dealer_welcome()))
+        print("\n")
 
     def mark_spider_bite_day(self, day):
         self.__counting_days[0] = day
@@ -420,7 +451,7 @@ class Player:
                     self.remove_status("Spider Bite")
                     type.type("Your spider bite is starting to heal. ")
                 else:
-                    self.hurt(random.choice([2, 7, 9, 11, 13, 15]))
+                    self.hurt(random.choice([2, 5, 7, 9, 11, 13, 15]))
                     type.type("Your spider bite is purple and pussing. A trip to the doctors might be a good idea. ")
             print("\n")
 
@@ -482,7 +513,7 @@ class Player:
                     type.type("A cloud of white liquid covers the cockroach, and you watch as it slows down, twitches, and dies. ")
                     type.type("Hopefully, that's the end of your cockroach problems. ")
                 else:
-                    type.type("You attempt to swat it with your hand, but it falls under your car seat ")
+                    type.type("You attempt to swat it with your hand, but it falls under your car seat. ")
                     type.type("You stick your head under the seat, but you aren't sure where the cockroach went, or if it has a family nearby. This is terrible. ")
                 print("\n")
                 type.type("The cockroach ate through some of your money. ")
@@ -512,6 +543,17 @@ class Player:
 
 
     # Poor Night Events (1 - 1,000)
+    def wander_the_road(self):
+        type.type("Bored out of your mind, you decide to wander along the side of the road, just to get a change of scenery from the dusty leather seats of your wagon. ")
+        type.type("As you take step after step over the asphalt, you notice a ditched wallet, just laying there. I guess it's yours now. ")
+        print("\n")
+        random_chance = random.randrange(2)
+        if random_chance == 0:
+            worth = random.randint(65, 120)
+        else:
+            worth = random.randint(7, 50)
+        type.type("That's another " + green(bright("$" + str(worth))) + " dollars")
+        self.change_balance(worth)
 
     # Cheap Day Events (1,000 - 10,000)
         
@@ -527,14 +569,15 @@ class Player:
 
     # Story Events
     def trusty_tom(self):
+        self.meet("Tom Event")
         type.type("You wake up to a blaring engine, roaring down the road towards you. ")
-        type.type("As you scratch your eyes awake, you read \'Tom the Trusty Mechanic\' painted on the hood of a bright gold truck. ")
+        type.type("As you scratch your eyes awake, you read \'Tom's Trusty Trucks and Tires\' painted on the hood of a bright gold truck. ")
         type.type("Waving the vehicle down, the truck slows, then halts, and an old, jolly man jumps out. ")
         print("\n")
         type.type("\"Well, howdy! The name's Tom. It appears you've gotten yourself in a bit of a pickle, ya think?\" ")
         type.type("Tom pulls a big red wrench out of his pocket, and walks to the hood of your beaten down wagon. ")
-        repair_price = random.choice([100, 150, 200, 250, 300])
-        type("\"Yep, this things busted alright! Tell ya what, for, I don't know, " + green(bright(str(repair_price) + " bucks")) + ", I'll get this thing replaced for ya, good as new! Whaddya say?\" ")
+        repair_price = random.choice([150, 200, 250, 300, 350])
+        type.type("\"Yep, this things busted alright! Tell ya what, for, I don't know, " + green(bright(str(repair_price) + " bucks")) + ", I'll get this thing replaced for ya, good as new! Whaddya say?\" ")
         while(True):
             yes_or_no = input("").lower()
             print()
@@ -546,6 +589,7 @@ class Player:
                 return
             elif((yes_or_no == "y") or (yes_or_no == "yes")):
                 if self.__balance >= repair_price:
+                    self.meet("Tom")
                     type.type("\"Really? Awesome! I'll be the best dang mechanic this ol' automobile has ever seen!\" ")
                     type.type("You watch in awe, as Tom, a man who has clearly perfected his craft, fixes up your wagon in no time. Sweet. ")
                     self.change_balance(-repair_price)
@@ -578,6 +622,7 @@ class Player:
                                 return
                             elif((yes_or_no_2 == "y") or (yes_or_no_2 == "yes")):
                                 if self.__balance >= (repair_price-50):
+                                    self.meet("Tom")
                                     type.type("\"Really? Awesome! I'll be the best dang mechanic this ol' automobile has ever seen!\" ")
                                     type.type("You watch in awe, as Tom, a man who has clearly perfected his craft, fixes up your wagon in no time. Sweet. ")
                                     self.change_balance(-(repair_price-50))
@@ -607,15 +652,146 @@ class Player:
                 type.type("\"Whaddya say?\" ")
 
 
+
+    def filthy_frank(self):
+        self.meet("Frank Event")
+        type.type("You wake up to a roaring engine, blasting into your eardrums. ")
+        type.type("As you jump up out of the front seat, you read \'Filthy Frank's Flawless Fixtures\' painted on the hood of a...well...a beater. ")
+        type.type("Waving the vehicle down, the beater slows, then appears to break down, and an old man with tattoo sleeves and long black hair steps out. He kicks his car, and the engine starts blaring once more. ")
+        print("\n")
+        type.type("\"Hello, the name's Frank. Now I've got a baseball game to catch, but it looks like you could use some help.\" ")
+        type.type("Frank pulls a shiny silver hammer out of his pocket, and walks to the hood of your beaten down wagon. ")
+        repair_price = random.choice([50, 75, 100])
+        type.type("\"My god. This is just awful. Tell you what, I can fix this up for like " + green(bright(str(repair_price) + " bucks")) + ", and your engine will be runnin' just as good as mine. You game?\" ")
+        while(True):
+            yes_or_no = input("").lower()
+            print()
+            if(yes_or_no == "n") or (yes_or_no == "no"):
+                type.type("What?! How could you not accept my service? I'm the cheapest damn autoshop worker on this here planet! But NOOOO, NOT FRANK! Never Frank. He Voted For Trump! Let's all ridicule frank for his political party. You god damn liberals.\" ")
+                type.type("Frank spits in your face, and get back in his truck. ")
+                print("\n")
+                type.type("You watch as he revs his engine, gets out of his truck, kicks his beater, gets back in, revs his engine, and speeds off into the horizon. ")
+                print("\n")
+                return
+            elif((yes_or_no == "y") or (yes_or_no == "yes")):
+                if self.__balance >= repair_price:
+                    type.type("\"Darn tootin! Lemme just do my thing.\" ")
+                    type.type("You watch in terror as Frank takes the hammer, and begins to beat the living daylight out of your wagon's engine. Each swing causes you to wince more and more. ")
+                    self.change_balance(-repair_price)
+                    random_chance = random.randrange(5)
+                    if random_chance < 2:
+                        self.meet("Frank")
+                        self.add_item("Car")
+                        type.type(magenta(bright("Your car has been fixed! You can now drive around!")))
+                        print("\n")
+                        type.type("\"Ah, I love fixin people's cars. You sure do drive a shitty vehicle, but I'm just glad I can help get you back up and going to your job every day. Gotta do something to help in this economy, you know?\" ")
+                        print("\n")
+                        type.type("And with that, you watch as he revs his engine, gets out of his truck, kicks his beater, gets back in, revs his engine, and speeds off into the horizon. ")
+                        print("\n")
+                        return
+                    else: 
+                        type.type("You notice Frank beginning to sweat while trying to fix your car. Each swing of his hammer is getting louder and louder, and Frank is clearly beginning to panic. Frank turns towards you, with tears streaming down his face. Or maybe it's just sweat.")
+                        print("\n")
+                        type.type("\"Oh man, listen, I'm so sorry about this, you know? I really thought if I just gave it the old hammer whirl that would do the trick. Hold on, maybe I have something in my truck. Stay right here!\" ")
+                        print("\n")
+                        type.type("You watch Frank runs over to his truck, kicks the side of it, gets in, revs his engine, and speeds off into the horizon. God Dammit.")
+                        print("\n")
+                        return
+                else:
+                    self.add_danger("Frank")
+                    type.type("\"Are you tryna rip me off? Cleary you don't have enough money to afford my services, which is honestly pathetic, since I have the cheapest services around! I don't get what it is with you young folk and not working, just staying home and smoking weed. It's miserable. You're miserable. Dontchu know I know people on the inside! I'll remeber this one.\" ")
+                    print("\n")
+                    type.type("You watch as he revs his engine, gets out of his truck, kicks his beater, gets back in, revs his engine, and speeds off into the horizon. ")
+                    print("\n")
+                    return
+            else:
+                type.type("\"Speak up! You're mumbling. \" ")
+
+
+
+    def optimal_oswald(self):
+        self.meet("Oswald Event")
+        type.type("You wake up to the sight of a glossy black limousine, quietly approaching your wagon. ")
+        type.type("As you sit up from your slumber, you read \'Oswald's Optimal Outoparts\' cursively engraved in gold letters on the side of the limo. ")
+        type.type("Waving the vehicle down, the limo slows, then stops before you. The door opens vertically, and a large red carpet is rolled out onto the street. You watch in awe as a man, with a combover and a tuxedo, walks out before you. He coughs, then speaks.  ")
+        print("\n")
+        type.type("\"Why hello there! The name's Oswald, as you can see by my nametag. Do you like my bowtie? Well of course you do! It appears your limousine has broken down.\" ")
+        type.type("Oswald pulls a gold whistle out of his pocket, and blows into it deeply. ")
+        type.type("\"Oh Stuart!\" You watch as a bald man in a tailcoat suit, no taller than 4 feet, hobbles over to Oswald's side. ")
+        print("\n")
+        type.type("\"This is Stuart! He will fix your limousine up for a fair price. Let's say, I don't know, I suppose a fair price is " + green(bright("500,000 dollars")) + ". ")
+        repair_price = random.choice([800, 850, 900])
+        type.type("Okay, the look on your face says that I'm making a big mistake. Let's try " + green(bright("$" + str(repair_price))) + ", and Stuart here will get you back on the road! Do you accept?\" ")
+        while(True):
+            yes_or_no = input("").lower()
+            print()
+            if(yes_or_no == "n") or (yes_or_no == "no"):
+                type.type("\"Really? You don't want my services? I'm so sorry Stuart, But it appears they don't want our services.\" ")
+                type.type("Stuart begins to break down into tears, and he runs quickly back into the limo. ")
+                type.type("\"Shame on you! Shame on you! I hope to never see the likes of you again.\" ")
+                print("\n")
+                type.type("You watch as Oswald rolls up the red carpet, gets back in the limo, and drives off into the distance. ")
+                print("\n")
+                return
+            elif((yes_or_no == "y") or (yes_or_no == "yes")):
+                if self.__balance >= repair_price:
+                    self.meet("Oswald")
+                    type.type("\"Jolly good! Stuart!\" ")
+                    type.type("You watch as the little man walks to the front of your wagon, opens the hood, and jumps in. You can't really see what's going on, but after a couple of minutes, Stuart jumps back out, covered in oil.")
+                    self.change_balance(-repair_price)
+                    self.add_item("Car")
+                    type.type(magenta(bright("Your car has been fixed! You can now drive around!")))
+                    print("\n")
+                    type.type("\"Oh my Stuart! Someone got a little too excited, didn't you? Yep, you're getting a bath as soon as we get back to the shop. Thanks again, stranger, its been a pleasure doing business with you. I recall it's good custom to tip after events like this, yes? Here, take this.\" ")
+                    tip = random.choice([50, 100])
+                    type.type("Oswald hands you a bright green bill, worth " + green(bright("$" + str(tip))) + ".")
+                    self.change_balance(tip)
+                    type.type("And with that, you watch as Stuart rolls up the red carpet. Oswald and Stuart get back in the limo, and drive off into the distance. ")
+                    print("\n")
+                    return
+                else:
+                    type.type("\"Why, it appears you're far too poor to attain my services. I'm truly sorry about this. Tell you what, here's a little something to get you back on your feet.\" ")
+                    tip = random.choice([50, 100])
+                    type.type("Oswald hands you a bright green bill, worth " + green(bright("$" + str(tip))) + ".")
+                    self.change_balance(tip)
+                    type.type("And with that, you watch as Stuart rolls up the red carpet. Oswald and Stuart get back in the limo, and drive off into the distance. ")
+                    if self.__balance > repair_price:
+                        type.type("Looking down, you see that after Oswald's tip, you had enough money to pay for the repair service after all, but it was too late. Oh well.")
+                    print("\n")
+                    return
+            else:
+                type.type("\"Come again? \" ")
+
+
+    def update_story_event_prereqs(self):
+        if(self.__balance>=200):
+            self.__prereqs[0] = True
+        if self.has_item("Car"):
+            self.__prereqs_done[0] == True
+
     def day_event(self):
         self.update_rank()
+        self.update_story_event_prereqs()
         ranStoryEvent = False
 
-        if(not self.has_item("Car")) and (self.__balance>=200):
+        if((self.__prereqs[0]) and not (self.__prereqs_done[0])):
             random_chance = random.randrange(3)
-            if random_chance==0:
-                self.trusty_tom()
-                ranStoryEvent = True
+            if random_chance == 0:
+                while((not self.has_met("Tom Event")) or (not self.has_met("Frank Event")) or (not self.has_met("Oswald Event"))):
+                    random_chance = random.randrange(3)
+                    if (random_chance == 0) and (not self.has_met("Tom Event")):
+                        self.trusty_tom()
+                        ranStoryEvent = True
+                        break
+                    elif (random_chance == 1) and (not self.has_met("Frank Event")):
+                        self.filthy_frank()
+                        ranStoryEvent = True
+                        break
+                    elif (random_chance == 2) and (not self.has_met("Oswald Event")):
+                        self.optimal_oswald()
+                        ranStoryEvent = True
+                        break
+
         if ranStoryEvent == False:
             match self.__rank:
                 case 0: dayEvent = getattr(self, self.__lists.get_poor_day_event())
@@ -625,7 +801,9 @@ class Player:
                 case 4: dayEvent = getattr(self, self.__lists.get_doughman_day_event())
                 case 5: dayEvent = getattr(self, self.__lists.get_nearly_day_event())
             dayEvent()
+
         self.update_rank()
+
 
     def afternoon(self):
         self.update_status()
@@ -670,6 +848,15 @@ class Player:
             elif shop == "Witch Doctor's Tower":
                 self.visit_witch_doctor()
                 return
+            elif shop == "Trusty Tom's Trucks and Tires":
+                self.visit_tom()
+                return
+            elif shop == "Filthy Frank's Flawless Fixtures":
+                self.visit_frank()
+                return
+            elif shop == "Oswald's Optimal Outoparts":
+                self.visit_oswald()
+                return
             elif shop == "Convenience Store":
                 self.visit_convenience_store()
                 return
@@ -683,7 +870,7 @@ class Player:
         else:
             self.night_event()
 
-            
+    #Doctor's Office Interaction    
     def visit_doctor(self):
         type.type("You get in your car and drive to the Doctor's Office. ")
         print("\n")
@@ -711,32 +898,60 @@ class Player:
         cost = int((random.randint(65, 90)/100)*self.__balance)
         type.type("That will be " + bright(green("${:,}".format(cost))))
         if self.has_item("Faulty Insurance"):
+            print()
             type.type("You show off your " + bright(magenta("Faulty Insurance")) + " to the lady, and put a convincing smile on your face. ")
             random_chance = random.randrange(10)
             if random_chance < 2:
                 self.add_danger("Doctor Ban")
+                print()
                 self.use_item("Faulty Insurance")
                 type.type("Is this supposed to fool me? A fake insurance card? That's it, I'm calling the cops! ")
                 print("\n")
                 type.type("Without hesitation, you turn, and run far, far away from the hospital, knowing that your face can't be seen there again. ")
+                self.start_night()
                 return
             else:
+                print()
                 type.type("I see, you have insurance. Well, that should give you quite the discount. ")
                 print()
                 cost = int((random.randint(10, 35)/100)*self.__balance)
                 type.type("That will be " + bright(green("${:,}".format(cost))))
                 self.change_balance(-cost)
+                self.start_night()
+                return
         else:
             self.change_balance(-cost)
+            self.start_night()
             return
 
-
+    # Witch Doctor's shop and interactions
     def visit_witch_doctor(self):
         type.type("You get in your car and drive to the Witch Doctor's Tower. ")
+        self.start_night()
 
+
+    def visit_tom(self):
+        type.type("You get in your car and drive to Tom's Trusty Trucks and Tires. ")
+        self.start_night()
+
+
+    def visit_frank(self):
+        type.type("You get in your car and drive to Filthy Frank's Flawless Fixtures. ")
+        self.start_night()
+
+
+    def visit_oswald(self):
+        type.type("You get in your car and drive to Oswald's Optimal Outoparts. ")
+        self.start_night()
+
+
+    # Convenience Store
     def visit_convenience_store(self):
         type.type("You get in your car and drive to the Convenience Store. ")
+        self.start_night()
 
+
+    # Marvin's Shop and interactions
     def visit_marvin(self):
         type.type("You get in your car and drive to Marvin's Mystical Merchandise. ")
         print("\n")
@@ -812,6 +1027,7 @@ class Player:
                     type.type("What was that? ")
 
         type.type("That's all I've got to sell you tonight. Maybe try coming back another day. ")
+        self.start_night()
 
     def get_item_desc(self, item):
         if item == "Delight Indicator": return "A small gadget, with wires tangled around it, and a small meter that displays the Dealer's happiness before every round of Blackjack."
@@ -839,3 +1055,4 @@ class Player:
             case 5: nightEvent = getattr(self, self.__lists.get_nearly_night_event())
         nightEvent()
         self.update_rank()
+        self.start_night()

@@ -7,7 +7,7 @@ def main():
     # player.first_setup()
     player.opening_lines()
     while(True):
-        blackjackGame.play_round(3)
+        blackjackGame.play_round(1)
         player.end_day()
         player.day_event()
         player.afternoon()

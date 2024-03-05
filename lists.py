@@ -6,6 +6,7 @@ class Lists:
         self.__quote_list = self.make_quote_list()
         self.__cheers_list = self.make_cheers_list()
         self.__advice_list = self.make_advice_list()
+        self.__dealer_welcome_list = self.make_dealer_welcome_list()
         self.__quote_setup_list = self.make_quote_setup_list()
         self.__quote_setup_list = self.make_quote_setup_list()
         self.__poor_day_events = self.make_poor_day_events_list()
@@ -44,6 +45,7 @@ class Lists:
     
     def make_poor_night_events_list(self):
         a_list = []
+        a_list.append("wander_the_road")
         return a_list
 
     def get_poor_day_event(self):
@@ -161,6 +163,12 @@ class Lists:
         a_list.append("Doctor's Office")
         if(self.__player.has_met("Witch")):
             a_list.append("Witch Doctor's Tower")
+        if(self.__player.has_met("Tom")):
+            a_list.append("Trusty Tom's Trucks and Tires")
+        if(self.__player.has_met("Frank")):
+            a_list.append("Filthy Frank's Flawless Fixtures")
+        if(self.__player.has_met("Oswald")):
+            a_list.append("Oswald's Optimal Outoparts")
         a_list.append("Convenience Store")
         if(self.__player.has_item("Map")):
             a_list.append("Marvin's Mystical Merchandise")
@@ -205,6 +213,20 @@ class Lists:
 
         random.shuffle(a_list)
         return a_list
+    
+    def make_dealer_welcome_list(self):
+        a_list = []
+        a_list.append("Back again? Let's get this show on the road.")
+        a_list.append("Welcome, welcome. Have a seat, and we can begin.")
+        a_list.append("Come, sit down, we have a game to play.")
+        a_list.append("Are you ready to play some Blackjack?")
+        a_list.append("Nightfall again, huh? Well, you know what's next.")
+        return a_list
+    
+    def get_dealer_welcome(self):
+        if len(self.__dealer_welcome_list)==0:
+            self.__dealer_welcome_list = self.make_dealer_welcome_list()
+        return self.__dealer_welcome_list.pop()
 
     def make_quote_list(self):
         a_list = []
