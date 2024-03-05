@@ -701,22 +701,22 @@ class Player:
                         print("\n")
                         type.type("\"Ah, I love fixin people's cars. You sure do drive a shitty vehicle, but I'm just glad I can help get you back up and going to your job every day. Gotta do something to help in this economy, you know?\" ")
                         print("\n")
-                        type.type("And with that, you watch as he revs his engine, gets out of his truck, kicks his beater, gets back in, revs his engine, and speeds off into the horizon. ")
+                        type.type("And with that, you watch as he revs his engine, gets out of his truck, kicks his beater, gets back in, revs his engine, and speeds off into the horizon.")
                         print("\n")
                         return
                     else: 
                         type.type("You notice Frank beginning to sweat while trying to fix your car. Each swing of his hammer is getting louder and louder, and Frank is clearly beginning to panic. Frank turns towards you, with tears streaming down his face. Or maybe it's just sweat.")
                         print("\n")
-                        type.type("\"Oh man, listen, I'm so sorry about this, you know? I really thought if I just gave it the old hammer whirl that would do the trick. Hold on, maybe I have something in my truck. Stay right here!\" ")
+                        type.type("\"Oh man, listen, I'm so sorry about this, you know? I really thought if I just gave it the old hammer whirl that would do the trick. Hold on, maybe I have something in my truck. Stay right here!\"")
                         print("\n")
                         type.type("You watch Frank runs over to his truck, kicks the side of it, gets in, revs his engine, and speeds off into the horizon. God Dammit.")
                         print("\n")
                         return
                 else:
                     self.add_danger("Frank")
-                    type.type("\"Are you tryna rip me off? Cleary you don't have enough money to afford my services, which is honestly pathetic, since I have the cheapest services around! I don't get what it is with you young folk and not working, just staying home and smoking weed. It's miserable. You're miserable. Dontchu know I know people on the inside! I'll remeber this one.\" ")
+                    type.type("\"Are you tryna rip me off? Cleary you don't have enough money to afford my services, which is honestly pathetic, since I have the cheapest services around! I don't get what it is with you young folk and not working, just staying home and smoking weed. It's miserable. You're miserable. Dontchu know I know people on the inside! I'll remeber this one.\"")
                     print("\n")
-                    type.type("You watch as he revs his engine, gets out of his truck, kicks his beater, gets back in, revs his engine, and speeds off into the horizon. ")
+                    type.type("You watch as he revs his engine, gets out of his truck, kicks his beater, gets back in, revs his engine, and speeds off into the horizon.")
                     print("\n")
                     return
             else:
@@ -728,11 +728,11 @@ class Player:
         self.meet("Oswald Event")
         type.type("You wake up to the sight of a glossy black limousine, quietly approaching your wagon. ")
         type.type("As you sit up from your slumber, you read \'Oswald's Optimal Outoparts\' cursively engraved in gold letters on the side of the limo. ")
-        type.type("Waving the vehicle down, the limo slows, then stops before you. The door opens vertically, and a large red carpet is rolled out onto the street. You watch in awe as a man, with a combover and a tuxedo, walks out before you. He coughs, then speaks.  ")
+        type.type("Waving the vehicle down, the limo slows, then stops before you. The door opens vertically, and a large red carpet is rolled out onto the street. You watch in awe as a man, with a combover and a tuxedo, walks out before you. He coughs, then speaks.")
         print("\n")
         type.type("\"Why hello there! The name's Oswald, as you can see by my nametag. Do you like my bowtie? Well of course you do! It appears your limousine has broken down.\" ")
         type.type("Oswald pulls a gold whistle out of his pocket, and blows into it deeply. ")
-        type.type("\"Oh Stuart!\" You watch as a bald man in a tailcoat suit, no taller than 4 feet, hobbles over to Oswald's side. ")
+        type.type("\"Oh Stuart!\" You watch as a bald man in a tailcoat suit, no taller than 4 feet, hobbles over to Oswald's side.")
         print("\n")
         type.type("\"This is Stuart! He will fix your limousine up for a fair price. Let's say, I don't know, I suppose a fair price is " + green(bright("500,000 dollars")) + ". ")
         repair_price = random.choice([800, 850, 900])
@@ -743,9 +743,9 @@ class Player:
             if(yes_or_no == "n") or (yes_or_no == "no"):
                 type.type("\"Really? You don't want my services? I'm so sorry Stuart, But it appears they don't want our services.\" ")
                 type.type("Stuart begins to break down into tears, and he runs quickly back into the limo. ")
-                type.type("\"Shame on you! Shame on you! I hope to never see the likes of you again.\" ")
+                type.type("\"Shame on you! Shame on you! I hope to never see the likes of you again.\"")
                 print("\n")
-                type.type("You watch as Oswald rolls up the red carpet, gets back in the limo, and drives off into the distance. ")
+                type.type("You watch as Oswald rolls up the red carpet, gets back in the limo, and drives off into the distance.")
                 print("\n")
                 return
             elif((yes_or_no == "y") or (yes_or_no == "yes")):
@@ -761,7 +761,7 @@ class Player:
                     tip = random.choice([50, 100])
                     type.type("Oswald hands you a bright green bill, worth " + green(bright("$" + str(tip))) + ".")
                     self.change_balance(tip)
-                    type.type("And with that, you watch as Stuart rolls up the red carpet. Oswald and Stuart get back in the limo, and drive off into the distance. ")
+                    type.type("And with that, you watch as Stuart rolls up the red carpet. Oswald and Stuart get back in the limo, and drive off into the distance.")
                     print("\n")
                     return
                 else:
@@ -775,7 +775,7 @@ class Player:
                     print("\n")
                     return
             else:
-                type.type("\"Come again? \" ")
+                type.type("\"Come again?\" ")
 
 
     def update_story_event_prereqs(self):
@@ -853,7 +853,7 @@ class Player:
                     break
                 else:
                     choice = None
-                    type.type("That number's not a choice! ")
+                    type.type("That number's not a choice!")
                     print()
                     type.type("Choose a number: ")
             print()
@@ -873,15 +873,24 @@ class Player:
     #Doctor's Office Interaction    
     def visit_doctor(self):
         type.type("You get in your car and drive to the Doctor's Office. ")
+        if not self.has_met("Doctor's Office"):
+            self.meet("Doctor's Office")
+            type.type("As you pull up closer to the bright blue building, you notice that the parking lot is concerningly empty. You park your wagon right up front next to the entrance, and step out towards the doors. ")
+            type.type("When you enter into the lobby, you're immediately hit with the strong smell of hand sanitizer in the air. The carpets are dull and brown, the light above you is flickering, and the walls are filled with posters telling you to 'Floss More Often!' and 'Wash Your Hands Before You Eat!' ")
+            type.type("If you didn't know any better, you would have guessed you were on a movie set.")
+            print("\n")
+            type.type("Walking towards the front desk, you see a cheery old lady, who looks up from her computer to smile at you. Her gray hair covers her glasses, and her hand trembles as she hands you a pen and a clipboard with some paperwork. Of course it's paperwork.")
+            print("\n")
+            type.type("After filling out your information, you walk back to the front desk, and hand the lady the clipboard. She smiles, and begins to speak to you.")
         print("\n")
         type.type("I see you're here for a checkup. The Doctor will see you now.")
         print("\n")
-        type.type("Hey there champ! How are you? Doing all right? Let's check you out and make sure you're all up to snuff. ")
+        type.type("Hey there champ! How are you? Doing all right? Let's check you out and make sure you're all up to snuff.")
         print()
         if (self.len_status() == 0) and (self.__health == 100):
-            type.type("Why, you look just as healthy as the day I met you, fresh from your mother's womb! Let me just give you this lollipop and you'll be free to go. ")
+            type.type("Why, you look just as healthy as the day I met you, fresh from your mother's womb! Let me just give you this lollipop and you'll be free to go.")
         elif (self.len_status() == 0):
-            type.type("Why, you don't seem to really need my help. You appear a little worse for wear, but this medicine should do the trick. ")
+            type.type("Why, you don't seem to really need my help. You appear a little worse for wear, but this medicine should do the trick.")
             print("\n")
             self.heal(100)
         else:
@@ -889,11 +898,11 @@ class Player:
                 type.type("I see you have a nasty spider bite. That thing looks gross. Let me get that cleaned up for you.")
                 print()
             print()
-            type.type("Well, that seems to be everything. You still appear a little worse for wear, but this medicine should do the trick. ")
+            type.type("Well, that seems to be everything. You still appear a little worse for wear, but this medicine should do the trick.")
             self.heal(100)
             
         print("\n")
-        type.type("You walk back to the front desk to checkout. ")
+        type.type("You walk back to the front desk to checkout.")
         print("\n")
         cost = int((random.randint(65, 90)/100)*self.__balance)
         type.type("That will be " + bright(green("${:,}".format(cost))))
@@ -905,14 +914,14 @@ class Player:
                 self.add_danger("Doctor Ban")
                 print()
                 self.use_item("Faulty Insurance")
-                type.type("Is this supposed to fool me? A fake insurance card? That's it, I'm calling the cops! ")
+                type.type("Is this supposed to fool me? A fake insurance card? That's it, I'm calling the cops!")
                 print("\n")
-                type.type("Without hesitation, you turn, and run far, far away from the hospital, knowing that your face can't be seen there again. ")
+                type.type("Without hesitation, you turn, and run far, far away from the hospital, knowing that your face can't be seen there again.")
                 self.start_night()
                 return
             else:
                 print()
-                type.type("I see, you have insurance. Well, that should give you quite the discount. ")
+                type.type("I see, you have insurance. Well, that should give you quite the discount.")
                 print()
                 cost = int((random.randint(10, 35)/100)*self.__balance)
                 type.type("That will be " + bright(green("${:,}".format(cost))))
@@ -953,9 +962,16 @@ class Player:
     # Convenience Store
     def visit_convenience_store(self):
         type.type("You get in your car and drive to the Convenience Store. ")
+        if not self.has_met("Convenience Store"):
+            type.type("When pulling into the parking lot, you have to grip the wheel tightly to keep control of the wagon, as the concrete beneath you is littered with potholes. As you drive closer to bright red brick building, you begin to read the sign 'Convenience Store' written in bold. ")
+            type.type("Is this place really called 'Convenience Store'? They couldn't have been any more creative? You park nearby, and get out, being sure not to trip on the loose chunks of road.")
+            print("\n")
+            type.type("When you open the glass door, you notice a bell above you ring. There's a teenager on his phone, sitting with his feet up on the counter. His face is covered with pimples, and he's in the middle of blowing a bubble with the gum in his mouth.")
+            print("\n")
+            type.type("You get closer to the boy, and he finally notices you, and puts his phone down.")
         print("\n")
         if(len(self.__convenience_store_inventory)==0):
-            type.type("As you walk up to the store, you see a white sign hanging on the front door. They're closed. Bummer. ")
+            type.type("As you walk up to the store, you see a white sign hanging on the front door. They're closed. Bummer.")
             print("\n")
             self.start_night()
             return
@@ -966,9 +982,9 @@ class Player:
             choice = None
             items = self.__convenience_store_inventory
             if items_bought == 0:
-                type.type("What do you want? ")
+                type.type("What do you want?")
             else:
-                type.type("What else you want? ")
+                type.type("What else you want?")
             print()
             for i in range(len(items)+1):
                 if(i<len(items)):
@@ -997,7 +1013,7 @@ class Player:
                     break
                 else:
                     choice = None
-                    type.type("We clearly don't have that in right now. ")
+                    type.type("We clearly don't have that in right now.")
                     print()
                     type.type("It's not hard, just choose a number: ")
             print()

@@ -160,7 +160,8 @@ class Lists:
     
     def make_shop_list(self):
         a_list = []
-        a_list.append("Doctor's Office")
+        if(not self.__player.has_danger("Doctor Ban")):
+            a_list.append("Doctor's Office")
         if(self.__player.has_met("Witch")):
             a_list.append("Witch Doctor's Tower")
         if(self.__player.has_met("Tom")):
