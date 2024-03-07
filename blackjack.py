@@ -99,27 +99,52 @@ class Blackjack:
     def update_player(self):
         self.__balance = self.__player.get_balance()
         self.__player.update_rank()
+        if self.__player.has_item("Golden Watch"):
+            self.__player.set_rounds(4)
 
-    def play_round(self, count):
+    def play_round(self, count=None):
+        # Updates the player
+        self.update_player()
+
+        # Sets number of rounds played, if not specified. Mainly for testing
+        if count==None:
+            count = self.__player.get_rounds()
+
         # Resets the deck
         self.hard_reset()
 
+        # Tells player that their golden watch is noticed by the Dealer
+        if self.__player.has_item("Golden Watch"):
+            type.fast("Your " + bright(magenta("Golden Watch")) + " glistens in the light hanging above the betting table.")
+            print("\n")
+
+        if self.__player.has_item("Dirty Old Hat"):
+            type.fast("The " + bright(magenta("Dirty Old Hat")) + " on your head sends dust in the air, and reeks of poverty.")
+            print("\n")
+
         # Makes the dealer a bit happier, as a new day has started
-        self.calm_dealer(random.choice([5, 7, 10]))
+        self.calm_dealer(random.choice([5, 7, 10]), False)
+        if self.__player.has_item("Delight Indicator"):
+            type.fast("Your " + bright(magenta("Delight Indicator")) + " begins to flash.")
+            print()
+            type.fast("The Dealer has calmed down since you've last seen him!")
+            print()
+            self.delight_indicator()
+            print("\n")
 
-
-        # Updates the blackjack balance to match player's balance, then tells the player their balance.
-        self.update_player()
+        # Tells the player their balance.
+        
         type.fast("You have " + green(bright("${:,}".format(self.__balance))))
+        print()
 
         for _ in range(count):
-            print()
             while(True):
                 self.__player.status()
-                type.fast("Dealer's current happiness: " + str(self.__dealer_happiness) + "%") # DELETE
                 print()
-
-                self.set_min_bet()
+                if(self.__player.has_item("Dirty Old Hat")):
+                    self.set_min_bet(int(self.__balance/4))
+                else:
+                    self.set_min_bet(self.__balance)
                 player_betting = False
                 while(not player_betting):
                     player_betting = self.bet()
@@ -170,20 +195,40 @@ class Blackjack:
         # Prints a line after all rounds of blackjack have finished
         print()
 
-    def anger_dealer(self, value):
+    def anger_dealer(self, value, message=True):
         if(self.__dealer_happiness - value <= 0):
             self.__dealer_happiness = 0
         else:
             self.__dealer_happiness -= value
+        if self.__player.has_item("Delight Indicator") and message == True:
+            print("\n")
+            type.fast("The Dealer has been angered!")
+            print()
+            self.delight_indicator()
 
-    def calm_dealer(self, value):
+    def calm_dealer(self, value, message=True):
         if(self.__dealer_happiness + value >= 100):
             self.__dealer_happiness = 100
         else:
             self.__dealer_happiness += value
+        if self.__player.has_item("Delight Indicator") and message==True:
+            print("\n")
+            type.fast("The Dealer has calmed down!")
+            print()
+            self.delight_indicator()
 
-    def set_min_bet(self):
-        balance_str = str(self.__balance)
+    def delight_indicator(self):
+        if self.__dealer_happiness > 66:
+            type.fast("Dealer's current happiness: " + bright(green(str(self.__dealer_happiness) + "%")))
+        elif self.__dealer_happiness > 33:
+            type.fast("Dealer's current happiness: " + bright(yellow(str(self.__dealer_happiness) + "%")))
+        else:
+            type.fast("Dealer's current happiness: " + bright(green(str(self.__dealer_happiness) + "%")))
+
+
+
+    def set_min_bet(self, balance):
+        balance_str = str(balance)
         balance_len = len(balance_str)
         if balance_len == 1:
             self.__min_bet = 1

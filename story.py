@@ -133,7 +133,7 @@ def bright(text):
     return (Style.BRIGHT + text + Style.NORMAL)
 
 class Player:
-    __slots__ = ["__alive", "__status_effects", "__inventory", "__dangers", "__met", "__health", "__balance", "__previous_balance", "__rank", "__day", "__counting_days", "__prereqs", "__prereqs_done", "__convenience_store_inventory", "__lists"]
+    __slots__ = ["__alive", "__status_effects", "__inventory", "__dangers", "__met", "__health", "__balance", "__previous_balance", "__rank", "__day", "__counting_days", "__round_count", "__prereqs", "__prereqs_done", "__convenience_store_inventory", "__lists"]
 
     def __init__(self):
         self.__alive = True
@@ -147,6 +147,7 @@ class Player:
         self.__rank = 0
         self.__day = 1
         self.__counting_days = [0, 0, 0, 0, 0, 0, 0]
+        self.__round_count = 3
         self.__prereqs = [False, False, False, False, False]
         self.__prereqs_done = [False, False, False, False, False]
         self.__convenience_store_inventory = []
@@ -163,12 +164,34 @@ class Player:
             self.kill()
         else:
             self.__health -= value
+        if self.has_item("Health Indicator"):
+            type.type("The " + magenta(bright("Health Indicator")) + " on your wrist makes a loud beep.")
+            print()
+            type.type("You took damage!")
+            print()
+            self.health_indicator()
 
     def heal(self, value):
         if(self.__health + value >= 100):
             self.__health = 100
         else:
             self.__health += value
+        if self.has_item("Health Indicator"):
+            type.type("The " + magenta(bright("Health Indicator")) + " on your wrist makes a subtle vibration.")
+            print()
+            type.type("You regained health!")
+            print()
+            self.health_indicator()
+
+
+    def health_indicator(self):
+        if self.__health > 66:
+            type.type("Your current health: " + bright(green(str(self.__health) + "%")))
+        elif self.__health > 33:
+            type.type("Your current health: " + bright(yellow(str(self.__health) + "%")))
+        else:
+            type.type("Your current health: " + bright(red(str(self.__health) + "%")))
+        print("\n")
 
     def status(self):
         if not self.__alive:
@@ -211,6 +234,12 @@ class Player:
 
     def len_status(self):
         return len(self.__status_effects)
+    
+    def get_rounds(self):
+        return self.__round_count
+    
+    def set_rounds(self, value):
+        self.__round_count = value
 
     def add_item(self, item):
         self.__inventory.add(item)
@@ -452,16 +481,17 @@ class Player:
         return self.__day - self.__counting_days[0]
     
     def update_status(self):
+        damage = 0
         if self.has_status("Spider Bite"):
             days_elapsed = self.get_spider_bite_day()
             if days_elapsed == 0:
-                self.hurt(random.choice([1, 2]))
+                damage += random.choice([1, 2])
                 type.type("The fangmarks of your spider bite are faint but visible. ")
             elif days_elapsed == 1:
-                self.hurt(random.choice([3, 4, 5, 6]))
+                damage += random.choice([3, 4, 5, 6])
                 type.type("Your spider bite is sore and swolen. ")
             elif days_elapsed == 2:
-                self.hurt(random.choice([4, 5, 6, 7, 8, 9]))
+                damage += random.choice([4, 5, 6, 7, 8, 9])
                 type.type("Your spider bite is really painful. You don't feel good. ")
             elif days_elapsed >= 3:
                 random_chance = random.randrange(4)
@@ -469,9 +499,12 @@ class Player:
                     self.remove_status("Spider Bite")
                     type.type("Your spider bite is starting to heal. ")
                 else:
-                    self.hurt(random.choice([7, 9, 11, 13, 15]))
+                    damage += random.choice([7, 9, 11, 13, 15])
                     type.type("Your spider bite is purple and pussing. A trip to the doctors might be a good idea. ")
             print("\n")
+
+        if damage > 0:
+            self.hurt(damage)
 
                 
     # Poor Day Events (1 - 1,000)
@@ -892,35 +925,34 @@ class Player:
         elif (self.len_status() == 0):
             type.type("Why, you don't seem to really need my help. You appear a little worse for wear, but this medicine should do the trick.")
             print("\n")
-            self.heal(100)
         else:
             if self.has_status("Spider Bite"):
                 type.type("I see you have a nasty spider bite. That thing looks gross. Let me get that cleaned up for you.")
                 print()
             print()
             type.type("Well, that seems to be everything. You still appear a little worse for wear, but this medicine should do the trick.")
-            self.heal(100)
-            
         print("\n")
+        self.heal(100)
         type.type("You walk back to the front desk to checkout.")
         print("\n")
         cost = int((random.randint(65, 90)/100)*self.__balance)
         type.type("That will be " + bright(green("${:,}".format(cost))))
         if self.has_item("Faulty Insurance"):
-            print()
+            print("\n")
             type.type("You show off your " + bright(magenta("Faulty Insurance")) + " to the lady, and put a convincing smile on your face. ")
             random_chance = random.randrange(10)
             if random_chance < 2:
                 self.add_danger("Doctor Ban")
-                print()
+                print("\n")
                 self.use_item("Faulty Insurance")
                 type.type("Is this supposed to fool me? A fake insurance card? That's it, I'm calling the cops!")
                 print("\n")
                 type.type("Without hesitation, you turn, and run far, far away from the hospital, knowing that your face can't be seen there again.")
+                print("\n")
                 self.start_night()
                 return
             else:
-                print()
+                print("\n")
                 type.type("I see, you have insurance. Well, that should give you quite the discount.")
                 print()
                 cost = int((random.randint(10, 35)/100)*self.__balance)
@@ -963,6 +995,7 @@ class Player:
     def visit_convenience_store(self):
         type.type("You get in your car and drive to the Convenience Store. ")
         if not self.has_met("Convenience Store"):
+            self.meet("Convenience Store")
             type.type("When pulling into the parking lot, you have to grip the wheel tightly to keep control of the wagon, as the concrete beneath you is littered with potholes. As you drive closer to bright red brick building, you begin to read the sign 'Convenience Store' written in bold. ")
             type.type("Is this place really called 'Convenience Store'? They couldn't have been any more creative? You park nearby, and get out, being sure not to trip on the loose chunks of road.")
             print("\n")
@@ -1025,10 +1058,10 @@ class Player:
                 self.add_item("Candy Bar")
                 type.type(bright(magenta("You got a Candy Bar!")))
             elif item == "Bag of Chips":
-                self.add_item("")
+                self.add_item("Bag of Chips")
                 type.type(bright(magenta("You got a Bag of Chips!")))
             elif item == "Turkey Sandwich":
-                self.add_item("")
+                self.add_item("Turkey Sandwich")
                 type.type(bright(magenta("You got a Turkey Sandwich!")))
             elif item == "Deck of Cards":
                 self.add_item("Deck of Cards")
@@ -1044,6 +1077,7 @@ class Player:
                 type.type(bright(magenta("You got a Bag of Acorns!")))
             elif item == "Home":
                 type.type("Suit yourself.")
+                print("\n")
                 self.start_night()
                 return
             
