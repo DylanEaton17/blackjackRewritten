@@ -304,7 +304,10 @@ class Player:
         self.__day+=1
 
     def end_day(self):
-        if(self.__day==1):
+        if(self.has_danger("Angry Dealer")):
+            self.lose_danger("Angry Dealer")
+            self.end_day_angry_dealer()
+        elif(self.__day==1):
             self.end_day_1()
         elif(not self.has_item("Car")):
             self.end_day_car()
@@ -444,6 +447,9 @@ class Player:
         type.type("After playing a few rounds of Blackjack, the dealer points to the door. ")
         type.type("Without questing his word, and with your winnings in hand, you scurry to the door, eager to get some sleep. ")
         type.type("You make it to your car and drive away from the casino, and you park in a little alcove on the side of the road. You lay down, and close your eyes. It's time to rest.")
+
+    def end_day_angry_dealer(self):
+        type.type("You've never seen the dealer quite so angry. Fortunately, you make it back to your car, and immediately pass out for the night. It's time to rest.")
 
     def start_night(self):
         if(self.__day==1):

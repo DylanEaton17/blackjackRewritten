@@ -13,6 +13,7 @@ def main():
     player.add_item("Faulty Insurance")
     player.add_item("Delight Indicator")
     player.add_item("Dirty Old Hat")
+    player.add_item("Sneaky Peeky Glasses")
 
     # Do whatever
     while(True):

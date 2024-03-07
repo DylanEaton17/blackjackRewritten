@@ -75,6 +75,10 @@ class Deck:
         self.__current_card = self.__deck.pop()
         return self.__current_card
     
+    def peek(self):
+        i = len(self) - 1
+        return self.__deck[i]
+    
 class Card:
     __slots__ = ["__name", "__suit", "__value"]
 
