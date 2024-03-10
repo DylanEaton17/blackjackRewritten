@@ -133,7 +133,7 @@ def bright(text):
     return (Style.BRIGHT + text + Style.NORMAL)
 
 class Player:
-    __slots__ = ["__alive", "__flask_effects", "__status_effects", "__clear_status", "__inventory", "__dangers", "__met", "__health", "__balance", "__previous_balance", "__rank", "__day", "__counting_days", "__round_count", "__prereqs", "__prereqs_done", "__convenience_store_inventory", "__lists"]
+    __slots__ = ["__alive", "__flask_effects", "__status_effects", "__clear_status", "__inventory", "__broken_inventory", "__dangers", "__met", "__health", "__balance", "__previous_balance", "__rank", "__day", "__counting_days", "__item_durability", "__flask_durability", "__round_count", "__prereqs", "__prereqs_done", "__convenience_store_inventory", "__lists"]
 
     def __init__(self):
         self.__alive = True
@@ -141,6 +141,7 @@ class Player:
         self.__status_effects = set()
         self.__clear_status = False
         self.__inventory = set()
+        self.__broken_inventory = set()
         self.__dangers = set()
         self.__met = set()
         self.__health = 100
@@ -149,6 +150,8 @@ class Player:
         self.__rank = 0
         self.__day = 1
         self.__counting_days = [0, 0, 0, 0, 0, 0, 0]
+        self.__item_durability = [6, 1, 1, 1, 1, 1, 1, 1]
+        self.__flask_durability = [0, 0, 0, 0, 0, 0, 0]
         self.__round_count = 3
         self.__prereqs = [False, False, False, False, False]
         self.__prereqs_done = [False, False, False, False, False]
@@ -194,6 +197,7 @@ class Player:
         else:
             type.type("Your current health: " + bright(red(str(self.__health) + "%")))
         print("\n")
+        self.update_health_indicator_durability()
 
     def status(self):
         if not self.__alive:
@@ -258,8 +262,19 @@ class Player:
     def has_item(self, item):
         return item in self.__inventory
     
+    def has_broken_item(self, item):
+        return item in self.__broken_inventory
+    
     def use_item(self, item):
         self.__inventory.remove(item)
+
+    def break_item(self, item):
+        self.__broken_inventory.add(item)
+        self.__inventory.remove(item)
+
+    def fix_item(self, item):
+        self.__inventory.add(item)
+        self.__broken_inventory.remove(item)
     
     def add_danger(self, danger):
         self.__dangers.add(danger)
@@ -327,6 +342,9 @@ class Player:
 
         print("\n")
 
+        self.update_dirty_old_hat_durability()
+        self.update_golden_watch_durability()
+
         # Starting cheer (eg. Yippee!)
         type.type(self.__lists.get_cheer())
 
@@ -378,8 +396,8 @@ class Player:
         type.type(self.__lists.get_quote())
 
         # Heals the player before the next day
-        self.heal(random.choice([1, 3, 5]))
         print("\n")
+        self.heal(random.choice([1, 3, 5]))
 
     # Opening
     def first_setup(self):
@@ -979,6 +997,7 @@ class Player:
                 cost = int((random.randint(10, 35)/100)*self.__balance)
                 type.type("That will be " + bright(green("${:,}".format(cost))))
                 self.change_balance(-cost)
+                self.update_faulty_insurance_durability()
                 self.start_night()
                 return
         else:
@@ -1224,7 +1243,9 @@ class Player:
         if not self.has_met("Convenience Store"):
             self.meet("Convenience Store")
             type.type("When pulling into the parking lot, you have to grip the wheel tightly to keep control of the wagon, as the concrete beneath you is littered with potholes. As you drive closer to bright red brick building, you begin to read the sign 'Convenience Store' written in bold. ")
-            type.type("Is this place really called 'Convenience Store'? They couldn't have been any more creative? You park nearby, and get out, being sure not to trip on the loose chunks of road.")
+            type.type("Really? This place really called 'Convenience Store'? They couldn't have come up with anything more creative? You park nearby, and get out, being sure not to trip on the loose chunks of road. ")
+            type.type("Walking closer to the store, you notice there's a poster with a smiling dude on it, holding his thumbs up, with the caption 'We Love our Customers! That's why we're limiting each customer to one item per visit. That means there's more for everyone! Sharing is caring!' ")
+            type.type("Looking through the window, the store is barren, with only a few items on the shelf. If not for someone standing at the register, you would have thought the place to be abandoned.")
             print("\n")
             type.type("When you open the glass door, you notice a bell above you ring. There's a teenager on his phone, sitting with his feet up on the counter. His face is covered with pimples, and he's in the middle of blowing a bubble with the gum in his mouth.")
             print("\n")
@@ -1282,20 +1303,23 @@ class Player:
                 items.pop(choice-1)
 
             if item == "Candy Bar":
-                self.add_item("Candy Bar")
-                type.type(bright(magenta("You got a Candy Bar!")))
+                type.type("You got a " + bright(magenta("Candy Bar!")))
+                print()
+                type.type("You chomp down the candy bar. It's sweet chocolate and caramel fill your stomach, and you feel a little better.")
             elif item == "Bag of Chips":
-                self.add_item("Bag of Chips")
-                type.type(bright(magenta("You got a Bag of Chips!")))
+                type.type("You got a " + bright(magenta("Bag of Chips!")))
+                print()
+                type.type("You chomp down the bag of chips. It's salty potato goodness fill your stomach, and you feel better.")
             elif item == "Turkey Sandwich":
-                self.add_item("Turkey Sandwich")
-                type.type(bright(magenta("You got a Turkey Sandwich!")))
+                type.type("You got a " + bright(magenta("Turkey Sandwich!")))
+                print()
+                type.type("You chomp down the turkey sandwich. It's savory turkey and provolone fill your stomach, and you feel much better.")
             elif item == "Deck of Cards":
+                type.type(bright(magenta("Deck of Cards!")))
                 self.add_item("Deck of Cards")
-                type.type(bright(magenta("You got a Deck of Cards!")))
             elif item == "Pest Control":
+                type.type("You got " + bright(magenta("Pest Control!")))
                 self.add_item("Pest Control")
-                type.type(bright(magenta("You got Pest Control!")))
             elif item == "LifeAlert":
                 type.type(bright(magenta("You got LifeAlert!")))
             elif item == "Necronomicon":
@@ -1337,17 +1361,22 @@ class Player:
         if len(inventory) == 0:
             type.type("Sorry man, I've got no product for you tonight. Maybe try coming back another day. ")
             return
+        else:
+            type.type("Welcome, welcome. I've got some very valuable stuff in stock, just for a fine gambler like you.")
+            print("\n")
+            type.type("While I won't get bogged down in the details of how I got my hands on it, I think you'll wanna check these out:")
+            print("\n")
 
         for item_number in range(len(inventory)):
             item = inventory[item_number]
             if (item_number==0) and (len(inventory)==1):
-                type.type("The only item I've got right now is: " + magenta(bright(item)))
+                type.type("The only item I've got right now is the " + self.__lists.get_marvin_adjective() + " " + magenta(bright(item)))
             elif (item_number==0):
-                type.type("The first item I've got is: " + magenta(bright(item)))
+                type.type("The first item I've got is the " + self.__lists.get_marvin_adjective() + " " + magenta(bright(item)))
             elif item_number==len(inventory)-1:
-                type.type("The last item I've got is: " + magenta(bright(item)))
+                type.type("The last item I've got is the " + self.__lists.get_marvin_adjective() + " " + magenta(bright(item)))
             else:
-                type.type("The next item I've got is: " + magenta(bright(item)))
+                type.type("The next item I've got is the " + self.__lists.get_marvin_adjective() + " " + magenta(bright(item)))
 
             print()
 
@@ -1391,7 +1420,7 @@ class Player:
                     type.type("Great! It's all yours.")
                     self.change_balance(-price)
                     self.add_item(item)
-                    type.type("You got " + magenta(bright(item)) + "!")
+                    type.type("You got the " + magenta(bright(item)) + "!")
                     print()
                     type.type("Description: " + self.get_item_desc(item))
                     print("\n")
@@ -1407,9 +1436,108 @@ class Player:
         type.type("That's all I've got to sell you tonight. Maybe try coming back another day. ")
         self.start_night()
 
+    def update_delight_indicator_durability(self):
+        if self.has_item("Delight Indicator") and (self.__item_durability[0] > 0):
+            self.__item_durability[0] -= random.choice([1, 2, 3, 5])
+            if self.__item_durability[0] <= 0:
+                self.__item_durability[0] = 0
+                self.break_item("Delight Indicator")
+                print("\n")
+                type.type(red(bright("Your Delight Indicator broke!")))
+
+        # Sets durability when you get the item, or if the item is fixed
+        if (self.has_item("Delight Indicator")) and (self.__item_durability[0] == 0):
+            self.__item_durability[0] = 45
+
+
+    def update_health_indicator_durability(self):
+        if self.has_item("Health Indicator") and (self.__item_durability[1] > 0):
+            self.__item_durability[1] -= random.choice([1, 2, 3, 5])
+            if self.__item_durability[1] <= 0:
+                self.__item_durability[1] = 0
+                self.break_item("Health Indicator")
+                type.type(red(bright("Your Health Indicator broke!")))
+                print("\n")
+
+        # Sets durability when you get the item, or if the item is fixed
+        if (self.has_item("Health Indicator")) and (self.__item_durability[1] == 0):
+            self.__item_durability[1] = 30
+
+
+    def update_dirty_old_hat_durability(self):
+        if self.has_item("Dirty Old Hat") and (self.__item_durability[2] > 0):
+            self.__item_durability[2] -= random.choice([1, 2, 3, 5])
+            if self.__item_durability[2] <= 0:
+                self.__item_durability[2] = 0
+                self.break_item("Dirty Old Hat")
+                type.type(red(bright("Your Dirty Old Hat broke!")))
+                print("\n")
+
+        # Sets durability when you get the item, or if the item is fixed
+        if (self.has_item("Dirty Old Hat")) and (self.__item_durability[2] == 0):
+            self.__item_durability[2] = 25
+
+
+    def update_golden_watch_durability(self):
+        if self.has_item("Golden Watch") and (self.__item_durability[3] > 0):
+            self.__item_durability[3] -= random.choice([1, 2, 3, 5])
+            if self.__item_durability[3] <= 0:
+                self.__item_durability[3] = 0
+                self.break_item("Golden Watch")
+                type.type(red(bright("Your Golden Watch broke!")))
+                print("\n")
+
+        # Sets durability when you get the item, or if the item is fixed
+        if (self.has_item("Golden Watch")) and (self.__item_durability[3] == 0):
+            self.__item_durability[3] = 20
+
+
+    def update_sneaky_peeky_glasses_durability(self):
+        if self.has_item("Sneaky Peeky Glasses") and (self.__item_durability[5] > 0):
+            self.__item_durability[5] -= random.choice([1, 2, 3, 5])
+            if self.__item_durability[5] <= 0:
+                self.__item_durability[5] = 0
+                self.break_item("Sneaky Peeky Glasses")
+                type.type(red(bright("Your Sneaky Peeky Glasses broke!")))
+                print("\n")
+
+        # Sets durability when you get the item, or if the item is fixed
+        if (self.has_item("Sneaky Peeky Glasses")) and (self.__item_durability[5] == 0):
+            self.__item_durability[5] = 15
+
+
+    def update_quiet_sneakers_durability(self):
+        if self.has_item("Quiet Sneakers") and (self.__item_durability[6] > 0):
+            self.__item_durability[6] -= random.choice([1, 2, 3, 5])
+            if self.__item_durability[6] <= 0:
+                self.__item_durability[6] = 0
+                self.break_item("Quiet Sneakers")
+                print()
+                type.type(red(bright("Your Quiet Sneakers broke!")))
+                print("\n")
+
+        # Sets durability when you get the item, or if the item is fixed
+        if (self.has_item("Quiet Sneakers")) and (self.__item_durability[6] == 0):
+            self.__item_durability[6] = 15
+
+
+    def update_faulty_insurance_durability(self):
+        if self.has_item("Faulty Insurance") and (self.__item_durability[7] > 0):
+            self.__item_durability[7] -= random.choice([1, 2, 3, 5])
+            if self.__item_durability[7] <= 0:
+                self.__item_durability[7] = 0
+                self.break_item("Faulty Insurance")
+                type.type(red(bright("Your Faulty Insurance broke!")))
+                print("\n")
+
+        # Sets durability when you get the item, or if the item is fixed
+        if (self.has_item("Faulty Insurance")) and (self.__item_durability[7] == 0):
+            self.__item_durability[7] = 15
+        
+
     def get_item_desc(self, item):
         if item == "Delight Indicator": return "A small gadget, with wires tangled around it, and a small meter that displays the Dealer's happiness before every round of Blackjack."
-        elif item == "Health Indicator": return "A small gadget, with wires construed around it, and a small gauge that displays changes in your health. Your current health is " + str(self.__health) + "."
+        elif item == "Health Indicator": return "A small gadget, with wires construed around it, and a small gauge that displays changes in your health. Your current health is " + bright(magenta(str(self.__health) + "%")) + "."
         elif item == "Dirty Old Hat": return "A dark brown leather hat, covered in dirt and tears. It makes you look poor, and lowers the Dealer's minimum bet."
         elif item == "Golden Watch": return "A bright gold watch that glistens in any light. It makes you look rich, and increases the number of Blackjack rounds the Dealer lets you play."
         elif item == "Enchanting Silver Bar": return "A silver bar that slowly increases in worth every day. Sell this after 3 days to make a profit. Its current value is (value)."

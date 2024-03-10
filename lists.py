@@ -22,7 +22,7 @@ class Lists:
         self.__doughman_night_events = self.make_doughman_night_events_list()
         self.__nearly_night_events = self.make_nearly_night_events_list()
         self.__shop_list = self.make_shop_list()
-
+        self.__marvins_adjectives_list = self.make_marvins_adjectives_list()
 
 
 
@@ -257,6 +257,29 @@ class Lists:
 
         random.shuffle(a_list)
         return a_list
+    
+    def make_marvins_adjectives_list(self):
+        a_list = []
+        a_list.append("stupendous")
+        a_list.append("magical")
+        a_list.append("magestic")
+        a_list.append("superb")
+        a_list.append("fanstastical")
+        a_list.append("all mighty")
+        a_list.append("one-of-a-kind")
+        a_list.append("terrific")
+        a_list.append("super duper")
+        a_list.append("ingenius")
+        a_list.append("kinda mediocre but still awesome")
+        a_list.append("never before seen")
+        a_list.append("crazy wacky")
+        random.shuffle(a_list)
+        return a_list
+
+    def get_marvin_adjective(self):
+        if len(self.__marvins_adjectives_list) == 0:
+            self.__marvins_adjectives_list = self.make_marvins_adjectives_list()
+        return self.__marvins_adjectives_list.pop()
     
     def make_dealer_welcome_list(self):
         a_list = []

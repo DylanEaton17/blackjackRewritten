@@ -119,11 +119,11 @@ class Blackjack:
 
         # Tells player that their golden watch is noticed by the Dealer
         if self.__player.has_item("Golden Watch"):
-            type.fast("Your " + bright(magenta("Golden Watch")) + " glistens in the light hanging above the betting table.")
+            type.fast("Your " + bright(magenta("Golden Watch")) + " glistens in the light hanging above the betting table. The Dealer will let you play an extra round.")
             print("\n")
 
         if self.__player.has_item("Dirty Old Hat"):
-            type.fast("The " + bright(magenta("Dirty Old Hat")) + " on your head sends dust in the air, and reeks of poverty.")
+            type.fast("The " + bright(magenta("Dirty Old Hat")) + " on your head sends dust in the air, and reeks of poverty. Minimum bets are lowered.")
             print("\n")
 
         # Makes the dealer a bit happier, as a new day has started
@@ -298,6 +298,7 @@ class Blackjack:
             type.fast("Dealer's current happiness: " + bright(yellow(str(self.__dealer_happiness) + "%")))
         else:
             type.fast("Dealer's current happiness: " + bright(green(str(self.__dealer_happiness) + "%")))
+        self.__player.update_delight_indicator_durability()
 
 
 
@@ -417,6 +418,7 @@ class Blackjack:
             else:
                 type.fast("Using your " + magenta(bright("Sneaky Peeky Glasses")) + ", you notice that the top card is a " + bright(magenta(str(next_card))))
             print("\n")
+            self.__player.update_sneaky_peeky_glasses_durability()
         else:
             print()
             type.fast(red("I didn't quite catch that."))
@@ -510,9 +512,9 @@ class Blackjack:
                 if message==4: type.fast(yellow(bright("Oh lord have mercy, you got a Blackjack!")))
                 print()
                 if self.__free_hand:
-                    type.fast(magenta(bright("You had " + green("${:,}".format(self.__balance)) + magenta(", and with a free bet of ") + green("${:,}".format(self.__bet)) + magenta(", you've doubled it!"))))
+                    type.fast(yellow(bright("You had " + green("${:,}".format(self.__balance)) + magenta(", and with a free bet of ") + green("${:,}".format(self.__bet)) + magenta(", you've tripled it!"))))
                 else:
-                    type.fast(magenta(bright("You had " + green("${:,}".format(self.__balance)) + magenta(", and with a bet of ") + green("${:,}".format(self.__bet)) + magenta(", you've doubled it!"))))
+                    type.fast(yellow(bright("You had " + green("${:,}".format(self.__balance)) + magenta(", and with a bet of ") + green("${:,}".format(self.__bet)) + magenta(", you've tripled it!"))))
                 print("\n")
                 type.fast(yellow(bright("Your new balance is " + green("${:,}".format(self.__balance) + " + ${:,}".format(self.__bet*2) + " = ${:,}".format(self.__balance+self.__bet*2)))))
                 self.__balance += 2*self.__bet
