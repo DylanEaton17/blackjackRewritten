@@ -90,9 +90,9 @@ class Typing:
                     time.sleep(0.2)
 
                 if self.__type_speed =="Default" and (char == "?") or (char == ":"):
-                    time.sleep(0.1)
+                    time.sleep(0.3)
                 elif self.__type_speed =="Fast" and (char == "?") or (char == ":"):
-                    time.sleep(0.1)
+                    time.sleep(0.2)
                 elif self.__type_speed =="Fastest" and (char == "?") or (char == ":"):
                     time.sleep(0.1)
                 
@@ -133,11 +133,13 @@ def bright(text):
     return (Style.BRIGHT + text + Style.NORMAL)
 
 class Player:
-    __slots__ = ["__alive", "__status_effects", "__inventory", "__dangers", "__met", "__health", "__balance", "__previous_balance", "__rank", "__day", "__counting_days", "__round_count", "__prereqs", "__prereqs_done", "__convenience_store_inventory", "__lists"]
+    __slots__ = ["__alive", "__flask_effects", "__status_effects", "__clear_status", "__inventory", "__dangers", "__met", "__health", "__balance", "__previous_balance", "__rank", "__day", "__counting_days", "__round_count", "__prereqs", "__prereqs_done", "__convenience_store_inventory", "__lists"]
 
     def __init__(self):
         self.__alive = True
+        self.__flask_effects = set()
         self.__status_effects = set()
+        self.__clear_status = False
         self.__inventory = set()
         self.__dangers = set()
         self.__met = set()
@@ -223,6 +225,15 @@ class Player:
             type.slow("u win lol look at u millionaire go girl")
             quit()
     
+    def add_flask(self, flask):
+        self.__flask_effects.add(flask)
+
+    def has_flask_effect(self, flask):
+        return flask in self.__flask_effects
+
+    def len_flasks(self):
+        return len(self.__flask_effects)
+
     def add_status(self, status):
         self.__status_effects.add(status)
 
@@ -430,8 +441,6 @@ class Player:
         print("\n")
         self.start_night()
 
-
-
     # End Days
     def end_day_1(self):
         type.type("After playing a few rounds of Blackjack, the dealer points to the door. ")
@@ -464,7 +473,7 @@ class Player:
         yes_or_no = input("").lower()
         print()
         if (yes_or_no == "n") or (yes_or_no == "no"):
-            type.slow(red(bright("Well that's just too bad isn't it. ")))
+            type.slow(red(bright("Well that's just too bad, isn't it. ")))
             type.slow(red("The Dealer fires three shots into your chest. You bleed out, and as you fade from reality, you see the Dealer reach into your pockets, and take the last 50 dollars from your lifeless body."))
             self.kill()
 
@@ -501,16 +510,21 @@ class Player:
                 type.type("Your spider bite is really painful. You don't feel good. ")
             elif days_elapsed >= 3:
                 random_chance = random.randrange(4)
-                if random_chance == 0:
+                if (random_chance == 0) or (self.__clear_status):
                     self.remove_status("Spider Bite")
                     type.type("Your spider bite is starting to heal. ")
                 else:
                     damage += random.choice([7, 9, 11, 13, 15])
                     type.type("Your spider bite is purple and pussing. A trip to the doctors might be a good idea. ")
             print("\n")
-
+        elif self.has_status("Snake Bite"):
+            pass
+        elif self.has_status("Rabies"):
+            pass
         if damage > 0:
             self.hurt(damage)
+
+        self.__clear_status = False
 
                 
     # Poor Day Events (1 - 1,000)
@@ -932,6 +946,7 @@ class Player:
             type.type("Why, you don't seem to really need my help. You appear a little worse for wear, but this medicine should do the trick.")
             print("\n")
         else:
+            self.__clear_status = True
             if self.has_status("Spider Bite"):
                 type.type("I see you have a nasty spider bite. That thing looks gross. Let me get that cleaned up for you.")
                 print()
@@ -974,23 +989,229 @@ class Player:
 
     # Witch Doctor's shop and interactions
     def visit_witch_doctor(self):
+        potions = self.__lists.make_witch_inventory()
         type.type("You get in your car and drive to the Witch Doctor's Tower. ")
-        self.start_night()
+        print("\n")
+        type.type("Muahahahahaha, hahahahahaha, HAHAHAHAHA!")
+        print()
+        type.type("Would you like me to HEAL you, HUMAN? ")
+        while(True):
+            yes_or_no = input("").lower()
+            print()
+            if((yes_or_no == "y") or (yes_or_no == "yes")):
+                type.type("Now THATS what I LIKE to hear!")
+                print("\n")
+                type.type("You watch as the Witch goes from shelf to shelf, grabbing frog legs and horse hairs and bee carcasses, throwing them all into the black boiling pot. It begins to glow green, and the Witch looks pleased. ")
+                print("\n")
+                type.type("HAHAHAHAHA! DRINK this, my DEAR!")
+                print("\n")
+                type.type("You drink the strange concoction, and it burns in your stomach. Hopefully, it makes you feel better.")
+                
+                print("\n")
+
+                random_chance = random.randrange(2)
+                if random_chance == 0:
+                    self.__clear_status = True
+                random_chance = random.randrange(3)
+                if random_chance == 0:
+                    self.heal(100)
+                
+                cost = int((random.randint(5, 25)/100)*self.__balance)
+                type.type("YOU owe ME some of your green BILLS! I THINK that " + bright(green("${:,}".format(cost))) + " would SUFFICE!")
+                self.change_balance(-cost)
+                if len(potions)==0:
+                    type.type("SORRY FOR YOU, but I'm simply out of FLASKS. No FLASKS means no POTIONS. Maybe try COMING BACK another DAY!")
+                    print("\n")
+                    self.start_night()
+                    return
+                else:
+                    type.type("NOW, while I have YOU here, care to PURCHASE any of my POWERFUL POTIONS?")
+                break
+            elif((yes_or_no == "n") or (yes_or_no == "no")):
+                type.type("HAHAH-oh what? You don't want MY help? That's QUITE UNFORTUNATE!")
+                print("\n")
+                if len(potions)==0:
+                    type.type("SORRY FOR YOU, but I'm simply out of FLASKS. No FLASKS means no POTIONS. Maybe try COMING BACK another DAY!")
+                    print("\n")
+                    self.start_night()
+                    return
+                else:
+                    type.type("WELL, are YOU in the MOOD to spend some MONEY on my MAGIC POTIONS?")
+                    break
+            else:
+                type.type("WHAT did you SAY? ")
+
+        print()
+
+        while(True):
+            for i in range(len(potions)+1):
+                if(i<len(potions)):
+                    type.type(str(i+1) + ". Flask of " + potions[i])
+                    time.sleep(0.5)
+                    print()
+                else:
+                    type.type(str(i+1) + ". I'm not buying anything")
+                    time.sleep(0.5)
+                    print()
+
+            if(self.len_flasks()==1):
+                type.type("NOW, I'm not ONE to JUDGE, but MIXING potions can be RISKY BUSINESS. Don't BLAME ME if you feel SICK.")
+                print()
+            elif(self.len_flasks()==2):
+                type.type("SO, you're TEETERING on DANGEROUS levels of potion in your BLOOD. Proceed with CAUTON.")
+                print()
+            elif(self.len_flasks()>=3):
+                type.type("ANY additional POTIONS in YOUR SYSTEM is ENTIRELY YOUR DECISION, and A BAD ONE AT THAT BUT I'M NOT YOU. Just please don't DIE on my CARPETS.")
+                print()
+            type.type("CHOOSE a number: ")
+            while True:
+                choice = None
+                while choice is None:
+                    try:
+                        choice = int(input())
+                    except ValueError:
+                        type.type("Choose A number: ")
+                if(1<=choice<=len(potions)):
+                    potion = potions[choice-1]
+                    break
+                elif choice==len(potions)+1:
+                    potion = "Home"
+                    break
+                else:
+                    choice = None
+                    type.type("I DONT have that NUMBER!")
+                    print()
+                    type.type("Choose a NUMBER: ")
+
+            print()
+
+            if potion == "No Bust":
+                type.type("AHHH, so YOU WANT the Flask of No Bust?")
+                price = random.choice([25000, 27000, 30000])
+            elif potion == "Imminent Blackjack":
+                type.type("I SEE, so YOU WANT the Flask of Imminent Blackjack?")
+                price = random.choice([40000, 45000, 50000])
+            elif potion == "Dealer's Whispers":
+                type.type("HAHAHA, so YOU WANT the Flask of Dealer's Whispers?")
+                price = random.choice([23000, 27000, 32000])
+            elif potion == "Bonus Fortune":
+                type.type("OOOOOOOOHHH, so YOU WANT the Flask of Bonus Fortune?")
+                price = random.choice([35000, 42000, 45000])
+            elif potion == "Anti-Venom":
+                type.type("OF COURSEEEE, YOU WANT the Flask of Anti-Venom?")
+                price = random.choice([25000, 26000, 27000])
+            elif potion == "Fortunate Day":
+                type.type("HEHEHAHAIHEHIA, so YOU WANT the Flask of Fortunate Day?")
+                price = random.choice([12000, 13000, 18000])
+            elif potion == "Fortunate Night":
+                type.type("MUAHAHAHAHA, so YOU WANT the Flask of Fortunate Night?")
+                price = random.choice([12000, 15000, 20000])
+            else: 
+                type.type("Then OUR BUSINESS has been SETTLED. Be GONE. GOODBYE! COME AGAIN!")
+                print("\n")
+                self.start_night()
+                return
+
+            print()
+
+            type.type("I SUPPOSE I can PART WAYS with THIS for " + green(bright("${:,}".format(price))) + ". What do YOU think? ")
+            
+            while True:
+                yes_or_no = input("").lower()
+                if ((yes_or_no == "y") or (yes_or_no == "yes")) and (self.__balance<price):
+                    print()
+                    type.type("YOUR WALLETS are far too SMALL for this TRANSACTION.")
+                    print("\n")
+                    type.type("PERHAPS one of the OTHER potions?")
+                    break
+                if (yes_or_no == "y") or (yes_or_no == "yes"):
+                    print()
+                    type.type("HAHAHAHAHAHAHAHAHA! YES! YES!")
+                    self.change_balance(-price)
+                    self.add_flask(potion)
+                    potions.pop(choice-1)
+                    type.type("You got the " + magenta(bright("Flask of " + potion)) + "!")
+                    print()
+                    type.type("Description: " + self.get_item_desc(potion))
+                    print("\n")
+                    if(self.len_flasks()==1):
+                        type.type("You chug the potion, and begin to feel warm inside.")
+                        print("\n")
+                    elif(self.len_flasks()==2):
+                        type.type("You chug the potion, and feel a bit dizzy. Maybe no more potions.")
+                        print("\n")
+                    elif(self.len_flasks()>=3):
+                        type.type("You chug the potion, and feel really, really awful.")
+                        random_chance = random.randrange(2)
+                        if random_chance == 0:
+                            self.__flask_effects = set()
+                            print("\n")
+                            type.type("You stumble back and forth, on the verge of fainting. You puke all over the floor.")
+                            print("\n")
+                            type.type("NOOOO, NOT ON THE CARPETS! WHAT did I SAY! NO MORE. NO MORE. YOU are DONE for TODAY. OUT, NOW.")
+                            print("\n")
+                            type.type("As you walk out, you feel your body begin to weaken. After all that, it seems the potions you had injested are now laying in a puddle on the floor of the Witch Doctor's tower. ")
+                            print("\n")
+                            self.start_night()
+                            return
+                        
+                        damage = random.choice([10, 12, 15, 20, 30, 40])
+                        if damage >= self.__health:
+                            print("\n")
+                            type.slow(red("Your vision starts turning red, then green, then purple. "))
+                            type.slow(red("Panicking, you run around the room, desperate to find an antidote. "))
+                            type.slow(red("You begin drinking potion, after potion, to no avail. "))
+                            type.slow(red("You can hear the Witch cackling in the background of your ringing ears, and slowly, you fall to the ground. "))
+                            type.slow(red("Your face rests on the soft carpet. It's so cozy. Too cosy. "))
+                            type.slow(red("Is that God? Yes, I think I can hear him! God! God! "))
+                            type.slow(red("My goodness, he's real! God begins to decend from the roof hundreds of feet above you, and as he slowly glides down the tower, "))
+                            type.slow(red("you get a closer look at his figure. A golden ring surrounds his body, and his white cloak is long and elegant. "))
+                            print("\n")
+                            type.slow(red(bright("As God decends, he looks you in the eyes, and you watch his face melt in front of you, his skin dripping onto your skin. ")))
+                            type.slow(red(bright("It burns, and all you can do is sit with the pain and agony as your body slowly shuts down.")))
+                            self.kill()
+                        else:
+                            print("\n")
+                            self.hurt(damage)
+
+                    if len(potions)==0:
+                        type.type("YOU bought EVERYTHING! How EXCITING! I suppose we're DONE exchanging GOODS! GOODBYE NOW!")
+                        print("\n")
+                        self.start_night()
+                        return
+                    else:
+                        type.type("OOOOH YES! Capitalism is FUN! I WANT MORE! MORE!")
+                        print()
+                    break
+                elif (yes_or_no == "n") or (yes_or_no == "no"):
+                    print()
+                    type.type("OK OK I see how IT IS! ")
+                    print("\n")
+                    type.type("PERHAPS a DIFFERENT potion?")
+                    print()
+                    break
+                else:
+                    print()
+                    type.type("GIVE me an ANSWER! ")
+
 
     # Tom's shop and interactions
     def visit_tom(self):
         type.type("You get in your car and drive to Tom's Trusty Trucks and Tires. ")
         self.start_night()
+        return
 
     # Frank's shop and interactions
     def visit_frank(self):
         type.type("You get in your car and drive to Filthy Frank's Flawless Fixtures. ")
         self.start_night()
+        return
 
     # Oswald's shop and interactions
     def visit_oswald(self):
         type.type("You get in your car and drive to Oswald's Optimal Outoparts. ")
         self.start_night()
+        return
 
     def update_convenience_store_inventory(self):
         if self.__day == 2: self.__convenience_store_inventory = self.__lists.make_convenience_store_inventory()
@@ -1195,6 +1416,14 @@ class Player:
         elif item == "Sneaky Peeky Glasses": return "A pair of glasses that allow you to sneak a peek at the next card in the deck once per night."
         elif item == "Quiet Sneakers": return "A pair of shoes that allows you to skip an unfavorable event during the day."
         elif item == "Faulty Insurance": return "A plastic card, with the company \'Super Real Insurance\' written on it. This card can be brought to the doctor's office for a chance of lowering bill fees."
+
+        elif item == "No Bust": return "A flask holding a dark green potion. It's infused with the power to veto a hand that busts. It lasts a few days."
+        elif item == "Imminent Blackjack": return "A flask holding a neon yellow potion. It's infused with the power to instantly give you a Blackjack after hitting your hand. It wears off after one use."
+        elif item == "Dealer's Whispers": return "A flask holding a navy blue potion. It's infused with the power to reveal the Dealer's hidden card. It lasts a few days."
+        elif item == "Bonus Fortune": return "A flask holding a shiny gold potion. It's infused with the power to let you double down afer being dealt a hand. It lasts a few days."
+        elif item == "Anti-Venom": return "A flask holding a sparkly orange potion. It's infused with the power to heal you when attacked by a venemous creature. It lasts until used."
+        elif item == "Fortunate Day": return "A flask holding a bright orange potion. It's infused with the luck of the sun, and makes your next morning lucky. It wears off after one use."
+        elif item == "Fortunate Night": return "A flask holding a pretty magenta potion. It's infused with the luck of the stars, and makes your next evening lucky. It wears off after one use, and has no impact on gambling."
 
     def update_silver_value(self):
         if self.has_item("Enchanting Silver Bar"):

@@ -145,18 +145,8 @@ class Blackjack:
                 self.__player.status()
                 print()
 
-                # Dealer happiness effects
-                self.__free_hand = False
-
-
-                self.__bet = random.randrange(int(self.__balance/18), int(self.__balance/8))
-                type.slow(bright(yellow("The Dealer's in a good mood. Here's a ") + green("${:,}".format(self.__bet)) + yellow(" hand, on the house!")))
-                print("\n")
-                self.__free_hand = True
-
                 # Checks the dealer's happiness, which could lead to effects
                 self.dealer_status()
-
 
                 if(self.__player.has_item("Dirty Old Hat")):
                     self.set_min_bet(int(self.__balance/4))
@@ -238,6 +228,8 @@ class Blackjack:
 
 
     def dealer_status(self):
+                # Dealer happiness effects
+                self.__free_hand = False
                 if self.__dealer_happiness == 100:
                     random_chance = random.randrange(3)
                     if random_chance == 0:

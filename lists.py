@@ -189,6 +189,38 @@ class Lists:
             a_list.append(("Bag of Acorns", 10))
         return a_list
     
+    def make_witch_inventory(self):
+        a_list = []
+        random_chance = random.randrange(3)
+        if(random_chance < 2) and (not self.__player.has_flask_effect("No Bust")):
+            a_list.append("No Bust")
+
+        random_chance = random.randrange(3)
+        if(random_chance < 2) and (not self.__player.has_flask_effect("Imminent Blackjack")):
+            a_list.append("Imminent Blackjack")
+
+        random_chance = random.randrange(3)
+        if(random_chance < 2) and (not self.__player.has_flask_effect("Dealer's Whispers")):
+            a_list.append("Dealer's Whispers")
+
+        random_chance = random.randrange(3)
+        if(random_chance < 2) and (not self.__player.has_flask_effect("Bonus Fortune")):
+            a_list.append("Bonus Fortune")
+
+        random_chance = random.randrange(3)
+        if(random_chance < 2) and (not self.__player.has_flask_effect("Anti-Venom")):
+            a_list.append("Anti-Venom")
+
+        random_chance = random.randrange(3)
+        if(random_chance < 2) and (not self.__player.has_flask_effect("Fortunate Day")):
+            a_list.append("Fortunate Day")
+
+        random_chance = random.randrange(3)
+        if(random_chance < 2) and (not self.__player.has_flask_effect("Fortunate Night")):
+            a_list.append("Fortunate Night")
+
+        return a_list
+
     def make_marvin_inventory(self):
         a_list = []
         random_chance = random.randrange(5)
