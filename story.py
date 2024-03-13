@@ -1480,6 +1480,7 @@ class Player:
         if self.__mechanic_visits == 0:
             type.type("Heyo! That's it. Heyo.")
 
+
     # Frank's shop and interactions
     def visit_frank(self):
         type.type("You get in your car and drive to Filthy Frank's Flawless Fixtures. ")
@@ -1614,6 +1615,131 @@ class Player:
     # Oswald's shop and interactions
     def visit_oswald(self):
         type.type("You get in your car and drive to Oswald's Optimal Outoparts. ")
+
+        if(len(self.__broken_inventory)>0):
+            broken_items = self.__lists.make_broken_items_list()
+            delight_indicator_price = 0
+            health_indicator_price = 0
+            dirty_old_hat_price = 0
+            golden_watch_price = 0
+            faulty_insurance_price = 0
+            sneaky_peeky_glasses_price = 0
+            quiet_sneakers_price = 0
+            type.type("I see you came in here with some broken valuables. Mind if I take a look at em?")
+            print()
+            while(True):
+                for i in range(len(broken_items)+1):
+                    if(i<len(broken_items)):
+                        type.type(str(i+1) + ". " + broken_items[i])
+                        time.sleep(0.5)
+                        print()
+                    else:
+                        type.type(str(i+1) + ". I'm all set")
+                        time.sleep(0.5)
+                        print()
+                type.type("Choose a number: ")
+                while True:
+                    choice = None
+                    while choice is None:
+                        try:
+                            choice = int(input())
+                        except ValueError:
+                            type.type("Choose a number: ")
+                    if(1<=choice<=len(broken_items)):
+                        item = broken_items[choice-1]
+                        break
+                    elif choice==len(broken_items)+1:
+                        item = "Home"
+                        break
+                    else:
+                        choice = None
+                        type.type("You don't have an item with that number!")
+                        print()
+                        type.type("Choose a number: ")
+
+                print()
+
+                if item == "Delight Indicator":
+                    type.type("You want me to fix that Delight Indicator of yours?")
+                    if delight_indicator_price == 0:
+                        delight_indicator_price = random.choice([4500, 5500, 6000])
+                    price = delight_indicator_price
+                elif item == "Health Indicator":
+                    type.type("You want me to fix that Health Indicator for ya?")
+                    if health_indicator_price == 0:
+                        health_indicator_price = random.choice([4000, 4500, 5500])
+                    price = health_indicator_price
+                elif item == "Dirty Old Hat":
+                    type.type("You want me to fix that Dirty Old Hat you got there?")
+                    if dirty_old_hat_price == 0:
+                        dirty_old_hat_price = random.choice([12500, 14000, 15000])
+                    price = dirty_old_hat_price
+                elif item == "Golden Watch":
+                    type.type("You want me to fix that Golden Watch you're wearin'?")
+                    if golden_watch_price == 0:
+                        golden_watch_price = random.choice([15000, 16000, 17500])
+                    price = golden_watch_price
+                elif item == "Faulty Insurance":
+                    type.type("Uhm, you want me to fix your Faulty Insurance card?")
+                    if faulty_insurance_price == 0:
+                        faulty_insurance_price = random.choice([5000, 5500, 6000])
+                    price = faulty_insurance_price
+                elif item == "Sneaky Peeky Glasses":
+                    type.type("You want me to fix those Sneaky Peeky Glasses on your head?")
+                    if sneaky_peeky_glasses_price == 0:
+                        sneaky_peeky_glasses_price = random.choice([17000, 18000, 20000])
+                    price = sneaky_peeky_glasses_price
+                elif item == "Quiet Sneakers":
+                    type.type("You want me to fix them there Quiet Sneakers you're rockin'?")
+                    if quiet_sneakers_price == 0:
+                       quiet_sneakers_price = random.choice([7500, 9000, 10000])
+                    price = quiet_sneakers_price
+                else: 
+                    type.type("Well then, I hope you have a great rest of your night. Stay safe now.")
+                    print("\n")
+                    self.start_night()
+                    return
+
+                print()
+
+                type.type("I can do that for ya for " + green(bright("${:,}".format(price))) + ". Whaddya say? ")
+                
+                while True:
+                    yes_or_no = input("").lower()
+                    if ((yes_or_no == "y") or (yes_or_no == "yes")) and (self.__balance<price):
+                        print()
+                        type.type("Aww man, sorry to tell you, but you just don't got enough funds for this, yunno?")
+                        print("\n")
+                        type.type("Maybe you can afford to fix up somethin' else?")
+                        break
+                    elif (yes_or_no == "y") or (yes_or_no == "yes"):
+                        print()
+                        type.type("Really? Awesome. Here, let me just wrench this baby back to life for ya.")
+                        self.change_balance(-price)
+                        self.fix_item(item)
+                        broken_items.pop(choice-1)
+                        type.type("Your " + magenta(bright(item)) + " has been fixed!")
+                        print("\n")
+                        if len(broken_items)==0:
+                            type.type("Phew! Well, that appears to be everything, doesn't it? Thanks for letting me help ya out. Have a nice day, now.")
+                            print("\n")
+                            self.start_night()
+                            return
+                        else:
+                            type.type("Phew! Got anything else for me?")
+                            print()
+                        break
+                    elif (yes_or_no == "n") or (yes_or_no == "no"):
+                        print()
+                        type.type("No dice? That's alright, now.")
+                        print("\n")
+                        type.type("What about your other wares?")
+                        print()
+                        break
+                    else:
+                        print()
+                        type.type("Couldn't hear ya. Whaddya say? ")
+
         self.start_night()
         return
 
