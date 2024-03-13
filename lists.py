@@ -174,7 +174,7 @@ class Lists:
         if(self.__player.has_item("Map")):
             a_list.append("Marvin's Mystical Merchandise")
         return a_list
-    
+
     def make_convenience_store_inventory(self):
         a_list = []
         a_list.append(("Candy Bar", 5))
@@ -212,6 +212,10 @@ class Lists:
             a_list.append("Anti-Venom")
 
         random_chance = random.randrange(3)
+        if(random_chance < 2) and (not self.__player.has_flask_effect("Anti-Virus")):
+            a_list.append("Anti-Virus")
+
+        random_chance = random.randrange(3)
         if(random_chance < 2) and (not self.__player.has_flask_effect("Fortunate Day")):
             a_list.append("Fortunate Day")
 
@@ -219,6 +223,25 @@ class Lists:
         if(random_chance < 2) and (not self.__player.has_flask_effect("Fortunate Night")):
             a_list.append("Fortunate Night")
 
+        return a_list
+
+
+    def make_broken_items_list(self):
+        a_list = []
+        if(self.__player.has_broken_item("Delight Indicator")):
+            a_list.append("Delight Indicator")
+        if(self.__player.has_broken_item("Health Indicator")):
+            a_list.append("Health Indicator")
+        if(self.__player.has_broken_item("Dirty Old Hat")):
+            a_list.append("Dirty Old Hat")
+        if(self.__player.has_broken_item("Golden Watch")):
+            a_list.append("Golden Watch")
+        if(self.__player.has_broken_item("Faulty Insurance")):
+            a_list.append("Faulty Insurance")
+        if(self.__player.has_broken_item("Sneaky Peeky Glasses")):
+            a_list.append("Sneaky Peeky Glasses")
+        if(self.__player.has_broken_item("Quiet Sneakers")):
+            a_list.append("Quiet Sneakers")
         return a_list
 
     def make_marvin_inventory(self):

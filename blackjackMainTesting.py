@@ -7,7 +7,7 @@ def main():
 
 
     # Set Custom Balance
-    player.set_balance(789654)
+    player.set_balance(10000)
     print("Set Balance: " + str(player.get_balance()))
     player.add_item("Car")
     player.add_item("Faulty Insurance")
@@ -16,6 +16,11 @@ def main():
     player.add_item("Dirty Old Hat")
     player.add_item("Golden Watch")
     player.add_item("Sneaky Peeky Glasses")
+    player.break_item("Golden Watch")
+    player.break_item("Delight Indicator")
+    player.break_item("Dirty Old Hat")
+    player.meet("Witch")
+    player.meet("Tom")
 
 
     while(True):

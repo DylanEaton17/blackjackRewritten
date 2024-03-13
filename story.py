@@ -133,7 +133,7 @@ def bright(text):
     return (Style.BRIGHT + text + Style.NORMAL)
 
 class Player:
-    __slots__ = ["__alive", "__flask_effects", "__status_effects", "__clear_status", "__inventory", "__broken_inventory", "__dangers", "__met", "__health", "__balance", "__previous_balance", "__rank", "__day", "__counting_days", "__item_durability", "__flask_durability", "__round_count", "__prereqs", "__prereqs_done", "__convenience_store_inventory", "__lists"]
+    __slots__ = ["__alive", "__flask_effects", "__status_effects", "__clear_status", "__inventory", "__broken_inventory", "__dangers", "__met", "__mechanic_visits", "__health", "__balance", "__previous_balance", "__rank", "__day", "__counting_days", "__item_durability", "__flask_durability", "__round_count", "__prereqs", "__prereqs_done", "__convenience_store_inventory", "__lists"]
 
     def __init__(self):
         self.__alive = True
@@ -144,13 +144,14 @@ class Player:
         self.__broken_inventory = set()
         self.__dangers = set()
         self.__met = set()
+        self.__mechanic_visits = 0
         self.__health = 100
         self.__balance = 50
         self.__previous_balance = 50
         self.__rank = 0
         self.__day = 1
         self.__counting_days = [0, 0, 0, 0, 0, 0, 0]
-        self.__item_durability = [6, 1, 1, 1, 1, 1, 1, 1]
+        self.__item_durability = [0, 0, 0, 0, 0, 0, 0, 0] # [6, 1, 1, 1, 1, 1, 1, 1]
         self.__flask_durability = [0, 0, 0, 0, 0, 0, 0]
         self.__round_count = 3
         self.__prereqs = [False, False, False, False, False]
@@ -234,6 +235,9 @@ class Player:
 
     def has_flask_effect(self, flask):
         return flask in self.__flask_effects
+    
+    def remove_flask_effect(self, flask):
+        self.__flask_effects.remove(flask)
 
     def len_flasks(self):
         return len(self.__flask_effects)
@@ -453,9 +457,9 @@ class Player:
         type.type("Roulette wheels! Poker tables! And in a dark corner of the abandoned casino, sits a dealer, shuffling cards for a new round of Blackjack. ")
         type.type("That 50 dollars might just come in handy after all. Thanks, Grandma!")
         print('\n')
-        type.type("As you go to sit down at the table, you hear the dealer cough, then watch as he sits up.")
+        type.type("As you go to sit down at the table, you hear the Dealer cough, then watch as he sits up.")
         print("\n")
-        type.type("In a deep, and yet strained voice, the dealer, cloaked in darkness, poses a question to you.")
+        type.type("In a deep, and yet strained voice, the Dealer, cloaked in darkness, poses a question to you.")
         print("\n")
         self.start_night()
 
@@ -517,7 +521,10 @@ class Player:
         damage = 0
         if self.has_status("Spider Bite"):
             days_elapsed = self.get_spider_bite_day()
-            if days_elapsed == 0:
+            if(self.__clear_status):
+                self.remove_status("Spider Bite")
+                type.type("Your spider bite is starting to heal. ")
+            elif days_elapsed == 0:
                 damage += random.choice([1, 2])
                 type.type("The fangmarks of your spider bite are faint but visible. ")
             elif days_elapsed == 1:
@@ -528,7 +535,7 @@ class Player:
                 type.type("Your spider bite is really painful. You don't feel good. ")
             elif days_elapsed >= 3:
                 random_chance = random.randrange(4)
-                if (random_chance == 0) or (self.__clear_status):
+                if (random_chance == 0):
                     self.remove_status("Spider Bite")
                     type.type("Your spider bite is starting to heal. ")
                 else:
@@ -663,7 +670,7 @@ class Player:
         type.type("\"Well, howdy! The name's Tom. It appears you've gotten yourself in a bit of a pickle, ya think?\" ")
         type.type("Tom pulls a big red wrench out of his pocket, and walks to the hood of your beaten down wagon. ")
         repair_price = random.choice([150, 200, 250, 300, 350])
-        type.type("\"Yep, this things busted alright! Tell ya what, for, I don't know, " + green(bright(str(repair_price) + " bucks")) + ", I'll get this thing replaced for ya, good as new! Whaddya say?\" ")
+        type.type("\"Yep, this thing's busted alright! Tell ya what, for, I don't know, " + green(bright(str(repair_price) + " bucks")) + ", I'll get this thing replaced for ya, good as new! Whaddya say?\" ")
         while(True):
             yes_or_no = input("").lower()
             print()
@@ -701,7 +708,7 @@ class Player:
                             # Declining Tom's second offer
                             if(yes_or_no_2 == "n") or (yes_or_no_2=="no"):
                                 print()
-                                type.type("Really? No dice, huh. Even with the discount? Yunno, I think you're makin' a mistake, but I ain't one to judge. You have a nice day now.\" ")
+                                type.type("\"Really? No dice, huh. Even with the discount? Yunno, I think you're makin' a mistake, but I ain't one to judge. You have a nice day now.\" ")
                                 type.type("Tom has a dissapointed look in his eye. It's clear that he wanted to help you. ")
                                 type.type("You watch as his big golden truck stutters, starts, then drives away.")
                                 print("\n")
@@ -753,7 +760,7 @@ class Player:
             yes_or_no = input("").lower()
             print()
             if(yes_or_no == "n") or (yes_or_no == "no"):
-                type.type("What?! How could you not accept my service? I'm the cheapest damn autoshop worker on this here planet! But NOOOO, NOT FRANK! Never Frank. He Voted For Trump! Let's all ridicule frank for his political party. You god damn liberals.\" ")
+                type.type("\"What?! How could you not accept my service? I'm the cheapest damn autoshop worker on this here planet! But NOOOO, NOT FRANK! Never Frank. He Voted For Trump! Let's all ridicule frank for his political party. You god damn liberals.\" ")
                 type.type("Frank spits in your face, and get back in his truck. ")
                 print("\n")
                 type.type("You watch as he revs his engine, gets out of his truck, kicks his beater, gets back in, revs his engine, and speeds off into the horizon. ")
@@ -785,7 +792,7 @@ class Player:
                         return
                 else:
                     self.add_danger("Frank")
-                    type.type("\"Are you tryna rip me off? Cleary you don't have enough money to afford my services, which is honestly pathetic, since I have the cheapest services around! I don't get what it is with you young folk and not working, just staying home and smoking weed. It's miserable. You're miserable. Dontchu know I know people on the inside! I'll remeber this one.\"")
+                    type.type("\"Are you tryna rip me off? Clearly you don't have enough money to afford my services, which is honestly pathetic, since I have the cheapest services around! I don't get what it is with you young folk and not working, just staying home and smoking weed. It's miserable. You're miserable. Dontchu know I know people on the inside! I'll remember this one.\"")
                     print("\n")
                     type.type("You watch as he revs his engine, gets out of his truck, kicks his beater, gets back in, revs his engine, and speeds off into the horizon.")
                     print("\n")
@@ -828,7 +835,7 @@ class Player:
                     self.add_item("Car")
                     type.type(magenta(bright("Your car has been fixed! You can now drive around!")))
                     print("\n")
-                    type.type("\"Oh my Stuart! Someone got a little too excited, didn't you? Yep, you're getting a bath as soon as we get back to the shop. Thanks again, stranger, its been a pleasure doing business with you. I recall it's good custom to tip after events like this, yes? Here, take this.\" ")
+                    type.type("\"Oh my Stuart! Someone got a little too excited, didn't you? Yep, you're getting a bath as soon as we get back to the shop. Thanks again, stranger, it's been a pleasure doing business with you. I recall it's good custom to tip after events like this, yes? Here, take this.\" ")
                     tip = random.choice([50, 100])
                     type.type("Oswald hands you a bright green bill, worth " + green(bright("$" + str(tip))) + ".")
                     self.change_balance(tip)
@@ -1062,6 +1069,14 @@ class Player:
 
         print()
 
+        no_bust_price = 0
+        imminent_blackjack_price = 0
+        dealers_whispers_price = 0
+        bonus_fortune_price = 0
+        antivenom_price = 0
+        antivirus_price = 0
+        fortunate_day_price = 0
+        fortunate_night_price = 0
         while(True):
             for i in range(len(potions)+1):
                 if(i<len(potions)):
@@ -1106,25 +1121,43 @@ class Player:
 
             if potion == "No Bust":
                 type.type("AHHH, so YOU WANT the Flask of No Bust?")
-                price = random.choice([25000, 27000, 30000])
+                if no_bust_price == 0:
+                    no_bust_price = random.choice([25000, 27000, 30000])
+                price = no_bust_price
             elif potion == "Imminent Blackjack":
                 type.type("I SEE, so YOU WANT the Flask of Imminent Blackjack?")
-                price = random.choice([40000, 45000, 50000])
+                if imminent_blackjack_price == 0:
+                    imminent_blackjack_price = random.choice([40000, 45000, 50000])
             elif potion == "Dealer's Whispers":
                 type.type("HAHAHA, so YOU WANT the Flask of Dealer's Whispers?")
-                price = random.choice([23000, 27000, 32000])
+                if dealers_whispers_price == 0:
+                    dealers_whispers_price = random.choice([23000, 27000, 32000])
+                price = dealers_whispers_price
             elif potion == "Bonus Fortune":
                 type.type("OOOOOOOOHHH, so YOU WANT the Flask of Bonus Fortune?")
-                price = random.choice([35000, 42000, 45000])
+                if bonus_fortune_price == 0:
+                    bonus_fortune_price = random.choice([35000, 42000, 45000])
+                price = bonus_fortune_price
             elif potion == "Anti-Venom":
                 type.type("OF COURSEEEE, YOU WANT the Flask of Anti-Venom?")
-                price = random.choice([25000, 26000, 27000])
+                if antivenom_price == 0:
+                    antivenom_price = random.choice([25000, 26000, 27000])
+                price = antivenom_price
+            elif potion == "Anti-Virus":
+                type.type("AH-HA, YOU WANT the Flask of Anti-Virus?")
+                if antivirus_price == 0:
+                    antivirus_price = random.choice([26000, 27000, 28000])
+                price = antivirus_price
             elif potion == "Fortunate Day":
                 type.type("HEHEHAHAIHEHIA, so YOU WANT the Flask of Fortunate Day?")
-                price = random.choice([12000, 13000, 18000])
+                if fortunate_day_price == 0:
+                    fortunate_day_price = random.choice([12000, 13000, 18000])
+                price = fortunate_day_price
             elif potion == "Fortunate Night":
                 type.type("MUAHAHAHAHA, so YOU WANT the Flask of Fortunate Night?")
-                price = random.choice([12000, 15000, 20000])
+                if fortunate_night_price == 0:
+                    fortunate_night_price = random.choice([12000, 15000, 20000])
+                price = fortunate_night_price
             else: 
                 type.type("Then OUR BUSINESS has been SETTLED. Be GONE. GOODBYE! COME AGAIN!")
                 print("\n")
@@ -1143,7 +1176,7 @@ class Player:
                     print("\n")
                     type.type("PERHAPS one of the OTHER potions?")
                     break
-                if (yes_or_no == "y") or (yes_or_no == "yes"):
+                elif (yes_or_no == "y") or (yes_or_no == "yes"):
                     print()
                     type.type("HAHAHAHAHAHAHAHAHA! YES! YES!")
                     self.change_balance(-price)
@@ -1217,12 +1250,364 @@ class Player:
     # Tom's shop and interactions
     def visit_tom(self):
         type.type("You get in your car and drive to Tom's Trusty Trucks and Tires. ")
+        print("\n")
+        self.tom_dialogue()
+        print("\n")
+        if(len(self.__broken_inventory)>0):
+            broken_items = self.__lists.make_broken_items_list()
+            delight_indicator_price = 0
+            health_indicator_price = 0
+            dirty_old_hat_price = 0
+            golden_watch_price = 0
+            faulty_insurance_price = 0
+            sneaky_peeky_glasses_price = 0
+            quiet_sneakers_price = 0
+            type.type("I see you came in here with some broken valuables. Mind if I take a look at em?")
+            print()
+            while(True):
+                for i in range(len(broken_items)+1):
+                    if(i<len(broken_items)):
+                        type.type(str(i+1) + ". " + broken_items[i])
+                        time.sleep(0.5)
+                        print()
+                    else:
+                        type.type(str(i+1) + ". I'm all set")
+                        time.sleep(0.5)
+                        print()
+                type.type("Choose a number: ")
+                while True:
+                    choice = None
+                    while choice is None:
+                        try:
+                            choice = int(input())
+                        except ValueError:
+                            type.type("Choose a number: ")
+                    if(1<=choice<=len(broken_items)):
+                        item = broken_items[choice-1]
+                        break
+                    elif choice==len(broken_items)+1:
+                        item = "Home"
+                        break
+                    else:
+                        choice = None
+                        type.type("You don't have an item with that number!")
+                        print()
+                        type.type("Choose a number: ")
+
+                print()
+
+                if item == "Delight Indicator":
+                    type.type("You want me to fix that Delight Indicator of yours?")
+                    if delight_indicator_price == 0:
+                        delight_indicator_price = random.choice([4500, 5500, 6000])
+                    price = delight_indicator_price
+                elif item == "Health Indicator":
+                    type.type("You want me to fix that Health Indicator for ya?")
+                    if health_indicator_price == 0:
+                        health_indicator_price = random.choice([4000, 4500, 5500])
+                    price = health_indicator_price
+                elif item == "Dirty Old Hat":
+                    type.type("You want me to fix that Dirty Old Hat you got there?")
+                    if dirty_old_hat_price == 0:
+                        dirty_old_hat_price = random.choice([12500, 14000, 15000])
+                    price = dirty_old_hat_price
+                elif item == "Golden Watch":
+                    type.type("You want me to fix that Golden Watch you're wearin'?")
+                    if golden_watch_price == 0:
+                        golden_watch_price = random.choice([15000, 16000, 17500])
+                    price = golden_watch_price
+                elif item == "Faulty Insurance":
+                    type.type("Uhm, you want me to fix your Faulty Insurance card?")
+                    if faulty_insurance_price == 0:
+                        faulty_insurance_price = random.choice([5000, 5500, 6000])
+                    price = faulty_insurance_price
+                elif item == "Sneaky Peeky Glasses":
+                    type.type("You want me to fix those Sneaky Peeky Glasses on your head?")
+                    if sneaky_peeky_glasses_price == 0:
+                        sneaky_peeky_glasses_price = random.choice([17000, 18000, 20000])
+                    price = sneaky_peeky_glasses_price
+                elif item == "Quiet Sneakers":
+                    type.type("You want me to fix them there Quiet Sneakers you're rockin'?")
+                    if quiet_sneakers_price == 0:
+                       quiet_sneakers_price = random.choice([7500, 9000, 10000])
+                    price = quiet_sneakers_price
+                else: 
+                    type.type("Well then, I hope you have a great rest of your night. Stay safe now.")
+                    print("\n")
+                    self.start_night()
+                    return
+
+                print()
+
+                type.type("I can do that for ya for " + green(bright("${:,}".format(price))) + ". Whaddya say? ")
+                
+                while True:
+                    yes_or_no = input("").lower()
+                    if ((yes_or_no == "y") or (yes_or_no == "yes")) and (self.__balance<price):
+                        print()
+                        type.type("Aww man, sorry to tell you, but you just don't got enough funds for this, yunno?")
+                        print("\n")
+                        random_chance = random.randrange(2)
+                        if random_chance == 0:
+                            type.type("Ugh, man, I just hate seein' people in need of help and not gettin' it, ya hear? ")
+                            type.type("Tell ya what, limited time offer, I'm giving out a special discount, just for you. ")
+                            discount = random.choice([15, 20, 25])
+                            price = int(price - (price*(discount/100)))
+                            type.type("Say yes right now, and I'll take " + str(discount) + "%" + " off your order.")
+                            print("\n")
+                            type.type("That means you're only payin' " + green(bright("${:,}".format(price))) + ". Could ya do that? ")
+
+                            while True:
+                                yes_or_no_2 = input("").lower()
+                                if ((yes_or_no_2 == "y") or (yes_or_no_2 == "yes")) and (self.__balance<price):
+                                    print()
+                                    type.type("Still can't afford it? That's tough luck, man. I really wish there was more I could do, ya know?")
+                                    print("\n")
+                                    type.type("Maybe you can fix up something else.")
+                                    print()
+                                    break
+                                elif (yes_or_no == "y") or (yes_or_no == "yes"):
+                                    print()
+                                    type.type("Really? Awesome. Here, let me just wrench this baby back to life for ya.")
+                                    self.change_balance(-price)
+                                    self.fix_item(item)
+                                    broken_items.pop(choice-1)
+                                    type.type("Your " + magenta(bright(item)) + " has been fixed!")
+                                    print("\n")
+                                    if len(broken_items)==0:
+                                        type.type("Phew! Well, that appears to be everything, doesn't it? Thanks for letting me help ya out. Have a nice day, now.")
+                                        print("\n")
+                                        self.start_night()
+                                        return
+                                    else:
+                                        type.type("Phew! Got anything else for me?")
+                                        print()
+                                        break
+                                elif (yes_or_no_2 == "n") or (yes_or_no_2 == "no"):
+                                    type.type("Really? Even with the discount? You do you, I suppose.")
+                                    print("\n")
+                                    type.type("Is there anything else I can fix for ya?")
+                                    print()
+                                    break
+                                else:
+                                    print()
+                                    type.type("Couldn't hear ya. Whaddya say? ")
+                            break
+                        else:
+                            type.type("Maybe you can afford to fix up somethin' else?")
+                            print()
+                        break
+                    elif (yes_or_no == "y") or (yes_or_no == "yes"):
+                        print()
+                        type.type("Really? Awesome. Here, let me just wrench this baby back to life for ya.")
+                        self.change_balance(-price)
+                        self.fix_item(item)
+                        broken_items.pop(choice-1)
+                        type.type("Your " + magenta(bright(item)) + " has been fixed!")
+                        print("\n")
+                        if len(broken_items)==0:
+                            type.type("Phew! Well, that appears to be everything, doesn't it? Thanks for letting me help ya out. Have a nice day, now.")
+                            print("\n")
+                            self.start_night()
+                            return
+                        else:
+                            type.type("Phew! Got anything else for me?")
+                            print()
+                        break
+                    elif (yes_or_no == "n") or (yes_or_no == "no"):
+                        print()
+                        type.type("No dice? ")
+                        random_chance = random.randrange(10)
+                        if random_chance == 0:
+                            type.type("You don't say. I mean, my prices are unbeatable. You know what, I'll prove it!")
+                            print("\n")
+                            type.type("Tell ya what, limited time offer, I'm giving out a special discount, just for you. ")
+                            discount = random.choice([15, 20, 25])
+                            price = int(price - (price*(discount/100)))
+                            type.type("Say yes right now, and I'll take " + str(discount) + "%" + " off your order.")
+                            print("\n")
+                            type.type("That means you're only payin' " + green(bright("${:,}".format(price))) + ". You interested? ")
+                            while True:
+                                yes_or_no_2 = input("").lower()
+                                if ((yes_or_no_2 == "y") or (yes_or_no_2 == "yes")) and (self.__balance<price):
+                                    print()
+                                    type.type("You can't afford it? Really? That's tough luck, man. I really wish there was more I could do, ya know?")
+                                    print("\n")
+                                    type.type("Maybe you can fix up something else.")
+                                    print()
+                                    break
+                                elif (yes_or_no_2 == "y") or (yes_or_no_2 == "yes"):
+                                    print()
+                                    type.type("Really? Awesome. Here, let me just wrench this baby back to life for ya.")
+                                    self.change_balance(-price)
+                                    self.fix_item(item)
+                                    broken_items.pop(choice-1)
+                                    type.type("Your " + magenta(bright(item)) + " has been fixed!")
+                                    print("\n")
+                                    if len(broken_items)==0:
+                                        type.type("Phew! Well, that appears to be everything, doesn't it? Thanks for letting me help ya out. Have a nice day, now.")
+                                        print("\n")
+                                        self.start_night()
+                                        return
+                                    else:
+                                        type.type("Phew! Got anything else for me?")
+                                        print()
+                                        break
+                                elif (yes_or_no_2 == "n") or (yes_or_no_2 == "no"):
+                                    type.type("Really? No interest, whatsoever? Even with the discount? You do you, I suppose.")
+                                    print("\n")
+                                    type.type("Want me to fix anything else?")
+                                    print()
+                                    break
+                                else:
+                                    print()
+                                    type.type("Couldn't hear ya. Whaddya say? ")
+                            break
+                        else:
+                            type.type("That's alright, now.")
+                            print("\n")
+                            type.type("What about your other wares?")
+                            print()
+                            break
+                    else:
+                        print()
+                        type.type("Couldn't hear ya. Whaddya say? ")
+
         self.start_night()
         return
+    
+    def tom_dialogue(self):
+        if self.__mechanic_visits == 0:
+            type.type("Heyo! That's it. Heyo.")
 
     # Frank's shop and interactions
     def visit_frank(self):
         type.type("You get in your car and drive to Filthy Frank's Flawless Fixtures. ")
+
+        if(len(self.__broken_inventory)>0):
+            broken_items = self.__lists.make_broken_items_list()
+            delight_indicator_price = 0
+            health_indicator_price = 0
+            dirty_old_hat_price = 0
+            golden_watch_price = 0
+            faulty_insurance_price = 0
+            sneaky_peeky_glasses_price = 0
+            quiet_sneakers_price = 0
+            type.type("I see you came in here with some broken valuables. Mind if I take a look at em?")
+            print()
+            while(True):
+                for i in range(len(broken_items)+1):
+                    if(i<len(broken_items)):
+                        type.type(str(i+1) + ". " + broken_items[i])
+                        time.sleep(0.5)
+                        print()
+                    else:
+                        type.type(str(i+1) + ". I'm all set")
+                        time.sleep(0.5)
+                        print()
+                type.type("Choose a number: ")
+                while True:
+                    choice = None
+                    while choice is None:
+                        try:
+                            choice = int(input())
+                        except ValueError:
+                            type.type("Choose a number: ")
+                    if(1<=choice<=len(broken_items)):
+                        item = broken_items[choice-1]
+                        break
+                    elif choice==len(broken_items)+1:
+                        item = "Home"
+                        break
+                    else:
+                        choice = None
+                        type.type("You don't have an item with that number!")
+                        print()
+                        type.type("Choose a number: ")
+
+                print()
+
+                if item == "Delight Indicator":
+                    type.type("You want me to fix that Delight Indicator of yours?")
+                    if delight_indicator_price == 0:
+                        delight_indicator_price = random.choice([4500, 5500, 6000])
+                    price = delight_indicator_price
+                elif item == "Health Indicator":
+                    type.type("You want me to fix that Health Indicator for ya?")
+                    if health_indicator_price == 0:
+                        health_indicator_price = random.choice([4000, 4500, 5500])
+                    price = health_indicator_price
+                elif item == "Dirty Old Hat":
+                    type.type("You want me to fix that Dirty Old Hat you got there?")
+                    if dirty_old_hat_price == 0:
+                        dirty_old_hat_price = random.choice([12500, 14000, 15000])
+                    price = dirty_old_hat_price
+                elif item == "Golden Watch":
+                    type.type("You want me to fix that Golden Watch you're wearin'?")
+                    if golden_watch_price == 0:
+                        golden_watch_price = random.choice([15000, 16000, 17500])
+                    price = golden_watch_price
+                elif item == "Faulty Insurance":
+                    type.type("Uhm, you want me to fix your Faulty Insurance card?")
+                    if faulty_insurance_price == 0:
+                        faulty_insurance_price = random.choice([5000, 5500, 6000])
+                    price = faulty_insurance_price
+                elif item == "Sneaky Peeky Glasses":
+                    type.type("You want me to fix those Sneaky Peeky Glasses on your head?")
+                    if sneaky_peeky_glasses_price == 0:
+                        sneaky_peeky_glasses_price = random.choice([17000, 18000, 20000])
+                    price = sneaky_peeky_glasses_price
+                elif item == "Quiet Sneakers":
+                    type.type("You want me to fix them there Quiet Sneakers you're rockin'?")
+                    if quiet_sneakers_price == 0:
+                       quiet_sneakers_price = random.choice([7500, 9000, 10000])
+                    price = quiet_sneakers_price
+                else: 
+                    type.type("Well then, I hope you have a great rest of your night. Stay safe now.")
+                    print("\n")
+                    self.start_night()
+                    return
+
+                print()
+
+                type.type("I can do that for ya for " + green(bright("${:,}".format(price))) + ". Whaddya say? ")
+                
+                while True:
+                    yes_or_no = input("").lower()
+                    if ((yes_or_no == "y") or (yes_or_no == "yes")) and (self.__balance<price):
+                        print()
+                        type.type("Aww man, sorry to tell you, but you just don't got enough funds for this, yunno?")
+                        print("\n")
+                        type.type("Maybe you can afford to fix up somethin' else?")
+                        break
+                    elif (yes_or_no == "y") or (yes_or_no == "yes"):
+                        print()
+                        type.type("Really? Awesome. Here, let me just wrench this baby back to life for ya.")
+                        self.change_balance(-price)
+                        self.fix_item(item)
+                        broken_items.pop(choice-1)
+                        type.type("Your " + magenta(bright(item)) + " has been fixed!")
+                        print("\n")
+                        if len(broken_items)==0:
+                            type.type("Phew! Well, that appears to be everything, doesn't it? Thanks for letting me help ya out. Have a nice day, now.")
+                            print("\n")
+                            self.start_night()
+                            return
+                        else:
+                            type.type("Phew! Got anything else for me?")
+                            print()
+                        break
+                    elif (yes_or_no == "n") or (yes_or_no == "no"):
+                        print()
+                        type.type("No dice? That's alright, now.")
+                        print("\n")
+                        type.type("What about your other wares?")
+                        print()
+                        break
+                    else:
+                        print()
+                        type.type("Couldn't hear ya. Whaddya say? ")
+
         self.start_night()
         return
 
@@ -1436,6 +1821,19 @@ class Player:
         type.type("That's all I've got to sell you tonight. Maybe try coming back another day. ")
         self.start_night()
 
+    def update_no_bust_durability(self):
+        if (self.has_flask_effect("No Bust")) and (self.__flask_durability[0] > 0):
+            self.__flask_durability[0] -= random.choice([1, 2])
+            if self.__flask_durability[0] <= 0:
+                self.__flask_durability[0] = 0
+                self.remove_flask_effect("No Bust")
+                print("\n")
+                type.type(red(bright("Your Flask of No Bust effect ran out!")))
+
+        # Sets durability when you get the item, or if the item is fixed
+        if (self.has_flask_effect("No Bust")) and (self.__flask_durability[0] == 0):
+            self.__flask_durability[0] = 4
+
     def update_delight_indicator_durability(self):
         if self.has_item("Delight Indicator") and (self.__item_durability[0] > 0):
             self.__item_durability[0] -= random.choice([1, 2, 3, 5])
@@ -1540,18 +1938,35 @@ class Player:
         elif item == "Health Indicator": return "A small gadget, with wires construed around it, and a small gauge that displays changes in your health. Your current health is " + bright(magenta(str(self.__health) + "%")) + "."
         elif item == "Dirty Old Hat": return "A dark brown leather hat, covered in dirt and tears. It makes you look poor, and lowers the Dealer's minimum bet."
         elif item == "Golden Watch": return "A bright gold watch that glistens in any light. It makes you look rich, and increases the number of Blackjack rounds the Dealer lets you play."
-        elif item == "Enchanting Silver Bar": return "A silver bar that slowly increases in worth every day. Sell this after 3 days to make a profit. Its current value is (value)."
+        elif item == "Enchanting Silver Bar": return "A silver bar that slowly increases in worth every day. Sell this after 3 days to make a profit."
         elif item == "Sneaky Peeky Glasses": return "A pair of glasses that allow you to sneak a peek at the next card in the deck once per night."
         elif item == "Quiet Sneakers": return "A pair of shoes that allows you to skip an unfavorable event during the day."
         elif item == "Faulty Insurance": return "A plastic card, with the company \'Super Real Insurance\' written on it. This card can be brought to the doctor's office for a chance of lowering bill fees."
 
+        elif item == "Delight Manipulator": return "A small gadget, embedded in your right arm, with wires sticking into your veins. Attached is a small antenna that elicits complete and absolute happiness in anyone around you."
+        elif item == "Health Manipulator": return "A small gadget, embedded in your left arm, with wires construed throughout your veins and into your heart. The device pumps artificial blood with a syntetic heartbeat throught your body, ensuring that you're always perfectly healthy."
+        elif item == "Unwashed Hair": return "An implant into your scalp, giving you a fake hairdo covered in grime and grease. It makes you look abysmally poor, and sets the Dealer's minimum bet to one measly dollar"
+        elif item == "Sapphire Watch": return "A sparkling sapphire watch that lights up any room. It makes you look richer than everyone else in the room, and greatly increases the number of Blackjack rounds the Dealer lets you play."
+        elif item == "Enchanting Gold Bar": return "A gold bar that quickly increases in worth every day. Sell this after 3 days to make a profit."
+        elif item == "Sneaky Peeky Goggles": return "A pair of goggles that allow you to sneak a peek at the next card in the deck once per round."
+        elif item == "Quiet Bunny Slippers": return "A pair of slippers that allows you to skip all unfavorable events during the day."
+        elif item == "Real Insurance": return "A plastic card, with the company \'Super Duper Real Insurance\' written on it. This card can be brought to the doctor's office to cover all bill fees."
+
         elif item == "No Bust": return "A flask holding a dark green potion. It's infused with the power to veto a hand that busts. It lasts a few days."
         elif item == "Imminent Blackjack": return "A flask holding a neon yellow potion. It's infused with the power to instantly give you a Blackjack after hitting your hand. It wears off after one use."
         elif item == "Dealer's Whispers": return "A flask holding a navy blue potion. It's infused with the power to reveal the Dealer's hidden card. It lasts a few days."
-        elif item == "Bonus Fortune": return "A flask holding a shiny gold potion. It's infused with the power to let you double down afer being dealt a hand. It lasts a few days."
+        elif item == "Bonus Fortune": return "A flask holding a shiny gold potion. It's infused with the power to let you double down after being dealt a hand. It lasts a few days."
         elif item == "Anti-Venom": return "A flask holding a sparkly orange potion. It's infused with the power to heal you when attacked by a venemous creature. It lasts until used."
+        elif item == "Anti-Virus": return "A flask holding a flowing grey potion. It's infused with the power to heal you when affected by a disease. It lasts until used."
         elif item == "Fortunate Day": return "A flask holding a bright orange potion. It's infused with the luck of the sun, and makes your next morning lucky. It wears off after one use."
         elif item == "Fortunate Night": return "A flask holding a pretty magenta potion. It's infused with the luck of the stars, and makes your next evening lucky. It wears off after one use, and has no impact on gambling."
+
+        elif item == "Never Bust": return "A flask holding a glowing green potion. It's infused with the power to veto a hand that busts."
+        elif item == "Guaranteed Blackjack": return "A flask holding a glowing yellow potion. It's infused with the power to instantly give you a Blackjack after hitting your hand."
+        elif item == "Dealer's Thoughts": return "A flask holding a glowing blue potion. It's infused with the power to always reveal the Dealer's hidden card."
+        elif item == "Endless Fortune": return "A flask holding a glowing gold potion. It's infused with the power randomly double your bet for free after being dealt a hand."
+        elif item == "Anti-Pathogen": return "A flask holding a glowing orange potion. It's infused with the power to heal you from any status effect."
+        elif item == "Fortunate Life": return "A flask holding a glowing red potion. It's infused with the luck of the sun and the moon, and fills your life with good fortune."
 
     def update_silver_value(self):
         if self.has_item("Enchanting Silver Bar"):
