@@ -7,8 +7,8 @@ def main():
 
 
     # Set Custom Balance
-    player.set_balance(10000)
-    print("Set Balance: " + str(player.get_balance()))
+    player.set_balance(900000)
+    print("Your current balance: " + str("${:,}".format(player.get_balance())))
     player.add_item("Car")
     player.add_item("Faulty Insurance")
     player.add_item("Delight Indicator")
@@ -16,6 +16,9 @@ def main():
     player.add_item("Dirty Old Hat")
     player.add_item("Golden Watch")
     player.add_item("Sneaky Peeky Glasses")
+    player.add_item("Quiet Sneakers")
+    player.break_item("Faulty Insurance")
+    player.break_item("Sneaky Peeky Glasses")
     player.break_item("Golden Watch")
     player.break_item("Delight Indicator")
     player.break_item("Dirty Old Hat")
@@ -24,11 +27,8 @@ def main():
 
 
     while(True):
-        player.afternoon()
+        player.turn_to_god()
         blackjackGame.play_round()
-        player.end_day()
-        player.day_event()
-
     # Useful Functions
     """
     player.day_event()

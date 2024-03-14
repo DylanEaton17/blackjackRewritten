@@ -158,6 +158,9 @@ class Blackjack:
                     while(not player_betting):
                         player_betting = self.bet()
 
+                if self.__player.is_religious():
+                    type.fast(self.__player.lists().get_prayer())
+                    print()
                 self.first_deal()
 
                 # Checks if either player was dealt blackjack

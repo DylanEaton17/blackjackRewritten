@@ -7,6 +7,9 @@ class Lists:
         self.__cheers_list = self.make_cheers_list()
         self.__advice_list = self.make_advice_list()
         self.__dealer_welcome_list = self.make_dealer_welcome_list()
+        self.__prayers_list = self.make_prayers_list()
+        self.__fed_squirrely_list = self.make_fed_squirrely_list()
+        self.__hungry_squirrely_list = self.make_hungry_squirrely_list()
         self.__quote_setup_list = self.make_quote_setup_list()
         self.__quote_setup_list = self.make_quote_setup_list()
         self.__poor_day_events = self.make_poor_day_events_list()
@@ -62,10 +65,12 @@ class Lists:
 # Cheap Events (1,000 - 10,000)
     def make_cheap_day_events_list(self):
         a_list = []
+        a_list.append("empty_event")
         return a_list
     
     def make_cheap_night_events_list(self):
         a_list = []
+        a_list.append("empty_event")
         return a_list
 
     def get_cheap_day_event(self):
@@ -82,10 +87,12 @@ class Lists:
 # Modest Events (10,000 - 100,000)
     def make_modest_day_events_list(self):
         a_list = []
+        a_list.append("empty_event")
         return a_list
     
     def make_modest_night_events_list(self):
         a_list = []
+        a_list.append("empty_event")
         return a_list
 
     def get_modest_day_event(self):
@@ -102,10 +109,12 @@ class Lists:
 # Rich Events (100,000 - 500,000)
     def make_rich_day_events_list(self):
         a_list = []
+        a_list.append("empty_event")
         return a_list
     
     def make_rich_night_events_list(self):
         a_list = []
+        a_list.append("empty_event")
         return a_list
 
     def get_rich_day_event(self):
@@ -122,10 +131,12 @@ class Lists:
 # Doughman Events (500,000 - 900,000)
     def make_doughman_day_events_list(self):
         a_list = []
+        a_list.append("empty_event")
         return a_list
     
     def make_doughman_night_events_list(self):
         a_list = []
+        a_list.append("empty_event")
         return a_list
 
     def get_doughman_day_event(self):
@@ -139,13 +150,15 @@ class Lists:
         return self.__doughman_night_events.pop()
     
 
-# Nearly There Events (900,000 - 1,000,000)
+# Nearly There Events (900,000 +)
     def make_nearly_day_events_list(self):
         a_list = []
+        a_list.append("empty_event")
         return a_list
     
     def make_nearly_night_events_list(self):
         a_list = []
+        a_list.append("empty_event")
         return a_list
 
     def get_nearly_day_event(self):
@@ -225,7 +238,6 @@ class Lists:
 
         return a_list
 
-
     def make_broken_items_list(self):
         a_list = []
         if(self.__player.has_broken_item("Delight Indicator")):
@@ -241,6 +253,24 @@ class Lists:
         if(self.__player.has_broken_item("Sneaky Peeky Glasses")):
             a_list.append("Sneaky Peeky Glasses")
         if(self.__player.has_broken_item("Quiet Sneakers")):
+            a_list.append("Quiet Sneakers")
+        return a_list
+    
+    def make_repairing_items_list(self):
+        a_list = []
+        if(self.__player.is_repairing_item("Delight Indicator")):
+            a_list.append("Delight Indicator")
+        if(self.__player.is_repairing_item("Health Indicator")):
+            a_list.append("Health Indicator")
+        if(self.__player.is_repairing_item("Dirty Old Hat")):
+            a_list.append("Dirty Old Hat")
+        if(self.__player.is_repairing_item("Golden Watch")):
+            a_list.append("Golden Watch")
+        if(self.__player.is_repairing_item("Faulty Insurance")):
+            a_list.append("Faulty Insurance")
+        if(self.__player.is_repairing_item("Sneaky Peeky Glasses")):
+            a_list.append("Sneaky Peeky Glasses")
+        if(self.__player.is_repairing_item("Quiet Sneakers")):
             a_list.append("Quiet Sneakers")
         return a_list
 
@@ -311,12 +341,74 @@ class Lists:
         a_list.append("Come, sit down, we have a game to play.")
         a_list.append("Are you ready to play some Blackjack?")
         a_list.append("Nightfall again, huh? Well, you know what's next.")
+        random.shuffle(a_list)
         return a_list
     
     def get_dealer_welcome(self):
         if len(self.__dealer_welcome_list)==0:
             self.__dealer_welcome_list = self.make_dealer_welcome_list()
         return self.__dealer_welcome_list.pop()
+    
+    def make_prayers_list(self):
+        a_list = []
+        a_list.append("You look up to the roof, with your hands together, praying He is watching. Amen.")
+        a_list.append("You close your eyes, and pray to Jesus that this next hand's a winner. Amen.")
+        a_list.append("With eyes closed, you send a prayer up to God, that you'll double your winnings. Amen.")
+        a_list.append("You put your hands together and pray, hoping that this next will make you rich. Amen.")
+        a_list.append("Closing your eyes, you pray to Jesus that you won't bust this next hand. Amen.")
+        a_list.append("You put your hands together, and pray to God that you're dealt a Blackjack. Amen.")
+        a_list.append("'Dear God', you think, 'just let me win this next one.' Amen.")
+        a_list.append("You look up, and pray. If God is real, he'll let you win the next hand. Amen.")
+        a_list.append("You close your eyes, and put your hands together. If Jesus really did die for our sins, then a Blackjack is inevitable. Amen.")
+        a_list.append("Closing your eyes, you begin to pray. God speaks back, telling you to hit your next hand, but only once. Amen.")
+        a_list.append("You pray to Jesus, and feel his presence. He smiles, as though saying, 'stand with the hand you're dealt.' Amen.")
+        a_list.append("You look up to the sky, and pray. If you win this next hand, maybe a spot in Heaven is waiting for you. Amen.")
+        a_list.append("You pray to Jesus that the demons leave you be, if only for this next hand. Amen.")
+        random.shuffle(a_list)
+        return a_list
+
+    def get_prayer(self):
+        if len(self.__prayers_list)==0:
+            self.__prayers_list = self.make_prayers_list()
+        return self.__prayers_list.pop()
+    
+    def make_fed_squirrely_list(self):
+        a_list = []
+        a_list.append("Squirrely just can't stop smiling today. It's super duper cute!")
+        a_list.append("Squirrely is in a super cuddly mood today. Not that you're complaining.")
+        a_list.append("Squirrely climbs up and down your arms, over and over. You couldn't stop him if you tried.")
+        a_list.append("You try to be extra quiet, as Squirrely is sleeping in your lap.")
+        a_list.append("Squirrely is extra cheery today, and he's currently lounging in your hair.")
+        a_list.append("You've never had a pet quite as silly as Squirrely, and he can't stop making faces at you, sticking his tongue out, winking his eyes.")
+        a_list.append("Of all the Squirrels you've seen before, Squirrely must be the softest. You pet him, and he makes a happy squeak!")
+        a_list.append("Looking around, you can't find Squirrely anywhere. But, as you keep looking, you realize that he's just hiding in your shoe!")
+        a_list.append("Squirrely curls up in your arms, as it's the place where he's the warmest!")
+        a_list.append("Squirrely can't help but keep opening and closing your glovebox.")
+        random.shuffle(a_list)
+        return a_list
+    
+    def get_fed_squirrely_update(self):
+        if len(self.__fed_squirrely_list)==0:
+            self.__fed_squirrely_list = self.make_fed_squirrely_list()
+        return self.__fed_squirrely_list.pop()
+
+    def make_hungry_squirrely_list(self):
+        a_list = []
+        a_list.append("Squirrely looks a bit hungry today.")
+        a_list.append("Squirrely isn't as jumpy today as he usually is.")
+        a_list.append("Squirrely has been sleeping all day. You're starting to get worried.")
+        a_list.append("Squirrely tries to look happy, but it's clear he's just not feeling it.")
+        a_list.append("Squirrely climbs onto your shoulder, sighs, then sleeps.")
+        a_list.append("Looking around, you can't find Squirrely anywhere. Is he hiding from you?")
+        a_list.append("Squirrely sits on your dashboard, and looks longingly out the window at other squirrels.")
+        a_list.append("While you're holding Squirrely in your hands, you feel his tummy rumble.")
+        random.shuffle(a_list)
+        return a_list
+
+    def get_hungry_squirrely_update(self):
+        if len(self.__hungry_squirrely_list)==0:
+            self.__hungry_squirrely_list = self.make_hungry_squirrely_list()
+        return self.__hungry_squirrely_list.pop()
 
     def make_quote_list(self):
         a_list = []
