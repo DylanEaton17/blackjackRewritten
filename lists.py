@@ -413,6 +413,9 @@ class Lists:
     def make_sickness_list(self):
         a_list = []
         a_list.append("You're sick, you just know it.")
+        if self.__player.has_status("Sore Throat"):
+            a_list.append("Your throat feels like it's on fire.")
+            a_list.append("The pain in your throat cannot be put into words. Mainly because you're having trouble speaking.")
         if self.__player.has_status("Hepatitis"):
             a_list.append("You have a seriously high fever, and feel like puking.")
             a_list.append("Your kidneys hurt really bad. That can't be good.")

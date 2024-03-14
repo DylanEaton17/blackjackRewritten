@@ -585,14 +585,43 @@ class Player:
         print("\n")
 
     def estranged_dog(self):
-        type.type("You wake up to the sound of barking outside your car. You get up, to see a golden retriever licking your window. You open the door, and pet the doggo on the head. He seems happy. You're happy, too.")
+        type.type("You wake up to the sound of barking outside your car. You get up, to see a golden retriever licking your window. ")
+        type.type("You open the door, and pet the doggo on the head. He seems happy. You're happy, too.")
         print("\n")
-        self.heal(random.choice([5, 10]))
+        if self.has_item("Dog Treat"):
+            self.use_item("Dog Treat")
+            type.type("You throw your " + bright(magenta("Dog Treat")) + " into the air, and the dog jumps up, and catches it in his mouth. He wags his tail in excitement. It's super cute.")
+            print("\n")
+            self.heal(random.choice([15, 20]))
+        else:
+            self.heal(random.choice([5, 10]))
         type.type("Before you get a chance to check the dog's collar to see where it came from, the dog bolts down the road, eager to cheer up someone else. It was a good dog.")
+        print("\n")
+        return
+    
+    def freight_truck(self):
+        type.type("You are jolted away by the sound of a horn blaring outside your car. Looking out your window, you see a man, in a bright red hat, inside of a freight truck that's parked just outside of your vehicle.")
+        print("\n")
+        type.type(quote("Hey, you. Wake the fuck up! Hahahaha!"))
+        print("\n")
+        type.type("You watch as the man honks his horn one more time, laughs, and drives off into the distance. What a jerk.")
         print("\n")
         return
 
     # Conditional
+    def sore_throat(self):
+        type.type("You wake up, and begin to have a coughing fit. Your throat is dry, and super sore. ")
+        if self.has_item("Cough Drops"):
+            self.use_item("Cough Drops")
+            type.type("Luckily, you have some " + magenta(bright("Cough Drops")) + " on hand, and you empty the box into your mouth. Almost like magic, your throat doesn't hurt anymore.")
+            print("\n")
+            return
+        else:
+            self.add_status("Sore Throat")
+            type.type("You cough, and cough, and cough some more, but the burning itch in your throat just won't go away.")
+            print("\n")
+            return
+
     def spider_bite(self):
         if not self.has_danger("Spider") or self.has_status("Spider Bite"):
             dayEvent = getattr(self, self.__lists.get_poor_day_event())
@@ -637,6 +666,22 @@ class Player:
             self.change_balance(-losses)
 
     # One-Time
+    def lone_cowboy(self):
+        type.type("You wake up to the sounds trotting, and distant whistling. You sit up, and through your windshield, you see a man wearing a full cowboy suit, with matching black hat and boots, and a short brown beard. ")
+        type.type("He's riding a magnificent horse, muscular, but nimble, each step powerful, but precise. The man reaches your window, and in a deep southern accent, he begins to talk to you.")
+        print("\n")
+        type.type(open_quote("Howdy, partner! The name's Jameson. Davey Jameson. I happen to notice you were admiring my steed. He's a beauty, isn't he. You see, it's common courtesy when a cowboy rides by, "))
+        type.type(close_quote("to give their mighty steed a carrot, as a way to express your gratitude for their hardwork and commitment to the job."))
+        print("\n")
+        type.type(quote("You my friend, you are carrotless. That's quite a disrespectful showing towards my steed. My, my, this can't do at all. What if another cowboy comes by, you're just gonna disrespect their steed, too? Tell you what, I happen to have one spare carrot in my pouch. Take this, and be ready. You never know when a cowboy's gonna come trotting by."))
+        print("\n")
+        self.add_item("Carrot")
+        type.type("Davey Jameson hands you his " + bright(magenta("Carrot")) | ", and smiles.")
+        print("\n")
+        type.type(quote("See, with this carrot in your possession, you're ready for anytime a cowboy strolls on down this road. Just give their steed a carrot, and they'll be very grateful."))
+        print("\n")
+        type.type("And with that, Jameson reins his horse high into the air, gives you a yee-haw, then dashes off down the road.")
+
     def whats_my_name(self):
         if not self.__name == None:
             dayEvent = getattr(self, self.__lists.get_poor_day_event())
@@ -1609,6 +1654,16 @@ class Player:
         return self.__day - self.__counting_days[6]
     
 
+    def mark_sore_throat_day(self, day, time="day"):
+        if time == "day":
+            self.__counting_days[7] = day
+        if time == "night":
+            self.__counting_days[7] = day-1
+
+    def get_soar_throat_day(self):
+        return self.__day - self.__counting_days[7]
+    
+
     def update_status(self):
         damage = 0
         if self.__clear_all_status == True:
@@ -1718,6 +1773,25 @@ class Player:
                 self.hurt(damage)
 
 
+        if self.has_status("Sore Throat"):
+            self.__is_sick = True
+            days_elapsed = self.get_hepatitis_day()
+            if(self.__clear_status):
+                self.remove_status("Sore Throat")
+            elif self.has_item("Cough Drops"):
+                type.type("With your " + bright(magenta("Cough Drops")) + " in hand, you begin to suck each drop, one by one, until the box is empty, and your throat feels nice and cool.")
+            elif days_elapsed == 0:
+                damage += random.choice([1, 3, 5])
+            elif days_elapsed == 1:
+                damage += random.choice([2, 4, 5])
+            elif days_elapsed > 3:
+                random_chance = random.randrange(2)
+                if random_chance == 0:
+                    self.remove_status("Hepatitis")
+                else:
+                    damage += random.choice([5, 6])
+
+
         if self.has_status("Hepatitis"):
             self.__is_sick = True
             days_elapsed = self.get_hepatitis_day()
@@ -1740,11 +1814,9 @@ class Player:
                 else:
                     damage += random.choice([5, 10, 15, 20, 25, 30])
 
-            if damage >= self.__health:
-                self.hurt(damage)
 
         # Sets is_sick to False if you don't have any sicknesses, an prints a health update
-        if (self.__is_sick) and not self.has_status("Hepatitis"):
+        if (self.__is_sick) and not (self.has_status("Hepatitis") or self.has_status("Sore Throat")):
             if self.has_status("Rabies"):
                 type.type("With rabies in your system, you're lucky to be alive.")
             elif self.has_status("Snake Bite") or self.has_status("Spider Bite"):
@@ -1758,6 +1830,10 @@ class Player:
         if self.__is_sick:
             type.type(self.__lists.get_sickness_update())
             print("\n")
+
+        # If sickness kills the player, this does it.
+        if damage >= self.__health:
+                self.hurt(damage)
 
         # Sets is_injured to True if you have 1 or more injuries
         if len(self.__injuries)>0:
@@ -1775,6 +1851,7 @@ class Player:
             type.type(self.__lists.get_injury_update())
             print("\n")
 
+        # If you took damage, this does it.
         if damage > 0:
             self.hurt(damage)
         self.__clear_status = False
