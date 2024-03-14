@@ -145,15 +145,18 @@ def space_quote(text):
     return ("\"" + text + "\" ")
 
 class Player:
-    __slots__ = ["__name", "__alive", "__flask_effects", "__status_effects", "__injuries", "__clear_status", "__inventory", "__broken_inventory", "__repairing_inventory", "__dangers", "__met", "__mechanic_visits", "__health", "__balance", "__previous_balance", "__rank", "__day", "__counting_days", "__item_durability", "__flask_durability", "__round_count", "__is_religious", "__prereqs", "__prereqs_done", "__convenience_store_inventory", "__lists"]
+    __slots__ = ["__name", "__alive", "__is_sick", "__is_injured", "__flask_effects", "__status_effects", "__injuries", "__clear_status", "__clear_all_status", "__inventory", "__broken_inventory", "__repairing_inventory", "__dangers", "__met", "__mechanic_visits", "__health", "__balance", "__previous_balance", "__rank", "__day", "__counting_days", "__item_durability", "__flask_durability", "__round_count", "__is_religious", "__prereqs", "__prereqs_done", "__convenience_store_inventory", "__lists"]
 
     def __init__(self):
         self.__name = None
         self.__alive = True
+        self.__is_sick = False
+        self.__is_injured = False
         self.__flask_effects = set()
         self.__status_effects = set()
         self.__injuries = set()
         self.__clear_status = False
+        self.__clear_all_status = False
         self.__inventory = set()
         self.__broken_inventory = set()
         self.__repairing_inventory = set()
@@ -165,8 +168,8 @@ class Player:
         self.__previous_balance = 50
         self.__rank = 0
         self.__day = 1
-        self.__counting_days = [0, 0, 0, 0, 0, 0, 0]
-        self.__item_durability = [0, 0, 0, 0, 0, 0, 1] # [6, 1, 1, 1, 1, 1, 1, 1]
+        self.__counting_days = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        self.__item_durability = [0, 0, 0, 0, 0, 0, 0] # [6, 1, 1, 1, 1, 1, 1, 1]
         self.__flask_durability = [0, 0, 0, 0, 0, 0, 0]
         self.__round_count = 3
         self.__is_religious = False
@@ -557,7 +560,10 @@ class Player:
         type.slow(red(self.__lists.get_dealer_welcome()))
         print("\n")
 
+
+
     # Poor Day Events (1 - 1,000)
+    # Everytime
     def seat_cash(self):
         type.type("You wake up in the front seat, covered in sweat. ")
         type.type("As the sun shines through the car window, you notice a bright green bill tucked between the seat cushions. Must be your lucky day. ")
@@ -578,6 +584,15 @@ class Player:
                 self.add_danger("Cockroach")
         print("\n")
 
+    def estranged_dog(self):
+        type.type("You wake up to the sound of barking outside your car. You get up, to see a golden retriever licking your window. You open the door, and pet the doggo on the head. He seems happy. You're happy, too.")
+        print("\n")
+        self.heal(random.choice([5, 10]))
+        type.type("Before you get a chance to check the dog's collar to see where it came from, the dog bolts down the road, eager to cheer up someone else. It was a good dog.")
+        print("\n")
+        return
+
+    # Conditional
     def spider_bite(self):
         if not self.has_danger("Spider") or self.has_status("Spider Bite"):
             dayEvent = getattr(self, self.__lists.get_poor_day_event())
@@ -621,6 +636,7 @@ class Player:
             type.type("You lost " + green(bright("${:,}".format(losses))) + ".")
             self.change_balance(-losses)
 
+    # One-Time
     def whats_my_name(self):
         if not self.__name == None:
             dayEvent = getattr(self, self.__lists.get_poor_day_event())
@@ -653,14 +669,6 @@ class Player:
                 type.type(quote("So you lied to me? You're a liar, stranger!"))
                 print("\n")
                 type.type(space_quote("Come on, tell me your real name!"))
-
-    def estranged_dog(self):
-        type.type("You wake up to the sound of barking outside your car. You get up, to see a golden retriever licking your window. You open the door, and pet the doggo on the head. He seems happy. You're happy, too.")
-        print("\n")
-        self.heal(random.choice([5, 10]))
-        type.type("Before you get a chance to check the dog's collar to see where it came from, the dog bolts down the road, eager to cheer up someone else. It was a good dog.")
-        print("\n")
-        return
     
     def interrogation(self):
         if self.has_met("Interrogator"):
@@ -689,6 +697,31 @@ class Player:
             return
 
     # Cheap Day Events (1,000 - 10,000)
+    # Everytime
+    
+    # Conditional
+        
+    # One-Time
+    def turn_to_god(self):
+        type.type("You wake up to someone knocking on your window. You sit up, and see a man, holding a bible, and wearing a cross on a chain around his neck.")
+        print("\n")
+        type.type(quote("Hello! I'm Father Ezekiel. You seem to be in a tough spot, living in your car? I was just wondering if you wanted me to give you my copy of The Bible. It has the word of God, and I hope it could help you understand that you aren't alone on this journey of life."))
+        print()
+        type.type(space_quote("Do you accept my offer, and Jesus as your savior?"))
+        answer = self.yes_or_no(space_quote("Do you?"))
+        if answer == "yes":
+            self.__is_religious = True
+            type.type(space_quote("Why, that's wonderful!"))
+            type.type("Father Ezekiel hands you his bible. ")
+            type.type(quote("I will pray for you, and I know that Jesus will always be with you. Amen."))
+        elif answer == "no":
+            type.type(open_quote("Well, to each their own. I certainly cast no judgements. "))
+            type.type(close_quote("I will pray for you, and I know that Jesus will always be with you. Amen."))
+        print("\n")
+        type.type("And with that, Father Ezekiel walks down the road, and out of sight.")
+        print("\n")
+        return
+    
     def hungry_cow(self):
         if self.has_met("Betsy"):
             dayEvent = getattr(self, self.__lists.get_cheap_day_event())
@@ -725,25 +758,10 @@ class Player:
                     break
             print("\n")
 
-    def turn_to_god(self):
-        type.type("You wake up to someone knocking on your window. You sit up, and see a man, holding a bible, and wearing a cross on a chain around his neck.")
-        print("\n")
-        type.type(quote("Hello! I'm Father Ezekiel. You seem to be in a tough spot, living in your car? I was just wondering if you wanted me to give you my copy of The Bible. It has the word of God, and I hope it could help you understand that you aren't alone on this journey of life."))
-        print()
-        type.type(space_quote("Do you accept my offer, and Jesus as your savior?"))
-        answer = self.yes_or_no(space_quote("Do you?"))
-        if answer == "yes":
-            self.__is_religious = True
-            type.type(space_quote("Why, that's wonderful!"))
-            type.type("Father Ezekiel hands you his bible. ")
-            type.type(quote("I will pray for you, and I know that Jesus will always be with you. Amen."))
-        elif answer == "no":
-            type.type(open_quote("Well, to each their own. I certainly cast no judgements. "))
-            type.type(close_quote("I will pray for you, and I know that Jesus will always be with you. Amen."))
-        print("\n")
-        type.type("And with that, Father Ezekiel walks down the road, and out of sight.")
+    # One-Time Conditional
 
     # Modest Day Events (10,000 - 100,000)
+    # Everytime
     def left_door_open(self):
         type.type("You wake up in the front seat, with a chill throughout your body. ")
         type.type("Had the passenger door really been open all night? ")
@@ -756,6 +774,7 @@ class Player:
                 self.add_danger("Squirrel")
         print("\n")   
 
+    # Conditional
     def another_spider_bite(self):
         if not self.has_danger("Spider") or self.has_status("Spider Bite"):
             dayEvent = getattr(self, self.__lists.get_modest_day_event())
@@ -812,7 +831,9 @@ class Player:
                 self.mark_squirrel_bite_day(self.__day)
                 print("\n") 
                 return
-    
+    # One-Time
+            
+    # One-Time Conditional
     def further_interrogation(self):
         if not self.has_met("Interrogator") or not self.has_danger("Further Interrogation"):
             dayEvent = getattr(self, self.__lists.get_modest_day_event())
@@ -843,6 +864,74 @@ class Player:
             return
         
     # Rich Day Events (100,000 - 500,000)
+    # Everytime
+    def left_trunk_open(self):
+        type.type("You wake up in the front seat, with a chill throughout the whole wagon. ")
+        type.type("Had the trunk really been open all night? ")
+        type.type("Hopefully nothing had gotten in. ")
+        type.type("You get out of the car and close the trunk, just to be safe.")
+        random_chance = random.randrange(6)
+        if random_chance < 2:
+                self.add_danger("Rat")
+        elif random_chance < 4:
+                self.add_danger("Termite")
+        print("\n")    
+
+    # Conditional
+    def rat_bite(self):
+        if self.has_status("Rabies") or not self.has_danger("Rat") or self.has_status("Rat Bite"):
+            dayEvent = getattr(self, self.__lists.get_rich_day_event())
+            dayEvent()
+            return
+        else:
+            type.type("You wake up to a sharp pain on your ankle! ")
+            type.type("You look down to see a skinny gray rat nibling your foot. You kick at it, but the little rodent runs under the seat. ")
+            print("\n")
+            type.type("The rat jumps up onto your backseat, and begins to laugh at you. Now that's just cruel. This rat must be crazy.")
+            print("\n")
+            if self.has_item("Pest Control"):
+                self.kill_pests()
+                type.type("You grab your " + magenta(bright("Pest Control")) + " and spray the rat down. ")
+                type.type("A cloud of white liquid covers the rat, and you watch as it spazzes out, and dies. ")
+                type.type("Hopefully, that's it for your rat problems. Except for that bite. You might wanna get that checked out.")
+            else:
+                type.type("You jump at the seat towards the rat, but it sneaks back under the passenger seat, and you can't find it. ")
+                type.type("That damn rat. Hopefully, the bite isn't too serious, but it's probably worth getting checked out.")
+            self.add_status("Rat Bite")
+            random_chance = random.randrange(2)
+            if random_chance == 1:
+                self.add_status("Rabies")
+                self.mark_rabies_day(self.__day)
+            self.mark_rat_bite_day(self.__day)
+            print("\n") 
+            return       
+        
+    def hungry_termites(self):
+        random_choice = random.randrange(2)
+        if (random_choice != 0) or not self.has_danger("Termite"):
+            dayEvent = getattr(self, self.__lists.get_poor_day_event())
+            dayEvent()
+            return
+        else:
+            type.type("You wake up to a clicking sound. Looking around, you notice that it's coming from your pile of money. ")
+            type.type("You jump up to check your cash, and you find a termite eating away at your cash. ")
+            if self.has_item("Pest Control"):
+                self.kill_pests()
+                type.type("You grab your " + magenta(bright("Pest Control")) + " and spray in the direction of the termite. ")
+                type.type("A cloud of white liquid covers the termite, and you watch as it slows down, twitches, and dies. ")
+                type.type("Hopefully, that's the end of your termite problems.")
+            else:
+                type.type("You attempt to swat it with your hand, but it falls under your car seat. ")
+                type.type("You stick your head under the seat, but you aren't sure where the termite went, or if it has a family nearby. This is just brutal.")
+            print("\n")
+            type.type("The termite ate through a lot of your money. ")
+            losses = int(self.get_balance() * (random.randint(20, 50)/100))
+            type.type("You lost " + green(bright("${:,}".format(losses))) + ".")
+            self.change_balance(-losses)
+
+    # One-Time
+            
+    # One-Time Conditional
     def starving_cow(self):
         if not self.has_met("Betsy") or not self.has_danger("Betsy Tractor"):
             dayEvent = getattr(self, self.__lists.get_rich_day_event())
@@ -882,6 +971,13 @@ class Player:
             print("\n")
 
     # Doughman Days (500,000 - 900,000)
+    # Everytime
+    
+    # Conditional
+            
+    # One-Time
+            
+    # One-Time Conditional
     def even_further_interrogation(self):
         if not self.has_met("Interrogator") or not self.has_danger("Even Further Interrogation"):
             dayEvent = getattr(self, self.__lists.get_modest_day_event())
@@ -912,6 +1008,13 @@ class Player:
             return
         
     # Nearly There Days (900,000+)
+    # Everytime
+        
+    # Conditional
+        
+    # One-Time
+        
+    # One-Time Conditional
     def cow_army(self):
         if not self.has_met("Betsy") or not self.has_danger("Betsy Army"):
             dayEvent = getattr(self, self.__lists.get_nearly_day_event())
@@ -1025,6 +1128,7 @@ class Player:
 
 
     # Poor Nights (1 - 1,000)
+    # Everytime
     def ditched_wallet(self):
         type.type("Bored out of your mind, you decide to wander along the side of the road, just to get a change of scenery from the dusty leather seats of your wagon. ")
         type.type("As you take step after step over the asphalt, you notice a ditched wallet, just laying there. I guess it's yours now. ")
@@ -1106,6 +1210,7 @@ class Player:
                 
 
     # Cheap Nights (1,000 - 10,000)
+    # Everytime
     def woodlands_river(self):
         type.type("After wandering from your vehicle, you find yourself deep in the woods. Deer dart by you. Trees branches sway back and forth. And you wander along a river, journeying into the unknown.")
         print("\n")
@@ -1131,6 +1236,7 @@ class Player:
                     type.type("Thankfully, you're able to play dead, just long enough for the bear to walk away without killing you. Somehow, you get up, and limp your way back to your wagon.")
                     print("\n")
                     type.type("The damage inflicted from the bear is serious and severe. It's probably a good idea to see the doctor tomorrow, when they're open again. In the meantime, you wrap yourself up with spare clothes, and go on with your life.")
+                    self.add_injury("Severed Skin")
                     print("\n")
                     return
                 elif random_chance_2 == 1:
@@ -1427,6 +1533,10 @@ class Player:
             self.lose_danger("Spider")
         if self.has_danger("Cockroach"):
             self.lose_danger("Cockroach")
+        if self.has_danger("Rat"):
+            self.lose_danger("Rat")
+        if self.has_danger("Termite"):
+            self.lose_danger("Termite")
 
 
     def mark_spider_bite_day(self, day, time="day"):
@@ -1439,38 +1549,76 @@ class Player:
         return self.__day - self.__counting_days[0]
     
 
-    def mark_squirrel_bite_day(self, day, time="day"):
+    def mark_hepatitis_day(self, day, time="day"):
         if time == "day":
             self.__counting_days[1] = day
         if time == "night":
             self.__counting_days[1] = day-1
 
-    def get_squirrel_bite_day(self):
+    def get_hepatitis_day(self):
         return self.__day - self.__counting_days[1]
-    
 
-    def mark_squirrely_fed_day(self, day, time="day"):
+
+    def mark_squirrel_bite_day(self, day, time="day"):
         if time == "day":
             self.__counting_days[2] = day
         if time == "night":
             self.__counting_days[2] = day-1
 
-    def get_squirrely_fed_day(self):
+    def get_squirrel_bite_day(self):
         return self.__day - self.__counting_days[2]
     
 
-    def mark_rabies_day(self, day, time="day"):
+    def mark_squirrely_fed_day(self, day, time="day"):
         if time == "day":
             self.__counting_days[3] = day
         if time == "night":
             self.__counting_days[3] = day-1
 
-    def get_rabies_day(self):
+    def get_squirrely_fed_day(self):
         return self.__day - self.__counting_days[3]
+    
+
+    def mark_rabies_day(self, day, time="day"):
+        if time == "day":
+            self.__counting_days[4] = day
+        if time == "night":
+            self.__counting_days[4] = day-1
+
+    def get_rabies_day(self):
+        return self.__day - self.__counting_days[4]
+    
+
+    def mark_rat_bite_day(self, day, time="day"):
+        if time == "day":
+            self.__counting_days[5] = day
+        if time == "night":
+            self.__counting_days[5] = day-1
+
+    def get_rat_bite_day(self):
+        return self.__day - self.__counting_days[5]
+    
+
+    def mark_snake_bite_day(self, day, time="day"):
+        if time == "day":
+            self.__counting_days[6] = day
+        if time == "night":
+            self.__counting_days[6] = day-1
+
+    def get_snake_bite_day(self):
+        return self.__day - self.__counting_days[6]
     
 
     def update_status(self):
         damage = 0
+        if self.__clear_all_status == True:
+            type.type("Whatever the Witch Doctor gave you yesterday, it worked wonders on you. You feel amazing, as though your body had been completely cleansed.")
+            print("\n")
+            self.__status_effects = set()
+            self.__injuries = set()
+            self.__is_sick = False
+            self.__is_injured = False
+
         if self.has_status("Spider Bite"):
             days_elapsed = self.get_spider_bite_day()
             if(self.__clear_status):
@@ -1495,10 +1643,32 @@ class Player:
                     type.type("Your spider bite is purple and pussing. A trip to the doctors might be a good idea. ")
             print("\n")
 
-        if damage >= self.__health:
-            self.hurt(damage)
+            if damage >= self.__health:
+                self.hurt(damage)
 
-        elif self.has_status("Squirrel Bite"):
+        if self.has_status("Snake Bite"):
+            days_elapsed = self.get_snake_bite_day()
+            if(self.__clear_status):
+                self.remove_status("Snake Bite")
+                type.type("Your snake bite is starting to heal. ")
+            elif days_elapsed == 0:
+                damage += random.choice([2, 4])
+                type.type("The fangmarks of your snake bite are faint but visible. There's some swelling. ")
+            elif days_elapsed == 1:
+                damage += random.choice([6, 8, 10, 12])
+                type.type("Your snake bite is swolen, and very painful. ")
+            elif days_elapsed == 2:
+                damage += random.choice([8, 10, 12, 14, 16, 18])
+                type.type("Your snake bite is really painful. You feel really nauseous. ")
+            elif days_elapsed >= 3:
+                damage += random.choice([7, 14, 18, 22, 26, 30])
+                type.type("Your snake bite is turning black. A trip to the doctors is probably the right choice. ")
+            print("\n")
+
+            if damage >= self.__health:
+                self.hurt(damage)
+
+        if self.has_status("Squirrel Bite"):
             days_elapsed = self.get_squirrel_bite_day()
             if(self.__clear_status):
                 self.remove_status("Squirrel Bite")
@@ -1512,30 +1682,98 @@ class Player:
                 type.type("Your squirrel bite is starting to heal. ")
             print("\n")
 
-        if damage >= self.__health:
-            self.hurt(damage)
 
-        elif self.has_status("Rabies"):
+        if self.has_status("Rat Bite"):
+            days_elapsed = self.get_rat_bite_day()
+            if(self.__clear_status):
+                self.remove_status("Rat Bite")
+                type.type("Your rat bite is starting to heal. ")
+            elif days_elapsed == 0:
+                type.type("You look at the bite mark the rat left on your ankle. It hurts like a motherfucker, but it's hard to tell if the bite infected. A trip to the doctor's is what a smart person would do.")
+            elif ((days_elapsed >= 1) and self.has_status("Rabies")) or (days_elapsed < 5):
+                type.type("Your rat bite looks the same as it did yesterday. It might hurt worse, but it's hard to tell.")
+            elif (days_elapsed == 5):
+                self.remove_status("Rat Bite")
+                type.type("Your rat bite is starting to heal. ")
+            print("\n")
+
+
+        if self.has_status("Rabies"):
             days_elapsed = self.get_rabies_day()
-            if(self.__clear_status) and (days_elapsed<=5):
+            if(self.__clear_status) and (days_elapsed<=3):
                 self.remove_status("Rabies")
-            elif days_elapsed==5:
+            elif days_elapsed==3:
                 type.type(red("Your mouth has begun to foam. It seems you've contracted rabies. Death is inevitable, and it's hurdling towards you."))
-                damage += random.choice([30, 50, 70])
+                damage += random.choice([10, 30, 50, 70])
                 print("\n")
-            elif days_elapsed==6:
+            elif days_elapsed==4:
                 type.type(red("The foaming has gotten worse, to the point where you begin to choke on it. You have a seizure in your car. Life is coming to an end."))
                 damage += random.choice([50, 70, 90])
                 print("\n")
-            elif days_elapsed==7:
+            elif days_elapsed==5:
                 type.slow(red(bright("Your mind has gone completely insane. You start tearing at your face, ripping away chunks of skin. The foam in your mouth turns red, and you feel yourself begin to fade from existance. You pull your eyes from their sockets, and scream in agony, as you die a painful death.")))
                 self.kill()
 
-        if damage >= self.__health:
-            self.hurt(damage)
+            if damage >= self.__health:
+                self.hurt(damage)
+
+
+        if self.has_status("Hepatitis"):
+            self.__is_sick = True
+            days_elapsed = self.get_hepatitis_day()
+            if(self.__clear_status):
+                self.remove_status("Hepatitis")
+            elif days_elapsed == 0:
+                damage += random.choice([1, 3, 5])
+            elif days_elapsed == 1:
+                damage += random.choice([5, 6, 7])
+            elif days_elapsed == 2:
+                damage += random.choice([2, 7, 10, 12])
+            elif days_elapsed == 3:
+                damage += random.choice([2, 8, 15, 17, 20])
+            elif days_elapsed == 4:
+                damage += random.choice([3, 9, 18, 20, 25])
+            elif days_elapsed > 4:
+                random_chance = random.randrange(4)
+                if random_chance == 0:
+                    self.remove_status("Hepatitis")
+                else:
+                    damage += random.choice([5, 10, 15, 20, 25, 30])
+
+            if damage >= self.__health:
+                self.hurt(damage)
+
+        # Sets is_sick to False if you don't have any sicknesses, an prints a health update
+        if (self.__is_sick) and not self.has_status("Hepatitis"):
+            if self.has_status("Rabies"):
+                type.type("With rabies in your system, you're lucky to be alive.")
+            elif self.has_status("Snake Bite") or self.has_status("Spider Bite"):
+                type.type("You may not be 100%, but at least you don't feel under the weather anymore.")
+            else:
+                type.type("You feel much less sick than you did yesterday, which is always good.")
+            self.__is_sick = False
+            print("\n")
+
+        # if player is sick, prints a sickness update
+        if self.__is_sick:
+            type.type(self.__lists.get_sickness_update())
+            print("\n")
+
+        # Sets is_injured to True if you have 1 or more injuries
+        if len(self.__injuries)>0:
+            self.__is_injured = True
+
+        # Sets is_injured to False if you have 0 injuries, and prints a healed update
+        if (self.__is_injured) and len(self.__injuries)==0:
+            type.type("The injuries to your body are doing much better.")
+            print("\n")
+            self.__is_injured = False
         
-        elif self.has_status("Snake Bite"):
-            pass
+        # If you're injured, prints an injury update, and adds damage
+        if self.__is_injured:
+            damage += len(self.__injuries)
+            type.type(self.__lists.get_injury_update())
+            print("\n")
 
         if damage > 0:
             self.hurt(damage)
@@ -1543,9 +1781,8 @@ class Player:
 
         # Sprays your car with Pest Control if you have a pest
         if self.has_pests() and self.has_item("Pest Control"):
-            type.type("Knowing that there's an unkilled pest somewhere in your car, you spray your " + magenta(bright("Pest Control")) + " throughout the vehicle, hoping that it'll solve your pest issues.")
+            type.type("Believing that there may be an unwanted pest somewhere in your car, you spray your " + magenta(bright("Pest Control")) + " throughout the vehicle, hoping that it'll solve your pest issues. ")
             self.kill_pests()
-            print("\n")
             type.type("After giving the wagon a minute to air out, you get back inside.")
             print("\n")
 
@@ -1716,9 +1953,12 @@ class Player:
                 
                 print("\n")
 
-                random_chance = random.randrange(2)
-                if random_chance == 0:
+                random_chance = random.randrange(10)
+                if random_chance < 5:
                     self.__clear_status = True
+                elif random_chance == 5:
+                    self.__clear_all_status = True
+
                 random_chance = random.randrange(3)
                 if random_chance == 0:
                     self.heal(100)
@@ -2584,7 +2824,7 @@ class Player:
         elif item == "Dealer's Whispers": return "A flask holding a navy blue potion. It's infused with the power to reveal the Dealer's hidden card. It lasts a few days."
         elif item == "Bonus Fortune": return "A flask holding a shiny gold potion. It's infused with the power to let you double down after being dealt a hand. It lasts a few days."
         elif item == "Anti-Venom": return "A flask holding a sparkly orange potion. It's infused with the power to heal you when attacked by a venemous creature. It lasts until used."
-        elif item == "Anti-Virus": return "A flask holding a flowing grey potion. It's infused with the power to heal you when affected by a disease. It lasts until used."
+        elif item == "Anti-Virus": return "A flask holding a flowing gray potion. It's infused with the power to heal you when affected by a disease. It lasts until used."
         elif item == "Fortunate Day": return "A flask holding a bright orange potion. It's infused with the luck of the sun, and makes your next morning lucky. It wears off after one use."
         elif item == "Fortunate Night": return "A flask holding a pretty magenta potion. It's infused with the luck of the stars, and makes your next evening lucky. It wears off after one use, and has no impact on gambling."
 

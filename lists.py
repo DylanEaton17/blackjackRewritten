@@ -409,6 +409,42 @@ class Lists:
         if len(self.__hungry_squirrely_list)==0:
             self.__hungry_squirrely_list = self.make_hungry_squirrely_list()
         return self.__hungry_squirrely_list.pop()
+    
+    def make_sickness_list(self):
+        a_list = []
+        a_list.append("You're sick, you just know it.")
+        if self.__player.has_status("Hepatitis"):
+            a_list.append("You have a seriously high fever, and feel like puking.")
+            a_list.append("Your kidneys hurt really bad. That can't be good.")
+        random.shuffle(a_list)
+        return a_list
+
+    def get_sickness_update(self):
+        sickness_update = self.make_sickness_list()
+        return sickness_update.pop()
+    
+
+    def make_injury_list(self):
+        a_list = []
+        a_list.append("Something's definitely wrong with your body. That's for certain.")
+        if self.__player.has_injury("Broken Leg"):
+            a_list.append("Your leg is purple and bruised, like badly.")
+            a_list.append("Your leg is broken. It just is. Has to be.")
+        if self.__player.has_injury("Fractured Spine"):
+            a_list.append("It's so hard to even sit up straight. That's not normal.")
+            a_list.append("Your back feels like it's being torn apart.")
+        if self.__player.has_injury("Severed Skin"):
+            a_list.append("The cuts all over your body means it's very hard to enjoy existing.")
+            a_list.append("It's incredible that your skin is still fully intact.")
+        if self.__player.has_injury("Scraped Knee"):
+            a_list.append("Your knee has seen better days. Much, much better days.")
+            a_list.append("Looking at your skinned knee, you swear you can see the bone.")
+        random.shuffle(a_list)
+        return a_list
+
+    def get_injury_update(self):
+        injury_update = self.make_injury_list()
+        return injury_update.pop()
 
     def make_quote_list(self):
         a_list = []
