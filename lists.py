@@ -410,6 +410,21 @@ class Lists:
             self.__hungry_squirrely_list = self.make_hungry_squirrely_list()
         return self.__hungry_squirrely_list.pop()
     
+
+    def make_worried_squirrely_list(self):
+        a_list = []
+        a_list.append("Squirrely shakes in your arms. The outside world is scaring him.")
+        if self.__player.has_travel_restriction("Rain"):
+            a_list.append("Squirrely has been hiding under the passenger seat all day. It seems he's scared of lightning.")
+        random.shuffle(a_list)
+        return a_list
+
+    def get_worried_squirrely_update(self):
+        if len(self.__worried_squirrely_list)==0:
+            self.__worried_squirrely_list = self.make_worried_squirrely_list()
+        return self.__worried_squirrely_list.pop()
+    
+
     def make_sickness_list(self):
         a_list = []
         a_list.append("You're sick, you just know it.")

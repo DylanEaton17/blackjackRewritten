@@ -145,7 +145,7 @@ def space_quote(text):
     return ("\"" + text + "\" ")
 
 class Player:
-    __slots__ = ["__name", "__alive", "__is_sick", "__is_injured", "__flask_effects", "__status_effects", "__injuries", "__clear_status", "__clear_all_status", "__inventory", "__broken_inventory", "__repairing_inventory", "__dangers", "__met", "__mechanic_visits", "__health", "__balance", "__previous_balance", "__rank", "__day", "__counting_days", "__item_durability", "__flask_durability", "__round_count", "__is_religious", "__prereqs", "__prereqs_done", "__convenience_store_inventory", "__lists"]
+    __slots__ = ["__name", "__alive", "__is_sick", "__is_injured", "__flask_effects", "__status_effects", "__injuries", "__travel_restrictions", "__clear_status", "__clear_all_status", "__inventory", "__broken_inventory", "__repairing_inventory", "__dangers", "__met", "__mechanic_visits", "__health", "__balance", "__previous_balance", "__rank", "__day", "__counting_days", "__item_durability", "__flask_durability", "__round_count", "__is_religious", "__prereqs", "__prereqs_done", "__convenience_store_inventory", "__lists"]
 
     def __init__(self):
         self.__name = None
@@ -155,6 +155,7 @@ class Player:
         self.__flask_effects = set()
         self.__status_effects = set()
         self.__injuries = set()
+        self.__travel_restrictions = set()
         self.__clear_status = False
         self.__clear_all_status = False
         self.__inventory = set()
@@ -262,6 +263,15 @@ class Player:
     
     def lists(self):
         return self.__lists
+    
+    def add_travel_restriction(self, restriction):
+        self.__travel_restrictions.add(restriction)
+
+    def has_travel_restriction(self, restriction):
+        return restriction in self.__travel_restrictions
+    
+    def remove_travel_restriction(self, restriction):
+        self.__travel_restrictions.remove(restriction)
 
     def add_flask(self, flask):
         self.__flask_effects.add(flask)
@@ -389,7 +399,7 @@ class Player:
         elif(self.__day==1):
             self.end_day_1()
         elif(not self.has_item("Car")):
-            self.end_day_car()
+            self.end_day_car_broken()
         else:
             self.end_day_car_fixed()
 
@@ -518,7 +528,7 @@ class Player:
         type.type("Without questing his word, and with your winnings in hand, you scurry to the door, eager to get some sleep after such a long day. ")
         type.type("Making it back to your car, ditched on the side of the road, but no longer engulfed in smoke, you lay down, and close your eyes. It's time to rest.")
 
-    def end_day_car(self):
+    def end_day_car_broken(self):
         type.type("After playing a few rounds of Blackjack, the dealer points to the door. ")
         type.type("Without questing his word, and with your winnings in hand, you scurry to the door, eager to get some sleep. ")
         type.type("Making it back to your car, ditched on the side of the road, you lay down, and close your eyes. It's time to rest.")
@@ -528,12 +538,22 @@ class Player:
         type.type("Without questing his word, and with your winnings in hand, you scurry to the door, eager to get some sleep. ")
         type.type("You make it to your car and drive away from the casino, and you park in a little alcove on the side of the road. You lay down, and close your eyes. It's time to rest.")
 
+    def end_day_wind(self):
+        self.remove_travel_restriction("Wind")
+        type.type("After playing a few rounds of Blackjack, the dealer points to the door. ")
+        type.type("Without questing his word, and with your winnings in hand, you scurry to the door, eager to get some sleep. ")
+        type.type("Stepping outside, you notice that the wind has calmed down. That's a relief. ")
+        type.type("Making it back to your car, ditched on the side of the road, you lay down, and close your eyes. It's time to rest.")
+
+
     def end_day_angry_dealer(self):
         type.type("You've never seen the dealer quite so angry. Fortunately, you make it back to your car, and immediately pass out for the night. It's time to rest.")
 
     def start_night(self):
         if(self.__day==1):
             self.start_night_1()
+        elif self.has_travel_restriction("Wind"):
+            self.end_day_wind()
         elif(not self.has_item("Car")):
             self.start_night_car()
         else:
@@ -610,6 +630,11 @@ class Player:
 
     # Conditional
     def sore_throat(self):
+        if self.has_status("Sore Throat"):
+            dayEvent = getattr(self, self.__lists.get_poor_day_event())
+            dayEvent()
+            
+            
         type.type("You wake up, and begin to have a coughing fit. Your throat is dry, and super sore. ")
         if self.has_item("Cough Drops"):
             self.use_item("Cough Drops")
@@ -618,6 +643,7 @@ class Player:
             return
         else:
             self.add_status("Sore Throat")
+            self.mark_sore_throat_day(self.__day)
             type.type("You cough, and cough, and cough some more, but the burning itch in your throat just won't go away.")
             print("\n")
             return
@@ -627,20 +653,21 @@ class Player:
             dayEvent = getattr(self, self.__lists.get_poor_day_event())
             dayEvent()
             return
+        
+        type.type("You wake up to a sharp pain on your arm! ")
+        type.type("Swinging your arm to scratch the pain, you watch as a spider jumps to your dashboard. ")
+        if self.has_item("Pest Control"):
+            self.kill_pests()
+            type.type("You grab your " + magenta(bright("Pest Control")) + " and spray in the direction of the spider. ")
+            type.type("A cloud of white liquid covers the spider, and you watch as it slows, and dies. ")
+            type.type("Hopefully, that's the end of your spider problems.")
         else:
-            type.type("You wake up to a sharp pain on your arm! ")
-            type.type("Swinging your arm to scratch the pain, you watch as a spider jumps to your dashboard. ")
-            if self.has_item("Pest Control"):
-                self.kill_pests()
-                type.type("You grab your " + magenta(bright("Pest Control")) + " and spray in the direction of the spider. ")
-                type.type("A cloud of white liquid covers the spider, and you watch as it slows, and dies. ")
-                type.type("Hopefully, that's the end of your spider problems.")
-            else:
-                type.type("You attempt to swat it with your hand, but it sneaks into your heater. ")
-                type.type("You start the engine and blast the heat, but you aren't sure if the spider has died, or if it has a family nearby. This sucks.")
-            self.add_status("Spider Bite")
-            self.mark_spider_bite_day(self.__day)
-            print("\n")
+            type.type("You attempt to swat it with your hand, but it sneaks into your heater. ")
+            type.type("You start the engine and blast the heat, but you aren't sure if the spider has died, or if it has a family nearby. This sucks.")
+        self.add_status("Spider Bite")
+        self.mark_spider_bite_day(self.__day)
+        print("\n")
+
 
     def hungry_cockroach(self):
         random_choice = random.randrange(2)
@@ -648,25 +675,31 @@ class Player:
             dayEvent = getattr(self, self.__lists.get_poor_day_event())
             dayEvent()
             return
+
+        type.type("You wake up to the sound of a hiss in your pile of money. ")
+        type.type("You jump up to check your cash, and you find a cockroach eating away at your cash. ")
+        if self.has_item("Pest Control"):
+            self.kill_pests()
+            type.type("You grab your " + magenta(bright("Pest Control")) + " and spray in the direction of the cockroach. ")
+            type.type("A cloud of white liquid covers the cockroach, and you watch as it slows down, twitches, and dies. ")
+            type.type("Hopefully, that's the end of your cockroach problems.")
         else:
-            type.type("You wake up to the sound of a hiss in your pile of money. ")
-            type.type("You jump up to check your cash, and you find a cockroach eating away at your cash. ")
-            if self.has_item("Pest Control"):
-                self.kill_pests()
-                type.type("You grab your " + magenta(bright("Pest Control")) + " and spray in the direction of the cockroach. ")
-                type.type("A cloud of white liquid covers the cockroach, and you watch as it slows down, twitches, and dies. ")
-                type.type("Hopefully, that's the end of your cockroach problems.")
-            else:
-                type.type("You attempt to swat it with your hand, but it falls under your car seat. ")
-                type.type("You stick your head under the seat, but you aren't sure where the cockroach went, or if it has a family nearby. This is terrible.")
-            print("\n")
-            type.type("The cockroach ate through some of your money. ")
-            losses = int(self.get_balance() * (random.randint(10, 40)/100))
-            type.type("You lost " + green(bright("${:,}".format(losses))) + ".")
-            self.change_balance(-losses)
+            type.type("You attempt to swat it with your hand, but it falls under your car seat. ")
+            type.type("You stick your head under the seat, but you aren't sure where the cockroach went, or if it has a family nearby. This is terrible.")
+        print("\n")
+        type.type("The cockroach ate through some of your money. ")
+        losses = int(self.get_balance() * (random.randint(10, 40)/100))
+        type.type("You lost " + green(bright("${:,}".format(losses))) + ".")
+        self.change_balance(-losses)
 
     # One-Time
     def lone_cowboy(self):
+        if self.has_met("Cowboy"):
+            dayEvent = getattr(self, self.__lists.get_poor_day_event())
+            dayEvent()
+            return
+
+        self.meet("Cowboy")
         type.type("You wake up to the sounds trotting, and distant whistling. You sit up, and through your windshield, you see a man wearing a full cowboy suit, with matching black hat and boots, and a short brown beard. ")
         type.type("He's riding a magnificent horse, muscular, but nimble, each step powerful, but precise. The man reaches your window, and in a deep southern accent, he begins to talk to you.")
         print("\n")
@@ -687,6 +720,7 @@ class Player:
             dayEvent = getattr(self, self.__lists.get_poor_day_event())
             dayEvent()
             return
+        
         type.type("You wake up to the sound of sneakers scratching against the concrete. As you sit up from your seat, you notice a little girl, with blonde hair and pigtails, jump roping towards you.")
         print("\n")
         type.type(space_quote("Howdy stranger! My name's Suzy! Do you like my name?"))
@@ -715,39 +749,53 @@ class Player:
                 print("\n")
                 type.type(space_quote("Come on, tell me your real name!"))
     
+
     def interrogation(self):
         if self.has_met("Interrogator"):
             dayEvent = getattr(self, self.__lists.get_poor_day_event())
             dayEvent()
             return
-        else:
-            self.meet("Interrogator")
-            self.add_danger("Further Interrogation")
-            type.type("You wake up, and through your windshield, you see a car parked right in front of you. Confused, and dazed, you sit up. As you open the door and get out of your car, you notice a man, in a bright red suit, peering into your trunk.")
-            print("\n")
-            type.type("The man sees you, and walks up to you.")
-            print("\n")
-            type.type(quote("You. You're awake. Good. You know that you aren't supposed to be here? This isn't a spot for people to live. This is a road for people to drive. I hope you know this."))
-            print("\n")
-            type.type(space_quote("Do you know this?"))
-            answer = self.yes_or_no(space_quote("Do you? Know this?"))
-            if answer == "yes":
-                type.type(quote("So you do know this. Then why do you live here? You shouldn't. It's not right, man. I'd suggest you stop living here. Maybe live somewhere else instead. Just not here."))
-                print()
-            elif answer == "no":
-                type.type(quote("You don't know this? How don't you know this? It's super obvious stuff, man. People don't live at places where they're not supposed to, and that's exactly what you're doing right now. I'd suggest you stop it, right this instance."))
-                print()
-            type.type("After the man tells you this, he looks up, and stares at the sun. And after about 20 seconds, he rubs his eyes, walks back to his car, and drives off.")
-            print("\n")
-            return
+    
+        self.meet("Interrogator")
+        self.add_danger("Further Interrogation")
+        type.type("You wake up, and through your windshield, you see a car parked right in front of you. Confused, and dazed, you sit up. As you open the door and get out of your car, you notice a man, in a bright red suit, peering into your trunk.")
+        print("\n")
+        type.type("The man sees you, and walks up to you.")
+        print("\n")
+        type.type(quote("You. You're awake. Good. You know that you aren't supposed to be here? This isn't a spot for people to live. This is a road for people to drive. I hope you know this."))
+        print("\n")
+        type.type(space_quote("Do you know this?"))
+        answer = self.yes_or_no(space_quote("Do you? Know this?"))
+        if answer == "yes":
+            type.type(quote("So you do know this. Then why do you live here? You shouldn't. It's not right, man. I'd suggest you stop living here. Maybe live somewhere else instead. Just not here."))
+            print()
+        elif answer == "no":
+            type.type(quote("You don't know this? How don't you know this? It's super obvious stuff, man. People don't live at places where they're not supposed to, and that's exactly what you're doing right now. I'd suggest you stop it, right this instance."))
+            print()
+        type.type("After the man tells you this, he looks up, and stares at the sun. And after about 20 seconds, he rubs his eyes, walks back to his car, and drives off.")
+        print("\n")
+        return
 
     # Cheap Day Events (1,000 - 10,000)
     # Everytime
-    
+    def strong_winds(self):
+        type.type("You wake up to a loud snap above you, followed by a massive branch crashing down from the treetops and into the street. The wind echoes throughout the trees around you, and many of them look to be on the verge of falling.")
+        print("\n")
+        type.type("With the weater being this bad, you make the executive decision to just chill in the wagon for the day.")
+        self.add_travel_restriction("Wind")
+        print("\n")
+
     # Conditional
         
+
     # One-Time
     def turn_to_god(self):
+        if self.has_met("Ezekiel"):
+            dayEvent = getattr(self, self.__lists.get_cheap_day_event())
+            dayEvent()
+            return
+        
+        self.meet("Ezekiel")
         type.type("You wake up to someone knocking on your window. You sit up, and see a man, holding a bible, and wearing a cross on a chain around his neck.")
         print("\n")
         type.type(quote("Hello! I'm Father Ezekiel. You seem to be in a tough spot, living in your car? I was just wondering if you wanted me to give you my copy of The Bible. It has the word of God, and I hope it could help you understand that you aren't alone on this journey of life."))
@@ -772,36 +820,36 @@ class Player:
             dayEvent = getattr(self, self.__lists.get_cheap_day_event())
             dayEvent()
             return
-        else:
-            self.meet("Betsy")
-            self.add_danger("Betsy Tractor")
-            type.type("You wake up to your whole car shaking. As you jump up from your seat, you see a beautiful black and white cow, staring you down through your window. ")
-            type.type("The cow moos at you aggressively, and you open the door. On its back is a note, that reads 'This is Betsy. Betsy gets hungry. Please feed Betsy.'")
-            print("\n")
-            type.type("Betsy stares into your soul, then looks over at the seat next to you. It appears Betsy is interested in your pile of money. ")
-            print()
-            type.type("Do you feed Betsy? ")
-            while True:
-                answer = self.yes_or_no("Moo? ")
-                if answer == "yes":
-                    type.type("You put a " + green(bright("$100")) + " dollar bill into Betsy's mouth. She chews it up, then spits it out in front of you.")
-                    self.change_balance(-100)
-                    random_chance = random.randrange(4)
-                    if (random_chance == 0) or (self.__balance < 500):
-                        type.type("Betsy moos, then smiles. She walks down the road, happy as can be.")
-                        break
-                    else:
-                        type.type("Betsy moos, then stares you down. She doesn't seem to be done with you.")
-                        print()
-                        type.type("Do you feed Betsy? ")
-                elif answer == "no":
-                    type.type("Betsy moos, then charges at you. She slams into your wagon hard, and your leg gets caught in the door. That hurt. Really, really bad.")
-                    print("\n")
-                    self.hurt(40)
-                    self.add_injury("Broken Leg")
-                    type.type("Betsy moos loudly, wags her tail, then walks down the road. Oh well.")
+        
+        self.meet("Betsy")
+        self.add_danger("Betsy Tractor")
+        type.type("You wake up to your whole car shaking. As you jump up from your seat, you see a beautiful black and white cow, staring you down through your window. ")
+        type.type("The cow moos at you aggressively, and you open the door. On its back is a note, that reads 'This is Betsy. Betsy gets hungry. Please feed Betsy.'")
+        print("\n")
+        type.type("Betsy stares into your soul, then looks over at the seat next to you. It appears Betsy is interested in your pile of money. ")
+        print()
+        type.type("Do you feed Betsy? ")
+        while True:
+            answer = self.yes_or_no("Moo? ")
+            if answer == "yes":
+                type.type("You put a " + green(bright("$100")) + " dollar bill into Betsy's mouth. She chews it up, then spits it out in front of you.")
+                self.change_balance(-100)
+                random_chance = random.randrange(4)
+                if (random_chance == 0) or (self.__balance < 500):
+                    type.type("Betsy moos, then smiles. She walks down the road, happy as can be.")
                     break
-            print("\n")
+                else:
+                    type.type("Betsy moos, then stares you down. She doesn't seem to be done with you.")
+                    print()
+                    type.type("Do you feed Betsy? ")
+            elif answer == "no":
+                type.type("Betsy moos, then charges at you. She slams into your wagon hard, and your leg gets caught in the door. That hurt. Really, really bad.")
+                print("\n")
+                self.hurt(40)
+                self.add_injury("Broken Leg")
+                type.type("Betsy moos loudly, wags her tail, then walks down the road. Oh well.")
+                break
+        print("\n")
 
     # One-Time Conditional
 
@@ -825,57 +873,57 @@ class Player:
             dayEvent = getattr(self, self.__lists.get_modest_day_event())
             dayEvent()
             return
+        
+        type.type("You wake up to a sharp pain on your neck! ")
+        type.type("Swinging your arm to scratch the pain, you watch as a spider jumps to the backseat. ")
+        if self.has_item("Pest Control"):
+            self.kill_pests()
+            type.type("You grab your " + magenta(bright("Pest Control")) + " and spray in the direction of the spider. ")
+            type.type("A cloud of white liquid covers the spider, and you watch as it slows, and dies. ")
+            type.type("Hopefully, that's the end of your spider problems.")
         else:
-            type.type("You wake up to a sharp pain on your neck! ")
-            type.type("Swinging your arm to scratch the pain, you watch as a spider jumps to the backseat. ")
-            if self.has_item("Pest Control"):
-                self.kill_pests()
-                type.type("You grab your " + magenta(bright("Pest Control")) + " and spray in the direction of the spider. ")
-                type.type("A cloud of white liquid covers the spider, and you watch as it slows, and dies. ")
-                type.type("Hopefully, that's the end of your spider problems.")
-            else:
-                type.type("The spider, now out of reach, crawls off the seat and onto the floor. ")
-                type.type("You stick your head out back, but you aren't sure where the spider went, or if it has a family nearby. This is unfortunate.")
-            self.add_status("Spider Bite")
-            self.mark_spider_bite_day(self.__day)
-            print("\n")
+            type.type("The spider, now out of reach, crawls off the seat and onto the floor. ")
+            type.type("You stick your head out back, but you aren't sure where the spider went, or if it has a family nearby. This is unfortunate.")
+        self.add_status("Spider Bite")
+        self.mark_spider_bite_day(self.__day)
+        print("\n")
 
     def squirrel_invasion(self):
         if not self.has_danger("Squirrel") or self.has_status("Squirrel Bite") or self.has_status("Rabies") or self.has_item("Squirrely") or self.has_met("Squirrely"):
             dayEvent = getattr(self, self.__lists.get_modest_day_event())
             dayEvent()
             return
-        else:
-            self.lose_danger("Squirrel")
-            if self.has_item("Bag of Acorns"):
-                self.use("Bag of Acorns")
-                type.type("You wake up to the sound of something rummaging through your car. Looking in the backseat, you notice a little squirrel, chewing through your " + bright(magenta("Bag of Acorns")) + ". He looks pretty cute.")
+
+        self.lose_danger("Squirrel")
+        if self.has_item("Bag of Acorns"):
+            self.use("Bag of Acorns")
+            type.type("You wake up to the sound of something rummaging through your car. Looking in the backseat, you notice a little squirrel, chewing through your " + bright(magenta("Bag of Acorns")) + ". He looks pretty cute.")
+            print("\n")
+            if self.has_met("Dead Squirrely"):
+                type.type("The squirrel notices you, and jumps from the bag, and over to your center console. He peers up at you, but your eyes are filled with tears. Nothing can ever replace Squirrely. You pick up the squirrel, open the door, and let it free.")
                 print("\n")
-                if self.has_met("Dead Squirrely"):
-                    type.type("The squirrel notices you, and jumps from the bag, and over to your center console. He peers up at you, but your eyes are filled with tears. Nothing can ever replace Squirrely. You pick up the squirrel, open the door, and let it free.")
-                    print("\n")
-                    return
-                else:
-                    type.type("The squirrel notices you, and jumps from the bag, and over to your center console. He peers up at you, with an acorn in hand, holding it up in your direction. You sick your hand out, and the squirrel give you the acorn. This must be a sign of peace.")
-                    print("\n")
-                    type.type("After an hour of watching the squirrel eat the acorns, climb around your car, and jump from your arm to the dashboard over and over, you decide that this squirrel is now yours. You name him 'Squirrely', in honor of him being a squirrel.")
-                    print("\n")
-                    self.add_item("Squirrely")
-                    self.mark_squirrely_fed_day()
-                    return
-            else:
-                type.type("You wake up to a sharp pain on your leg! ")
-                type.type("You swing the hurt leg, and you watch as a squirrel goes flying into the air. ")
-                type.type("The littel rodent starts climbing around your car, scurrying around the walls, desperately trying to get out. ")
-                type.type("You open the backseat windows, and the squirrel jumps out, and darts into the woods. Hopefully, that bite isn't too serious.")
-                self.add_status("Squirrel Bite")
-                random_chance = random.randrange(4)
-                if random_chance == 1:
-                    self.add_status("Rabies")
-                    self.mark_rabies_day(self.__day)
-                self.mark_squirrel_bite_day(self.__day)
-                print("\n") 
                 return
+            else:
+                type.type("The squirrel notices you, and jumps from the bag, and over to your center console. He peers up at you, with an acorn in hand, holding it up in your direction. You sick your hand out, and the squirrel give you the acorn. This must be a sign of peace.")
+                print("\n")
+                type.type("After an hour of watching the squirrel eat the acorns, climb around your car, and jump from your arm to the dashboard over and over, you decide that this squirrel is now yours. You name him 'Squirrely', in honor of him being a squirrel.")
+                print("\n")
+                self.add_item("Squirrely")
+                self.mark_squirrely_fed_day()
+                return
+        else:
+            type.type("You wake up to a sharp pain on your leg! ")
+            type.type("You swing the hurt leg, and you watch as a squirrel goes flying into the air. ")
+            type.type("The littel rodent starts climbing around your car, scurrying around the walls, desperately trying to get out. ")
+            type.type("You open the backseat windows, and the squirrel jumps out, and darts into the woods. Hopefully, that bite isn't too serious.")
+            self.add_status("Squirrel Bite")
+            random_chance = random.randrange(4)
+            if random_chance == 1:
+                self.add_status("Rabies")
+                self.mark_rabies_day(self.__day)
+            self.mark_squirrel_bite_day(self.__day)
+            print("\n") 
+            return
     # One-Time
             
     # One-Time Conditional
@@ -884,29 +932,29 @@ class Player:
             dayEvent = getattr(self, self.__lists.get_modest_day_event())
             dayEvent()
             return
-        else:
-            self.lose_danger("Further Interrogation")
-            self.add_danger("Even Further Interrogation")
-            type.type("You wake up, and through your windshield, you see a car parked right in front of you. Tired, and concerned, you sit up. As you open the door and get out of your car, you notice a man you've met before, in his bright red suit, once again peering into your trunk.")
-            print("\n")
-            type.type("The man sees you, and walks up to you, with a clipboard in his hand.")
-            print("\n")
-            type.type(space_quote("You. You're awake. Good. You see this clipboard? It says you can't be here."))
-            type.type("You begin to read the paper on the clipboard. It's a message, written in Comic Sans.")
-            print("\n")
-            type.type("It reads 'This offical message from the government and the military and the army says that you can't be here. That's right, you, the person reading this message right now, living on this land right here. It's not for you. It won't ever be for you. So, you can't live here. You need to move right now, or I'll be very very angry.'")
-            print("\n")
-            type.type(space_quote("Did you read it?"))
-            answer = self.yes_or_no(space_quote("Did you? Read it?"))
-            if answer == "yes":
-                type.type(quote("Good, so you know that all these powerful people want yo- are demanding that you move from where you're currently living, right this instant! I'd suggest you do so. I certainly wouldn't want to upset the government."))
-                print()
-            elif answer == "no":
-                type.type(quote("You didn't read it? Come on, I worked so hard on it. You really should read a clipboard with words on it if someone asks you to. Regardless, it says that you need to move! Or the consequences will be scary!"))
-                print()
-            type.type("After the man tells you this, he looks up, and stares at the sun. And after about 25 seconds, he rubs his eyes, walks back to his car, and drives off.")
-            print("\n")
-            return
+
+        self.lose_danger("Further Interrogation")
+        self.add_danger("Even Further Interrogation")
+        type.type("You wake up, and through your windshield, you see a car parked right in front of you. Tired, and concerned, you sit up. As you open the door and get out of your car, you notice a man you've met before, in his bright red suit, once again peering into your trunk.")
+        print("\n")
+        type.type("The man sees you, and walks up to you, with a clipboard in his hand.")
+        print("\n")
+        type.type(space_quote("You. You're awake. Good. You see this clipboard? It says you can't be here."))
+        type.type("You begin to read the paper on the clipboard. It's a message, written in Comic Sans.")
+        print("\n")
+        type.type("It reads 'This offical message from the government and the military and the army says that you can't be here. That's right, you, the person reading this message right now, living on this land right here. It's not for you. It won't ever be for you. So, you can't live here. You need to move right now, or I'll be very very angry.'")
+        print("\n")
+        type.type(space_quote("Did you read it?"))
+        answer = self.yes_or_no(space_quote("Did you? Read it?"))
+        if answer == "yes":
+            type.type(quote("Good, so you know that all these powerful people want yo- are demanding that you move from where you're currently living, right this instant! I'd suggest you do so. I certainly wouldn't want to upset the government."))
+            print()
+        elif answer == "no":
+            type.type(quote("You didn't read it? Come on, I worked so hard on it. You really should read a clipboard with words on it if someone asks you to. Regardless, it says that you need to move! Or the consequences will be scary!"))
+            print()
+        type.type("After the man tells you this, he looks up, and stares at the sun. And after about 25 seconds, he rubs his eyes, walks back to his car, and drives off.")
+        print("\n")
+        return
         
     # Rich Day Events (100,000 - 500,000)
     # Everytime
@@ -928,51 +976,52 @@ class Player:
             dayEvent = getattr(self, self.__lists.get_rich_day_event())
             dayEvent()
             return
+
+        type.type("You wake up to a sharp pain on your ankle! ")
+        type.type("You look down to see a skinny gray rat nibling your foot. You kick at it, but the little rodent runs under the seat. ")
+        print("\n")
+        type.type("The rat jumps up onto your backseat, and begins to laugh at you. Now that's just cruel. This rat must be crazy.")
+        print("\n")
+        if self.has_item("Pest Control"):
+            self.kill_pests()
+            type.type("You grab your " + magenta(bright("Pest Control")) + " and spray the rat down. ")
+            type.type("A cloud of white liquid covers the rat, and you watch as it spazzes out, and dies. ")
+            type.type("Hopefully, that's it for your rat problems. Except for that bite. You might wanna get that checked out.")
         else:
-            type.type("You wake up to a sharp pain on your ankle! ")
-            type.type("You look down to see a skinny gray rat nibling your foot. You kick at it, but the little rodent runs under the seat. ")
-            print("\n")
-            type.type("The rat jumps up onto your backseat, and begins to laugh at you. Now that's just cruel. This rat must be crazy.")
-            print("\n")
-            if self.has_item("Pest Control"):
-                self.kill_pests()
-                type.type("You grab your " + magenta(bright("Pest Control")) + " and spray the rat down. ")
-                type.type("A cloud of white liquid covers the rat, and you watch as it spazzes out, and dies. ")
-                type.type("Hopefully, that's it for your rat problems. Except for that bite. You might wanna get that checked out.")
-            else:
-                type.type("You jump at the seat towards the rat, but it sneaks back under the passenger seat, and you can't find it. ")
-                type.type("That damn rat. Hopefully, the bite isn't too serious, but it's probably worth getting checked out.")
-            self.add_status("Rat Bite")
-            random_chance = random.randrange(2)
-            if random_chance == 1:
-                self.add_status("Rabies")
-                self.mark_rabies_day(self.__day)
-            self.mark_rat_bite_day(self.__day)
-            print("\n") 
-            return       
+            type.type("You jump at the seat towards the rat, but it sneaks back under the passenger seat, and you can't find it. ")
+            type.type("That damn rat. Hopefully, the bite isn't too serious, but it's probably worth getting checked out.")
+        self.add_status("Rat Bite")
+        random_chance = random.randrange(2)
+        if random_chance == 1:
+            self.add_status("Rabies")
+            self.mark_rabies_day(self.__day)
+        self.mark_rat_bite_day(self.__day)
+        print("\n") 
+        return       
         
+
     def hungry_termites(self):
         random_choice = random.randrange(2)
         if (random_choice != 0) or not self.has_danger("Termite"):
             dayEvent = getattr(self, self.__lists.get_poor_day_event())
             dayEvent()
             return
+
+        type.type("You wake up to a clicking sound. Looking around, you notice that it's coming from your pile of money. ")
+        type.type("You jump up to check your cash, and you find a termite eating away at your cash. ")
+        if self.has_item("Pest Control"):
+            self.kill_pests()
+            type.type("You grab your " + magenta(bright("Pest Control")) + " and spray in the direction of the termite. ")
+            type.type("A cloud of white liquid covers the termite, and you watch as it slows down, twitches, and dies. ")
+            type.type("Hopefully, that's the end of your termite problems.")
         else:
-            type.type("You wake up to a clicking sound. Looking around, you notice that it's coming from your pile of money. ")
-            type.type("You jump up to check your cash, and you find a termite eating away at your cash. ")
-            if self.has_item("Pest Control"):
-                self.kill_pests()
-                type.type("You grab your " + magenta(bright("Pest Control")) + " and spray in the direction of the termite. ")
-                type.type("A cloud of white liquid covers the termite, and you watch as it slows down, twitches, and dies. ")
-                type.type("Hopefully, that's the end of your termite problems.")
-            else:
-                type.type("You attempt to swat it with your hand, but it falls under your car seat. ")
-                type.type("You stick your head under the seat, but you aren't sure where the termite went, or if it has a family nearby. This is just brutal.")
-            print("\n")
-            type.type("The termite ate through a lot of your money. ")
-            losses = int(self.get_balance() * (random.randint(20, 50)/100))
-            type.type("You lost " + green(bright("${:,}".format(losses))) + ".")
-            self.change_balance(-losses)
+            type.type("You attempt to swat it with your hand, but it falls under your car seat. ")
+            type.type("You stick your head under the seat, but you aren't sure where the termite went, or if it has a family nearby. This is just brutal.")
+        print("\n")
+        type.type("The termite ate through a lot of your money. ")
+        losses = int(self.get_balance() * (random.randint(20, 50)/100))
+        type.type("You lost " + green(bright("${:,}".format(losses))) + ".")
+        self.change_balance(-losses)
 
     # One-Time
             
@@ -982,42 +1031,48 @@ class Player:
             dayEvent = getattr(self, self.__lists.get_rich_day_event())
             dayEvent()
             return
-        else:
-            self.add_danger("Betsy Army")
-            self.lose_danger("Betsy Tractor")
-            type.type("You wake up to the sound of a tractor barrling closer. As you jump up from your seat, you see the tractor getting closer to your wagon. ")
-            type.type("The tractor drives beside your vehicle, and pushes right up against you, grinding the paint off your car. That's just mean. ")
-            print("\n")
-            type.type("You look up at the driver to see a beautiful black and white cow. Good god, it's Betsy. Why, Betsy, why. The cow moos at you aggressively, and you roll down the window. ")
-            print("\n")
-            type.type("Betsy stares into your soul, then looks over at the seat next to you. It appears Betsy is interested in your pile of money. ")
-            print()
-            type.type("Do you feed Betsy? ")
-            while True:
-                answer = self.yes_or_no("Moo? ")
-                if answer == "yes":
-                    type.type("You reach out your window, and put a stack of bills, worth " + green(bright("$10,000")) + " into Betsy's mouth. She chews them up, then spits them out into your wagon.")
-                    self.change_balance(-10000)
-                    random_chance = random.randrange(4)
-                    if (random_chance == 0) or (self.__balance <50000):
-                        type.type("Betsy moos, then smiles. She pulls away from the car, and drives the tractor down the road, happy as can be.")
-                        break
-                    else:
-                        type.type("Betsy moos, then stares you down. She doesn't seem to be done with you.")
-                        print()
-                        type.type("Do you feed Betsy? ")
-                elif answer == "no":
-                    type.type("Betsy moos, then backs the tractor up. She then proceeds to step on the gas, and drives the tractor forward at your vehicle, slamming into the front of your wagon hard. She moos and moos and moos, pushing your car further back. The jolt of the vehicles smashing into each other kills, and your spine begins to fracture.")
-                    print("\n")
-                    self.hurt(80)
-                    self.add_injury("Fractured Spine")
-                    type.type("Betsy laughs a laugh, almost maniacal, before driving the tractor down the road.")
+
+        self.add_danger("Betsy Army")
+        self.lose_danger("Betsy Tractor")
+        type.type("You wake up to the sound of a tractor barrling closer. As you jump up from your seat, you see the tractor getting closer to your wagon. ")
+        type.type("The tractor drives beside your vehicle, and pushes right up against you, grinding the paint off your car. That's just mean. ")
+        print("\n")
+        type.type("You look up at the driver to see a beautiful black and white cow. Good god, it's Betsy. Why, Betsy, why. The cow moos at you aggressively, and you roll down the window. ")
+        print("\n")
+        type.type("Betsy stares into your soul, then looks over at the seat next to you. It appears Betsy is interested in your pile of money. ")
+        print()
+        type.type("Do you feed Betsy? ")
+        while True:
+            answer = self.yes_or_no("Moo? ")
+            if answer == "yes":
+                type.type("You reach out your window, and put a stack of bills, worth " + green(bright("$10,000")) + " into Betsy's mouth. She chews them up, then spits them out into your wagon.")
+                self.change_balance(-10000)
+                random_chance = random.randrange(4)
+                if (random_chance == 0) or (self.__balance <50000):
+                    type.type("Betsy moos, then smiles. She pulls away from the car, and drives the tractor down the road, happy as can be.")
                     break
-            print("\n")
+                else:
+                    type.type("Betsy moos, then stares you down. She doesn't seem to be done with you.")
+                    print()
+                    type.type("Do you feed Betsy? ")
+            elif answer == "no":
+                type.type("Betsy moos, then backs the tractor up. She then proceeds to step on the gas, and drives the tractor forward at your vehicle, slamming into the front of your wagon hard. She moos and moos and moos, pushing your car further back. The jolt of the vehicles smashing into each other kills, and your spine begins to fracture.")
+                print("\n")
+                self.hurt(80)
+                self.add_injury("Fractured Spine")
+                type.type("Betsy laughs a laugh, almost maniacal, before driving the tractor down the road.")
+                break
+        print("\n")
 
     # Doughman Days (500,000 - 900,000)
     # Everytime
-    
+    def thunderstorm(self):
+        self.add_travel_restriction("Rain")
+        type.type("You wake up to the sound of raindrops hitting the roof of your wagon. It starts with a couple, then a few, and before you even get the chance to stretch, it begins to pour. The sky is a dark, dark grey, and streams start to form along the road.")
+        print("\n")
+        type.type("The pitter-patter of the rain on your car lulls you back to sleep. When a strike of lightning wakes you once more, you look out the windows to see a few inches of rain covering the street. Welp, there goes your plans for the day.")
+        print("\n")
+        return
     # Conditional
             
     # One-Time
@@ -1028,29 +1083,29 @@ class Player:
             dayEvent = getattr(self, self.__lists.get_modest_day_event())
             dayEvent()
             return
-        else:
-            self.lose_danger("Even Further Interrogation")
-            self.add_danger("Final Interrogation")
-            type.type("You wake up, and through your windshield, you see a car parked right in front of you. Not this again. As you open the door and get out of your car, you notice the man in his bright red suit, once again peering into your trunk.")
-            print("\n")
-            type.type("The man sees you, and walks up to you, with a badge in his hand.")
-            print("\n")
-            type.type(space_quote("You. You're awake. Good. You see this badge? It says I have the authority to make you not live here."))
-            type.type("You look at the badge. It's a piece of paper, colored gold, with the letters 'FBI' and 'CIA' written in pencil.")
-            print("\n")
-            type.type(quote("See? I'm allowed to make you leave. And I'm invoking my right to do this right now!"))
-            print("\n")
-            type.type(space_quote("Are you gonna leave?"))
-            answer = self.yes_or_no(space_quote("Are you? Gonna leave?"))
-            if answer == "yes":
-                type.type(quote("Good, you better do what I say, I'm super powerful. I hope you actually move and stop living here, because it's really getting on my nervers. I'll be back to make sure you do it, mark my words."))
-                print()
-            elif answer == "no":
-                type.type(quote("What? But you have to! This badge says so! You better listen to me, because I'm really starting to get upset. I'll be back, and if you haven't moved yet, I'll make you, mark my words."))
-                print()
-            type.type("After the man tells you this, he looks up, and stares at the sun. And after about 30 seconds, he rubs his eyes, walks back to his car, and drives off.")
-            print("\n")
-            return
+
+        self.lose_danger("Even Further Interrogation")
+        self.add_danger("Final Interrogation")
+        type.type("You wake up, and through your windshield, you see a car parked right in front of you. Not this again. As you open the door and get out of your car, you notice the man in his bright red suit, once again peering into your trunk.")
+        print("\n")
+        type.type("The man sees you, and walks up to you, with a badge in his hand.")
+        print("\n")
+        type.type(space_quote("You. You're awake. Good. You see this badge? It says I have the authority to make you not live here."))
+        type.type("You look at the badge. It's a piece of paper, colored gold, with the letters 'FBI' and 'CIA' written in pencil.")
+        print("\n")
+        type.type(quote("See? I'm allowed to make you leave. And I'm invoking my right to do this right now!"))
+        print("\n")
+        type.type(space_quote("Are you gonna leave?"))
+        answer = self.yes_or_no(space_quote("Are you? Gonna leave?"))
+        if answer == "yes":
+            type.type(quote("Good, you better do what I say, I'm super powerful. I hope you actually move and stop living here, because it's really getting on my nervers. I'll be back to make sure you do it, mark my words."))
+            print()
+        elif answer == "no":
+            type.type(quote("What? But you have to! This badge says so! You better listen to me, because I'm really starting to get upset. I'll be back, and if you haven't moved yet, I'll make you, mark my words."))
+            print()
+        type.type("After the man tells you this, he looks up, and stares at the sun. And after about 30 seconds, he rubs his eyes, walks back to his car, and drives off.")
+        print("\n")
+        return
         
     # Nearly There Days (900,000+)
     # Everytime
@@ -1065,111 +1120,111 @@ class Player:
             dayEvent = getattr(self, self.__lists.get_nearly_day_event())
             dayEvent()
             return
-        else:
-            self.lose_danger("Betsy Army")
-            type.type("You wake up to the sound of thousands of hoofsteps, getting closer to your wagon. You jump out of your seat, to see the street flooded with cows, all getting closer to your vehicle. ")
-            type.type("At the front of the crowd, is a cow, distinct from the rest. It's Betsy. Of course, it's Betsy. God fucking dammit.")
-            print("\n")
-            type.type("Betsy leads the herd to your wagon, and as you roll the window down, all you can hear are the hundreds upon hundreds of moos, from each of the angry cows. ")
-            print("\n")
-            type.type("Betsy, and the rest of the cows, all stare into your soul, then look over at the seat next to you. It appears Betsy and her friends are interested in your pile of money. ")
-            print()
-            type.type("Do you feed Betsy and her friends? ")
-            while True:
-                answer = self.yes_or_no("Moo? ")
-                if answer == "yes":
-                    type.type("You throw a bunch of bills into the crowd of cows, worth " + green(bright("$100,000")) + ". Betsy catches a bill, chews it up, then spits it out into your face.")
-                    self.change_balance(-100000)
-                    random_chance = random.randrange(4)
-                    if (random_chance == 0) or (self.__balance <100001):
-                        type.type("Betsy moos, then smiles. The rest of the cows moo in harmony, and the crowd begins to march down the road, happy as can be.")
-                        break
-                    else:
-                        type.type("Betsy moos, then stares you down. The rest of the cows begin to moo. They don't seem to be done with you.")
-                        print()
-                        type.type("Do you feed Betsy? ")
-                elif answer == "no":
-                    type.type("Betsy moos, then charges your vehicle. The rest of the cows start attacking your wagon, shattering the windows, knocking off the tires, and pummeling the doors.")
-                    print("\n")
-                    type.slow(red(bright("A pane of glass explodes next to you, sending shards into your face. One catches your eye, and you scream in pain. The cows continue to attack you, and your money is spiring all around you. Unable to see, and covered in blood, you close your eyes, and let yourself succumb to the army of cows. You won, Betsy, you won.")))
-                    self.kill()
+
+        self.lose_danger("Betsy Army")
+        type.type("You wake up to the sound of thousands of hoofsteps, getting closer to your wagon. You jump out of your seat, to see the street flooded with cows, all getting closer to your vehicle. ")
+        type.type("At the front of the crowd, is a cow, distinct from the rest. It's Betsy. Of course, it's Betsy. God fucking dammit.")
+        print("\n")
+        type.type("Betsy leads the herd to your wagon, and as you roll the window down, all you can hear are the hundreds upon hundreds of moos, from each of the angry cows. ")
+        print("\n")
+        type.type("Betsy, and the rest of the cows, all stare into your soul, then look over at the seat next to you. It appears Betsy and her friends are interested in your pile of money. ")
+        print()
+        type.type("Do you feed Betsy and her friends? ")
+        while True:
+            answer = self.yes_or_no("Moo? ")
+            if answer == "yes":
+                type.type("You throw a bunch of bills into the crowd of cows, worth " + green(bright("$100,000")) + ". Betsy catches a bill, chews it up, then spits it out into your face.")
+                self.change_balance(-100000)
+                random_chance = random.randrange(4)
+                if (random_chance == 0) or (self.__balance <100001):
+                    type.type("Betsy moos, then smiles. The rest of the cows moo in harmony, and the crowd begins to march down the road, happy as can be.")
                     break
-            print("\n")
+                else:
+                    type.type("Betsy moos, then stares you down. The rest of the cows begin to moo. They don't seem to be done with you.")
+                    print()
+                    type.type("Do you feed Betsy? ")
+            elif answer == "no":
+                type.type("Betsy moos, then charges your vehicle. The rest of the cows start attacking your wagon, shattering the windows, knocking off the tires, and pummeling the doors.")
+                print("\n")
+                type.slow(red(bright("A pane of glass explodes next to you, sending shards into your face. One catches your eye, and you scream in pain. The cows continue to attack you, and your money is spiring all around you. Unable to see, and covered in blood, you close your eyes, and let yourself succumb to the army of cows. You won, Betsy, you won.")))
+                self.kill()
+                break
+        print("\n")
 
     def final_interrogation(self):
         if not self.has_met("Interrogator") or not self.has_danger("Final Interrogation"):
             dayEvent = getattr(self, self.__lists.get_modest_day_event())
             dayEvent()
             return
-        else:
-            self.lose_danger("Final Interrogation")
-            type.type("You wake up, and through your windshield, you see a car parked right in front of you. You can feel your blood start to boil. What's this guys problem? As you open the door and get out of your car, you notice the man in his bright red suit, once again peering into your trunk.")
+
+        self.lose_danger("Final Interrogation")
+        type.type("You wake up, and through your windshield, you see a car parked right in front of you. You can feel your blood start to boil. What's this guys problem? As you open the door and get out of your car, you notice the man in his bright red suit, once again peering into your trunk.")
+        print("\n")
+        type.type("The man sees you, and walks up to you, with a pistol holstered to his waist.")
+        print("\n")
+        type.type(space_quote("You. I'm done playing around. It's time to move. I mean it."))
+        type.type("You look down at the gun on his waist. It looks fancy, and certainly deadly.")
+        print("\n")
+        type.type(quote("I wouldn't test me if I were you. It's time to go, now."))
+        print("\n")
+        type.type(space_quote("Will you leave?"))
+        answer = self.yes_or_no(space_quote("Answer me. "))
+        if answer == "yes":
+            type.type(quote("That's great. Fantastic. But I don't believe a word that comes out of your filty mouth. Prove it. Leave. Go away. GET OUT."))
             print("\n")
-            type.type("The man sees you, and walks up to you, with a pistol holstered to his waist.")
+            type.type("You are fueled with anger. Who is this guy, and what gives him the right to harass you? All for being homeless? No longer. You reach for the gun on his waist.")
             print("\n")
-            type.type(space_quote("You. I'm done playing around. It's time to move. I mean it."))
-            type.type("You look down at the gun on his waist. It looks fancy, and certainly deadly.")
+            random_chance = random.randrange(4)
+            if random_chance == 0:
+                type.slow(red("Before you get the chance to grab it, the man steps back, unholsters the pistol, then fires three shots into your chest. The glass behind you shatters, and you fall to your knees in the street."))
+                print("\n")
+                type.slow(red(quote("You should've just listened to me man! All you had to do was listen! Move, live somewhere else. Find a home, anything. But no! You just had to live in your car, like the homeless piece of shit that you are!")))
+                print("\n")
+                type.slow(red(bright("The man kicks you down, and steps on your chest, causing the bullet holes to leak blood onto the concrete below you. As you feel yourself beginning to fade away, you watch the man lift his pistol to your head, and pull the trigger.")))
+                self.kill()
+            else:
+                type.type("You snatch the gun from his holster, and he tackles you to the ground. You fight and struggle, each of you with both hands on the pistol. In the distance, you hear the horn of a freight truck beginning to drive closer. The man punches you in the arm, and it stings. Without thinking twice, you give the man a headbutt, and he falls backwards into the road. You point the gun at the man, and he begins to cry.")
+                print("\n")
+                type.type(quote("Please, I'm sorry. I didn't mean to cause any of this. I just, I hate seeing people living on the streets, all alone. I was just trying to help you. Just, please, for the love of god, don't hurt me."))
+                print("\n")
+                type.type("As the man begs for his life, the freight truck continues to draw closer, and the horn gets louder. You point at the truck in the distance, but the man can't see through the tears in his eyes.")
+                print("\n")
+                type.type(space_quote("Please, I have a family. I have children. My name is Phil. I don't wanna die. I'm too young. I can't die. I can't die. I ca-"))
+                type.type("You watch as the freight truck crushes Phil, and continues down the road. Nothing remained but the splotches of blood that splattered the road where he once stood.")
+                print("\n")
+                type.type("After sitting a while, and recollecting your thoughts, you bring the pistol over to Phil's car, and throw it onto the passengers seat. Looking inside, the car has dice hanging on the mirror, and is filled to the brim with red suits. On the dashboard sits a photo, of Phil, his wife, and his three kids, all wearing bright red suits. Phil might've been crazy, but at least he was consistent.")
+                print("\n")
+                type.type("You get in the car, and drive it down the road, before turning into the woods. You drive a mile in, before parking the car before the lake. You get out, and push the car into the water, watching as it submerges.")
+                print("\n")
+                return
+        elif answer == "no":
+            type.type(quote("Really? You really want to do that? I warned you, man."))
             print("\n")
-            type.type(quote("I wouldn't test me if I were you. It's time to go, now."))
+            type.type("The man pulls out his pistol, and points it at you. You lift your hands above your head, before quickly reaching for the pistol.")
             print("\n")
-            type.type(space_quote("Will you leave?"))
-            answer = self.yes_or_no(space_quote("Answer me. "))
-            if answer == "yes":
-                type.type(quote("That's great. Fantastic. But I don't believe a word that comes out of your filty mouth. Prove it. Leave. Go away. GET OUT."))
+            random_chance = random.randrange(3)
+            if random_chance == 0:
+                type.slow(red("Before you get the chance to grab it, the man steps back, then fires three shots into your chest. The glass behind you shatters, and you fall to your knees in the street."))
                 print("\n")
-                type.type("You are fueled with anger. Who is this guy, and what gives him the right to harass you? All for being homeless? No longer. You reach for the gun on his waist.")
+                type.slow(red(quote("Nice try, man! You should've just listened to me! All you had to do was listen! Move, live somewhere else. Find a home, anything. But no! You just had to live in your car, like the homeless piece of shit that you are!")))
                 print("\n")
-                random_chance = random.randrange(4)
-                if random_chance == 0:
-                    type.slow(red("Before you get the chance to grab it, the man steps back, unholsters the pistol, then fires three shots into your chest. The glass behind you shatters, and you fall to your knees in the street."))
-                    print("\n")
-                    type.slow(red(quote("You should've just listened to me man! All you had to do was listen! Move, live somewhere else. Find a home, anything. But no! You just had to live in your car, like the homeless piece of shit that you are!")))
-                    print("\n")
-                    type.slow(red(bright("The man kicks you down, and steps on your chest, causing the bullet holes to leak blood onto the concrete below you. As you feel yourself beginning to fade away, you watch the man lift his pistol to your head, and pull the trigger.")))
-                    self.kill()
-                else:
-                    type.type("You snatch the gun from his holster, and he tackles you to the ground. You fight and struggle, each of you with both hands on the pistol. In the distance, you hear the horn of a freight truck beginning to drive closer. The man punches you in the arm, and it stings. Without thinking twice, you give the man a headbutt, and he falls backwards into the road. You point the gun at the man, and he begins to cry.")
-                    print("\n")
-                    type.type(quote("Please, I'm sorry. I didn't mean to cause any of this. I just, I hate seeing people living on the streets, all alone. I was just trying to help you. Just, please, for the love of god, don't hurt me."))
-                    print("\n")
-                    type.type("As the man begs for his life, the freight truck continues to draw closer, and the horn gets louder. You point at the truck in the distance, but the man can't see through the tears in his eyes.")
-                    print("\n")
-                    type.type(space_quote("Please, I have a family. I have children. My name is Phil. I don't wanna die. I'm too young. I can't die. I can't die. I ca-"))
-                    type.type("You watch as the freight truck crushes Phil, and continues down the road. Nothing remained but the splotches of blood that splattered the road where he once stood.")
-                    print("\n")
-                    type.type("After sitting a while, and recollecting your thoughts, you bring the pistol over to Phil's car, and throw it onto the passengers seat. Looking inside, the car has dice hanging on the mirror, and is filled to the brim with red suits. On the dashboard sits a photo, of Phil, his wife, and his three kids, all wearing bright red suits. Phil might've been crazy, but at least he was consistent.")
-                    print("\n")
-                    type.type("You get in the car, and drive it down the road, before turning into the woods. You drive a mile in, before parking the car before the lake. You get out, and push the car into the water, watching as it submerges.")
-                    print("\n")
-                    return
-            elif answer == "no":
-                type.type(quote("Really? You really want to do that? I warned you, man."))
+                type.slow(red(bright("The man kicks you down, and steps on your chest, causing the bullet holes to leak blood onto the concrete below you. As you feel yourself beginning to fade away, you watch the man lift his pistol to your hand, and pull the trigger.")))
+                self.kill()
+            else:
+                type.type("You snatch the gun from his hands, and he tackles you to the ground. You fight and struggle, each of you with both hands on the pistol. The man punches you in the arm, and it stings. Without thinking twice, you give the man a headbutt, and he falls backwards into the road. You point the gun at the man, and he begins to cry.")
                 print("\n")
-                type.type("The man pulls out his pistol, and points it at you. You lift your hands above your head, before quickly reaching for the pistol.")
+                type.type(quote("Please, I'm sorry. I didn't mean to cause any of this. I just, I hate seeing people living on the streets, all alone. I was just trying to help you. Just, please, for the love of god, don't hurt me."))
                 print("\n")
-                random_chance = random.randrange(3)
-                if random_chance == 0:
-                    type.slow(red("Before you get the chance to grab it, the man steps back, then fires three shots into your chest. The glass behind you shatters, and you fall to your knees in the street."))
-                    print("\n")
-                    type.slow(red(quote("Nice try, man! You should've just listened to me! All you had to do was listen! Move, live somewhere else. Find a home, anything. But no! You just had to live in your car, like the homeless piece of shit that you are!")))
-                    print("\n")
-                    type.slow(red(bright("The man kicks you down, and steps on your chest, causing the bullet holes to leak blood onto the concrete below you. As you feel yourself beginning to fade away, you watch the man lift his pistol to your hand, and pull the trigger.")))
-                    self.kill()
-                else:
-                    type.type("You snatch the gun from his hands, and he tackles you to the ground. You fight and struggle, each of you with both hands on the pistol. The man punches you in the arm, and it stings. Without thinking twice, you give the man a headbutt, and he falls backwards into the road. You point the gun at the man, and he begins to cry.")
-                    print("\n")
-                    type.type(quote("Please, I'm sorry. I didn't mean to cause any of this. I just, I hate seeing people living on the streets, all alone. I was just trying to help you. Just, please, for the love of god, don't hurt me."))
-                    print("\n")
-                    type.type("As the man begs for his life, you cock the gun. You point pistol at the man, and he continues to cry.")
-                    print("\n")
-                    type.type(space_quote("Please, I have a family. I have children. My name is Phil. I don't wanna die. I'm too young. I can't die. I can't die. I ca-"))
-                    type.type("You pull the trigger, and Phil becomes quiet. His blood covers the street, but at least his red suit still looks good as new.")
-                    print("\n")
-                    type.type("After sitting a while, and recollecting your thoughts, you drag Phil over to his car. You stuff him into the trunk, and throw his pistol onto the passengers seat. Looking inside, the car has dice hanging on the mirror, and is filled to the brim with red suits. On the dashboard sits a photo, of Phil, his wife, and his three kids, all wearing bright red suits. Phil might've been crazy, but at least he was consistent.")
-                    print("\n")
-                    type.type("You get in the car, and drive it down the road, before turning into the woods. You drive a mile in, before parking the car before the lake. You get out, and push the car into the water, watching as it submerges.")
-                    print("\n")
-                    return
+                type.type("As the man begs for his life, you cock the gun. You point pistol at the man, and he continues to cry.")
+                print("\n")
+                type.type(space_quote("Please, I have a family. I have children. My name is Phil. I don't wanna die. I'm too young. I can't die. I can't die. I ca-"))
+                type.type("You pull the trigger, and Phil becomes quiet. His blood covers the street, but at least his red suit still looks good as new.")
+                print("\n")
+                type.type("After sitting a while, and recollecting your thoughts, you drag Phil over to his car. You stuff him into the trunk, and throw his pistol onto the passengers seat. Looking inside, the car has dice hanging on the mirror, and is filled to the brim with red suits. On the dashboard sits a photo, of Phil, his wife, and his three kids, all wearing bright red suits. Phil might've been crazy, but at least he was consistent.")
+                print("\n")
+                type.type("You get in the car, and drive it down the road, before turning into the woods. You drive a mile in, before parking the car before the lake. You get out, and push the car into the water, watching as it submerges.")
+                print("\n")
+                return
 
 
     # Poor Nights (1 - 1,000)
@@ -1857,7 +1912,7 @@ class Player:
         self.__clear_status = False
 
         # Sprays your car with Pest Control if you have a pest
-        if self.has_pests() and self.has_item("Pest Control"):
+        if self.has_pests() and self.has_item("Pest Control") and (not self.has_travel_restriction("Rain")) and (not self.has_travel_restriction("Wind")):
             type.type("Believing that there may be an unwanted pest somewhere in your car, you spray your " + magenta(bright("Pest Control")) + " throughout the vehicle, hoping that it'll solve your pest issues. ")
             self.kill_pests()
             type.type("After giving the wagon a minute to air out, you get back inside.")
@@ -1865,15 +1920,17 @@ class Player:
 
         # Feeds Squirrely if you have Acorns
         if self.has_item("Bag of Acorns") and self.has_item("Squirrely"):
-            type.type("You give Squirrely your " + magenta(bright("Bag of Acorns")) + ", and he goes to town, munching down all of them.")
+            type.type("You give Squirrely your " + magenta(bright("Bag of Acorns")) + ", and he goes to town, munching down all of them. What a good squirrel.")
             print("\n")
 
         # Gives Squirrely Status Update
         if self.has_item("Squirrely"):
             days_elapsed = self.get_squirrely_fed_day()
+            if self.has_travel_restriction("rain") or self.has_travel_restriction("Wind"):
+                type.type(self.__lists.get_worried_squirrely_update())
             if days_elapsed == 0:
                 type.type("Squirrely is well-fed, and happy as can be.")
-            if days_elapsed <= 4:
+            elif days_elapsed <= 4:
                 type.type(self.__lists.get_fed_squirrely_update())
             elif days_elapsed < 6:
                 type.type(self.__lists.get_hungry_squirrely_update())
@@ -1893,11 +1950,50 @@ class Player:
                     type.type(self.__lists.get_hungry_squirrely_update())
             print("\n")
 
+
     def afternoon(self):
         self.update_status()
         self.update_rank()
         self.update_convenience_store_inventory()
-        if self.has_item("Car"):
+        if self.has_travel_restriction("Wind"):
+            random_chance = random.randrange(3)
+            if random_chance == 0:
+                type.type("You watch the wind pull twigs and branches from the trees all afternoon.")
+            elif random_chance == 1:
+                type.type("One branch falls, and lands on the hood of your wagon. Had it been any bigger, that could've been bad.")
+            elif random_chance == 2:
+                type.type("You hear a loud crash in the distance. A tree must've fallen nearby.")
+            else:
+                type.type("The wind pushes the light gray clouds across the sky, and you watch them all afternoon.")
+            
+            print("\n")
+            
+            type.type("As the sun begins to fall, you collect your money, and leave the warmth of your wagon. You barrel out into the wind, trudging your way to the casino.")
+
+            print("\n")
+            random_chance = random.randrange(3)
+            if random_chance == 1:
+                type.slow(red("It's a windy one today. Now, let us gamble."))
+            elif random_chance == 2:
+                type.slow(red("Suprised you made it here in one piece, given the weather. It's time to bet."))
+            elif random_chance == 3:
+                type.slow(red("It's nice to see you tonight. Shows commitment. You ready?"))
+            else:
+                type.slow(red("Wind didn't blow any of your money away, did it? Anyways, let's play."))
+            print("\n")
+
+        elif self.has_travel_restriction("Rain"):
+            type.type("You watch, as the rain pours, and pours, and pours. By nightfall, the rain hasn't let up, and flooding in the streets has only gotten worse. Unfortunately, you're gonna have to skip out on Blackjack for the night.")
+            print("\n")
+            type.type("You get cozy in your car, and begin to doze off. ")
+
+        elif self.has_travel_restriction("Battery"):
+            pass
+
+        elif self.has_travel_restriction("Engine"):
+            pass
+            
+        elif self.has_item("Car"):
             choice = None
             shops = self.__lists.make_shop_list()
             type.type("Would you like to spend your day driving somewhere? ")
