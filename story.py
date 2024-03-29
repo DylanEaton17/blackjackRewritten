@@ -234,7 +234,7 @@ class Player:
             elif self.__day == 2: type.slow("You lasted " + bright(yellow(str(self.__day-1) + " day")) + ".")
             else: type.slow("You lasted " + bright(yellow(str(self.__day) + " days")) + "!")
             print()
-            type.slow("You met your fate with a final balance of " + green(bright("$" + str(self.__balance))))
+            type.slow("You met your fate with a final balance of " + green(bright("${:,}".format(self.__balance))))
             print()
             type.slow("The police were able to recover your body, but nobody cared enough to show up to your funeral.")
             quit()
@@ -465,7 +465,7 @@ class Player:
     # Opening
     def first_setup(self):
         while (True):
-            type("Type 'y' or 'yes', not case sensitive, to say yes to a question: ")
+            type.type("Type 'y' or 'yes', not case sensitive, to say yes to a question: ")
             yes_or_no = input("").lower()
             if (yes_or_no == "y") or (yes_or_no == "yes"):
                 break
@@ -474,7 +474,7 @@ class Player:
         print()
 
         while (True):
-            type("Type 'n' or 'no', not case sensitive, to say no to a question: ")
+            type.type("Type 'n' or 'no', not case sensitive, to say no to a question: ")
             yes_or_no = input("").lower()
             if (yes_or_no == "n") or (yes_or_no == "no"):
                 break
@@ -483,7 +483,7 @@ class Player:
         print()
 
         while (True):
-            type("Type 'h' or 'hit', not case sensitive, to hit your hand: ")
+            type.type("Type 'h' or 'hit', not case sensitive, to hit your hand: ")
             hit_or_stand = input("").lower()
             if (hit_or_stand == "h") or (hit_or_stand == "hit"):
                 break
@@ -492,7 +492,7 @@ class Player:
         print()
 
         while (True):
-            type("Type 's' or 'stand', not case sensitive, to stand with your hand's value: ")
+            type.type("Type 's' or 'stand', not case sensitive, to stand with your hand's value: ")
             hit_or_stand = input("").lower()
             if (hit_or_stand == "s") or (hit_or_stand == "stand"):
                 break
@@ -633,7 +633,7 @@ class Player:
         if self.has_status("Sore Throat"):
             dayEvent = getattr(self, self.__lists.get_poor_day_event())
             dayEvent()
-            
+            return
             
         type.type("You wake up, and begin to have a coughing fit. Your throat is dry, and super sore. ")
         if self.has_item("Cough Drops"):
@@ -643,7 +643,7 @@ class Player:
             return
         else:
             self.add_status("Sore Throat")
-            self.mark_sore_throat_day(self.__day)
+            self.mark_day("Sore Throat")
             type.type("You cough, and cough, and cough some more, but the burning itch in your throat just won't go away.")
             print("\n")
             return
@@ -665,7 +665,7 @@ class Player:
             type.type("You attempt to swat it with your hand, but it sneaks into your heater. ")
             type.type("You start the engine and blast the heat, but you aren't sure if the spider has died, or if it has a family nearby. This sucks.")
         self.add_status("Spider Bite")
-        self.mark_spider_bite_day(self.__day)
+        self.mark_day("Spider Bite")
         print("\n")
 
 
@@ -709,7 +709,7 @@ class Player:
         type.type(quote("You my friend, you are carrotless. That's quite a disrespectful showing towards my steed. My, my, this can't do at all. What if another cowboy comes by, you're just gonna disrespect their steed, too? Tell you what, I happen to have one spare carrot in my pouch. Take this, and be ready. You never know when a cowboy's gonna come trotting by."))
         print("\n")
         self.add_item("Carrot")
-        type.type("Davey Jameson hands you his " + bright(magenta("Carrot")) | ", and smiles.")
+        type.type("Davey Jameson hands you his " + bright(magenta("Carrot")) + ", and smiles.")
         print("\n")
         type.type(quote("See, with this carrot in your possession, you're ready for anytime a cowboy strolls on down this road. Just give their steed a carrot, and they'll be very grateful."))
         print("\n")
@@ -770,7 +770,7 @@ class Player:
             type.type(quote("So you do know this. Then why do you live here? You shouldn't. It's not right, man. I'd suggest you stop living here. Maybe live somewhere else instead. Just not here."))
             print()
         elif answer == "no":
-            type.type(quote("You don't know this? How don't you know this? It's super obvious stuff, man. People don't live at places where they're not supposed to, and that's exactly what you're doing right now. I'd suggest you stop it, right this instance."))
+            type.type(quote("You don't know this? How don't you know this? It's super obvious stuff, man. People don't live at places where they're not supposed to, and that's exactly what you're doing right now. I'd suggest you stop it, right this instant."))
             print()
         type.type("After the man tells you this, he looks up, and stares at the sun. And after about 20 seconds, he rubs his eyes, walks back to his car, and drives off.")
         print("\n")
@@ -786,7 +786,11 @@ class Player:
         print("\n")
 
     # Conditional
-        
+    def got_a_cold(self):
+        type.type("You wake up to a sneeze, followed by your nose running, droplets falling down from your chin and onto your shirt. Damn, must be a cold.")
+        self.add_status("Cold")
+        self.mark_day("Cold")
+        print("\n")
 
     # One-Time
     def turn_to_god(self):
@@ -885,7 +889,7 @@ class Player:
             type.type("The spider, now out of reach, crawls off the seat and onto the floor. ")
             type.type("You stick your head out back, but you aren't sure where the spider went, or if it has a family nearby. This is unfortunate.")
         self.add_status("Spider Bite")
-        self.mark_spider_bite_day(self.__day)
+        self.mark_day("Spider Bite")
         print("\n")
 
     def squirrel_invasion(self):
@@ -909,7 +913,7 @@ class Player:
                 type.type("After an hour of watching the squirrel eat the acorns, climb around your car, and jump from your arm to the dashboard over and over, you decide that this squirrel is now yours. You name him 'Squirrely', in honor of him being a squirrel.")
                 print("\n")
                 self.add_item("Squirrely")
-                self.mark_squirrely_fed_day()
+                self.mark_day("Squirrely Fed")
                 return
         else:
             type.type("You wake up to a sharp pain on your leg! ")
@@ -920,8 +924,8 @@ class Player:
             random_chance = random.randrange(4)
             if random_chance == 1:
                 self.add_status("Rabies")
-                self.mark_rabies_day(self.__day)
-            self.mark_squirrel_bite_day(self.__day)
+                self.mark_day("Rabies")
+            self.mark_day("Squirrel Bite")
             print("\n") 
             return
     # One-Time
@@ -994,8 +998,8 @@ class Player:
         random_chance = random.randrange(2)
         if random_chance == 1:
             self.add_status("Rabies")
-            self.mark_rabies_day(self.__day)
-        self.mark_rat_bite_day(self.__day)
+            self.mark_day("Rabies")
+        self.mark_day("Rat Bite")
         print("\n") 
         return       
         
@@ -1003,7 +1007,7 @@ class Player:
     def hungry_termites(self):
         random_choice = random.randrange(2)
         if (random_choice != 0) or not self.has_danger("Termite"):
-            dayEvent = getattr(self, self.__lists.get_poor_day_event())
+            dayEvent = getattr(self, self.__lists.get_rich_day_event())
             dayEvent()
             return
 
@@ -1073,6 +1077,7 @@ class Player:
         type.type("The pitter-patter of the rain on your car lulls you back to sleep. When a strike of lightning wakes you once more, you look out the windows to see a few inches of rain covering the street. Welp, there goes your plans for the day.")
         print("\n")
         return
+    
     # Conditional
             
     # One-Time
@@ -1080,7 +1085,7 @@ class Player:
     # One-Time Conditional
     def even_further_interrogation(self):
         if not self.has_met("Interrogator") or not self.has_danger("Even Further Interrogation"):
-            dayEvent = getattr(self, self.__lists.get_modest_day_event())
+            dayEvent = getattr(self, self.__lists.get_doughman_day_event())
             dayEvent()
             return
 
@@ -1153,7 +1158,7 @@ class Player:
 
     def final_interrogation(self):
         if not self.has_met("Interrogator") or not self.has_danger("Final Interrogation"):
-            dayEvent = getattr(self, self.__lists.get_modest_day_event())
+            dayEvent = getattr(self, self.__lists.get_nearly_day_event())
             dayEvent()
             return
 
@@ -1396,7 +1401,7 @@ class Player:
             yes_or_no = input("").lower()
             print()
             if(yes_or_no == "n") or (yes_or_no == "no"):
-                type.type("Really? No dice, huh. Yunno, I think you're makin' a mistake, but I ain't one to judge. You have a nice day now.\" ")
+                type.type("\"Really? No dice, huh. Yunno, I think you're makin' a mistake, but I ain't one to judge. You have a nice day now.\" ")
                 type.type("Tom has a sad look in his eye. It's clear that he wanted to help you. ")
                 type.type("You watch as his big golden truck stutters, starts, then drives away.")
                 print("\n")
@@ -1638,86 +1643,42 @@ class Player:
         if self.has_danger("Termite"):
             self.lose_danger("Termite")
 
+    def get_mark_index(self, mark):
+        match mark:
+            case "Spider Bite":
+                return 0
+            case "Hepatitis":
+                return 1
+            case "Squirrel Bite":
+                return 2
+            case "Squirrely Fed":
+                return 3
+            case "Rabies":
+                return 4
+            case "Rat Bite":
+                return 5
+            case "Snake Bite":
+                return 6
+            case "Sore Throat":
+                return 7
+            case "Cold":
+                return 8
 
-    def mark_spider_bite_day(self, day, time="day"):
+    def mark_day(self, mark, time="day"):
+        i = self.get_mark_index(mark)
         if time == "day":
-            self.__counting_days[0] = day
+            self.__counting_days[i] = self.__day
         if time == "night":
-            self.__counting_days[0] = day-1
+            self.__counting_days[i] = self.__day-1
 
-    def get_spider_bite_day(self):
-        return self.__day - self.__counting_days[0]
+    def get_days_elapsed(self, mark):
+        i = self.get_mark_index(mark)
+        return self.__day - self.__counting_days[i]
     
-
-    def mark_hepatitis_day(self, day, time="day"):
-        if time == "day":
-            self.__counting_days[1] = day
-        if time == "night":
-            self.__counting_days[1] = day-1
-
-    def get_hepatitis_day(self):
-        return self.__day - self.__counting_days[1]
-
-
-    def mark_squirrel_bite_day(self, day, time="day"):
-        if time == "day":
-            self.__counting_days[2] = day
-        if time == "night":
-            self.__counting_days[2] = day-1
-
-    def get_squirrel_bite_day(self):
-        return self.__day - self.__counting_days[2]
     
-
-    def mark_squirrely_fed_day(self, day, time="day"):
-        if time == "day":
-            self.__counting_days[3] = day
-        if time == "night":
-            self.__counting_days[3] = day-1
-
-    def get_squirrely_fed_day(self):
-        return self.__day - self.__counting_days[3]
-    
-
-    def mark_rabies_day(self, day, time="day"):
-        if time == "day":
-            self.__counting_days[4] = day
-        if time == "night":
-            self.__counting_days[4] = day-1
-
-    def get_rabies_day(self):
-        return self.__day - self.__counting_days[4]
-    
-
-    def mark_rat_bite_day(self, day, time="day"):
-        if time == "day":
-            self.__counting_days[5] = day
-        if time == "night":
-            self.__counting_days[5] = day-1
-
-    def get_rat_bite_day(self):
-        return self.__day - self.__counting_days[5]
-    
-
-    def mark_snake_bite_day(self, day, time="day"):
-        if time == "day":
-            self.__counting_days[6] = day
-        if time == "night":
-            self.__counting_days[6] = day-1
-
-    def get_snake_bite_day(self):
-        return self.__day - self.__counting_days[6]
-    
-
-    def mark_sore_throat_day(self, day, time="day"):
-        if time == "day":
-            self.__counting_days[7] = day
-        if time == "night":
-            self.__counting_days[7] = day-1
-
-    def get_soar_throat_day(self):
-        return self.__day - self.__counting_days[7]
-    
+    def update_silver_value(self):
+        if self.has_item("Enchanting Silver Bar"):
+            return 1000
 
     def update_status(self):
         damage = 0
@@ -1728,9 +1689,12 @@ class Player:
             self.__injuries = set()
             self.__is_sick = False
             self.__is_injured = False
+            self.__clear_all_status = False
 
+        # Physical Threats
+        # Spider Bite
         if self.has_status("Spider Bite"):
-            days_elapsed = self.get_spider_bite_day()
+            days_elapsed = self.get_days_elapsed("Spider Bite")
             if(self.__clear_status):
                 self.remove_status("Spider Bite")
                 type.type("Your spider bite is starting to heal. ")
@@ -1756,8 +1720,9 @@ class Player:
             if damage >= self.__health:
                 self.hurt(damage)
 
+        # Snake Bite
         if self.has_status("Snake Bite"):
-            days_elapsed = self.get_snake_bite_day()
+            days_elapsed = self.get_days_elapsed("Snake Bite")
             if(self.__clear_status):
                 self.remove_status("Snake Bite")
                 type.type("Your snake bite is starting to heal. ")
@@ -1778,8 +1743,9 @@ class Player:
             if damage >= self.__health:
                 self.hurt(damage)
 
+        # Squirrel Bite
         if self.has_status("Squirrel Bite"):
-            days_elapsed = self.get_squirrel_bite_day()
+            days_elapsed = self.get_days_elapsed("Squirrel Bite")
             if(self.__clear_status):
                 self.remove_status("Squirrel Bite")
                 type.type("Your squirrel bite is starting to heal. ")
@@ -1792,9 +1758,9 @@ class Player:
                 type.type("Your squirrel bite is starting to heal. ")
             print("\n")
 
-
+        # Rat Bite
         if self.has_status("Rat Bite"):
-            days_elapsed = self.get_rat_bite_day()
+            days_elapsed = self.get_days_elapsed("Rat Bite")
             if(self.__clear_status):
                 self.remove_status("Rat Bite")
                 type.type("Your rat bite is starting to heal. ")
@@ -1807,9 +1773,9 @@ class Player:
                 type.type("Your rat bite is starting to heal. ")
             print("\n")
 
-
+        # Rabies
         if self.has_status("Rabies"):
-            days_elapsed = self.get_rabies_day()
+            days_elapsed = self.get_days_elapsed("Rabies")
             if(self.__clear_status) and (days_elapsed<=3):
                 self.remove_status("Rabies")
             elif days_elapsed==3:
@@ -1828,9 +1794,28 @@ class Player:
                 self.hurt(damage)
 
 
+        # Sicknesses
+        # Cold
+        if self.has_status("Cold"):
+            self.__is_sick = True
+            days_elapsed = self.get_days_elapsed("Cold")
+            if(self.__clear_status):
+                self.remove_status("Cold")
+            elif days_elapsed == 0:
+                damage += random.choice([2, 3, 6])
+            elif days_elapsed == 1:
+                damage += random.choice([2, 5, 7])
+            elif days_elapsed > 3:
+                random_chance = random.randrange(2)
+                if random_chance == 0:
+                    self.remove_status("Cold")
+                else:
+                    damage += random.choice([3, 4, 5, 6, 7, 8, 9])
+
+        # Sore Throat
         if self.has_status("Sore Throat"):
             self.__is_sick = True
-            days_elapsed = self.get_hepatitis_day()
+            days_elapsed = self.get_days_elapsed("Sore Throat")
             if(self.__clear_status):
                 self.remove_status("Sore Throat")
             elif self.has_item("Cough Drops"):
@@ -1842,14 +1827,14 @@ class Player:
             elif days_elapsed > 3:
                 random_chance = random.randrange(2)
                 if random_chance == 0:
-                    self.remove_status("Hepatitis")
+                    self.remove_status("Sore Throat")
                 else:
                     damage += random.choice([5, 6])
 
-
+        # Hepatitis
         if self.has_status("Hepatitis"):
             self.__is_sick = True
-            days_elapsed = self.get_hepatitis_day()
+            days_elapsed = self.get_days_elapsed("Hepatitis")
             if(self.__clear_status):
                 self.remove_status("Hepatitis")
             elif days_elapsed == 0:
@@ -1871,7 +1856,7 @@ class Player:
 
 
         # Sets is_sick to False if you don't have any sicknesses, an prints a health update
-        if (self.__is_sick) and not (self.has_status("Hepatitis") or self.has_status("Sore Throat")):
+        if (self.__is_sick) and not (self.has_status("Hepatitis") and not self.has_status("Sore Throat") or self.has_status("Cold")):
             if self.has_status("Rabies"):
                 type.type("With rabies in your system, you're lucky to be alive.")
             elif self.has_status("Snake Bite") or self.has_status("Spider Bite"):
@@ -1888,7 +1873,8 @@ class Player:
 
         # If sickness kills the player, this does it.
         if damage >= self.__health:
-                self.hurt(damage)
+                type.slow(bright(red(self.__lists.get_sickness_death())))
+                self.kill()
 
         # Sets is_injured to True if you have 1 or more injuries
         if len(self.__injuries)>0:
@@ -1896,7 +1882,7 @@ class Player:
 
         # Sets is_injured to False if you have 0 injuries, and prints a healed update
         if (self.__is_injured) and len(self.__injuries)==0:
-            type.type("The injuries to your body are doing much better.")
+            type.type("The injuries on your body are doing much better.")
             print("\n")
             self.__is_injured = False
         
@@ -1909,6 +1895,7 @@ class Player:
         # If you took damage, this does it.
         if damage > 0:
             self.hurt(damage)
+
         self.__clear_status = False
 
         # Sprays your car with Pest Control if you have a pest
@@ -1925,7 +1912,7 @@ class Player:
 
         # Gives Squirrely Status Update
         if self.has_item("Squirrely"):
-            days_elapsed = self.get_squirrely_fed_day()
+            days_elapsed = self.get_days_elapsed("Squirrely Fed")
             if self.has_travel_restriction("rain") or self.has_travel_restriction("Wind"):
                 type.type(self.__lists.get_worried_squirrely_update())
             if days_elapsed == 0:
@@ -3007,11 +2994,6 @@ class Player:
         elif item == "Endless Fortune": return "A flask holding a glowing gold potion. It's infused with the power randomly double your bet for free after being dealt a hand."
         elif item == "Anti-Pathogen": return "A flask holding a glowing orange potion. It's infused with the power to heal you from any status effect."
         elif item == "Fortunate Life": return "A flask holding a glowing red potion. It's infused with the luck of the sun and the moon, and fills your life with good fortune."
-
-    def update_silver_value(self):
-        if self.has_item("Enchanting Silver Bar"):
-            return 1000
-
 
     def night_event(self):
         self.update_rank()

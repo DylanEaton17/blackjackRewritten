@@ -39,16 +39,28 @@ class Lists:
 # Poor Events (1 - 1,000)
     def make_poor_day_events_list(self):
         a_list = []
+        # Everytime
         a_list.append("seat_cash")
         a_list.append("left_window_down")
+        a_list.append("estranged_dog")
+        a_list.append("freight_truck")
+        # Conditional
+        a_list.append("sore_throat")
         a_list.append("spider_bite")
         a_list.append("hungry_cockroach")
+        # One-Time
+        a_list.append("lone_cowboy")
+        a_list.append("whats_my_name")
+        a_list.append("Interrogation")
         random.shuffle(a_list)
         return a_list
     
     def make_poor_night_events_list(self):
         a_list = []
         a_list.append("ditched_wallet")
+        a_list.append("went_jogging")
+        a_list.append("woodlands_path")
+        random.shuffle(a_list)
         return a_list
 
     def get_poor_day_event(self):
@@ -65,12 +77,19 @@ class Lists:
 # Cheap Events (1,000 - 10,000)
     def make_cheap_day_events_list(self):
         a_list = []
-        a_list.append("empty_event")
+        # Everytime
+        a_list.append("strong_winds")
+        # Conditional
+        # One-Time
+        a_list.append("turn_to_god")
+        a_list.append("hungry_cow")
+        random.shuffle(a_list)
         return a_list
     
     def make_cheap_night_events_list(self):
         a_list = []
-        a_list.append("empty_event")
+        a_list.append("woodlands_river")
+        random.shuffle(a_list)
         return a_list
 
     def get_cheap_day_event(self):
@@ -87,12 +106,20 @@ class Lists:
 # Modest Events (10,000 - 100,000)
     def make_modest_day_events_list(self):
         a_list = []
-        a_list.append("empty_event")
+        # Everytime
+        a_list.append("left_door_open")
+        # Conditional
+        a_list.append("another_spider_bite")
+        a_list.append("squirrel_invasion")
+        # One-Time Conditional
+        a_list.append("further_interrogation")
+        random.shuffle(a_list)
         return a_list
     
     def make_modest_night_events_list(self):
         a_list = []
         a_list.append("empty_event")
+        random.shuffle(a_list)
         return a_list
 
     def get_modest_day_event(self):
@@ -109,12 +136,20 @@ class Lists:
 # Rich Events (100,000 - 500,000)
     def make_rich_day_events_list(self):
         a_list = []
-        a_list.append("empty_event")
+        # Everytime
+        a_list.append("left_trunk_open")
+        # Conditional
+        a_list.append("rat_bite")
+        a_list.append("hungry_termites")
+        # One-Time Conditional
+        a_list.append("starving_cow")
+        random.shuffle(a_list)
         return a_list
     
     def make_rich_night_events_list(self):
         a_list = []
         a_list.append("empty_event")
+        random.shuffle(a_list)
         return a_list
 
     def get_rich_day_event(self):
@@ -131,12 +166,17 @@ class Lists:
 # Doughman Events (500,000 - 900,000)
     def make_doughman_day_events_list(self):
         a_list = []
-        a_list.append("empty_event")
+        # Everytime
+        a_list.append("thunderstorm")
+        # One-Time Conditional
+        a_list.append("even_further_interrogation")
+        random.shuffle(a_list)
         return a_list
     
     def make_doughman_night_events_list(self):
         a_list = []
         a_list.append("empty_event")
+        random.shuffle(a_list)
         return a_list
 
     def get_doughman_day_event(self):
@@ -153,12 +193,16 @@ class Lists:
 # Nearly There Events (900,000 +)
     def make_nearly_day_events_list(self):
         a_list = []
-        a_list.append("empty_event")
+        # One-Time Conditional
+        a_list.append("cow_army")
+        a_list.append("final_interrogation")
+        random.shuffle(a_list)
         return a_list
     
     def make_nearly_night_events_list(self):
         a_list = []
         a_list.append("empty_event")
+        random.shuffle(a_list)
         return a_list
 
     def get_nearly_day_event(self):
@@ -428,6 +472,9 @@ class Lists:
     def make_sickness_list(self):
         a_list = []
         a_list.append("You're sick, you just know it.")
+        if self.__player.has_status("Cold"):
+            a_list.append("You sneeze, and snot fills your hands. This makes you want to cry.")
+            a_list.append("You can't breathe through your nose, as it's completely clogged.")
         if self.__player.has_status("Sore Throat"):
             a_list.append("Your throat feels like it's on fire.")
             a_list.append("The pain in your throat cannot be put into words. Mainly because you're having trouble speaking.")
@@ -436,11 +483,21 @@ class Lists:
             a_list.append("Your kidneys hurt really bad. That can't be good.")
         random.shuffle(a_list)
         return a_list
-
+    
     def get_sickness_update(self):
         sickness_update = self.make_sickness_list()
         return sickness_update.pop()
-    
+
+    def get_sickness_death(self):
+        a_list = []
+        if self.__player.has_status("Cold"):
+            a_list.append("As you sneeze, you feel your heart stop beating in your chest. You clench it, before collapsing in your wagon.")
+        if self.__player.has_status("Sore Throat"):
+            a_list.append("You cough, then keep coughing. After each convulsion in your body, you try to catch your breath, only to cough even more. Trying desperately to get some air, you stick your head out the window, and directly into the freight truck that's driving by.")
+        if self.__player.has_status("Hepatitis"):
+            a_list.append("The side of your body gives out a sharp pain. You reach for it, before screaming in agony. As you spit out blood, you watch as the world around you starts to darken.")
+        random.shuffle(a_list)
+        return a_list.pop()
 
     def make_injury_list(self):
         a_list = []

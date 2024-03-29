@@ -24,11 +24,15 @@ def main():
     player.break_item("Dirty Old Hat")
     player.meet("Witch")
     player.meet("Tom")
+    player.increment_day()
+    player.hurt(99)
 
 
     while(True):
-        player.turn_to_god()
+        player.got_a_cold()
+        player.afternoon()
         blackjackGame.play_round()
+        player.end_day()
     # Useful Functions
     """
     player.day_event()

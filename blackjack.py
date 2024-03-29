@@ -515,9 +515,9 @@ class Blackjack:
                 if message==4: type.fast(yellow(bright("Oh lord have mercy, you got a Blackjack!")))
                 print()
                 if self.__free_hand:
-                    type.fast(yellow(bright("You had " + green("${:,}".format(self.__balance)) + magenta(", and with a free bet of ") + green("${:,}".format(self.__bet)) + magenta(", you've tripled it!"))))
+                    type.fast(yellow(bright("You had " + green("${:,}".format(self.__balance)) + yellow(", and with a free bet of ") + green("${:,}".format(self.__bet)) + yellow(", you've tripled it!"))))
                 else:
-                    type.fast(yellow(bright("You had " + green("${:,}".format(self.__balance)) + magenta(", and with a bet of ") + green("${:,}".format(self.__bet)) + magenta(", you've tripled it!"))))
+                    type.fast(yellow(bright("You had " + green("${:,}".format(self.__balance)) + yellow(", and with a bet of ") + green("${:,}".format(self.__bet)) + yellow(", you've tripled it!"))))
                 print("\n")
                 type.fast(yellow(bright("Your new balance is " + green("${:,}".format(self.__balance) + " + ${:,}".format(self.__bet*2) + " = ${:,}".format(self.__balance+self.__bet*2)))))
                 self.__balance += 2*self.__bet
