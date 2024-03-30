@@ -294,8 +294,8 @@ class Lists:
             a_list.append("Golden Watch")
         if(self.__player.has_broken_item("Faulty Insurance")):
             a_list.append("Faulty Insurance")
-        if(self.__player.has_broken_item("Sneaky Peeky Glasses")):
-            a_list.append("Sneaky Peeky Glasses")
+        if(self.__player.has_broken_item("Sneaky Peeky Shades")):
+            a_list.append("Sneaky Peeky Shades")
         if(self.__player.has_broken_item("Quiet Sneakers")):
             a_list.append("Quiet Sneakers")
         return a_list
@@ -312,8 +312,8 @@ class Lists:
             a_list.append("Golden Watch")
         if(self.__player.is_repairing_item("Faulty Insurance")):
             a_list.append("Faulty Insurance")
-        if(self.__player.is_repairing_item("Sneaky Peeky Glasses")):
-            a_list.append("Sneaky Peeky Glasses")
+        if(self.__player.is_repairing_item("Sneaky Peeky Shades")):
+            a_list.append("Sneaky Peeky Shades")
         if(self.__player.is_repairing_item("Quiet Sneakers")):
             a_list.append("Quiet Sneakers")
         return a_list
@@ -345,8 +345,8 @@ class Lists:
             a_list.append("Enchanting Silver Bar")
 
         random_chance = random.randrange(5)
-        if (random_chance<=1) and (not self.__player.has_item("Sneaky Peeky Glasses")):
-            a_list.append("Sneaky Peeky Glasses")
+        if (random_chance<=1) and (not self.__player.has_item("Sneaky Peeky Shades")):
+            a_list.append("Sneaky Peeky Shades")
 
         random_chance = random.randrange(5)
         if (random_chance<=1) and (not self.__player.has_item("Quiet Sneakers")):

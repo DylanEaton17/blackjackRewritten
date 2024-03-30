@@ -15,24 +15,22 @@ def main():
     player.add_item("Health Indicator")
     player.add_item("Dirty Old Hat")
     player.add_item("Golden Watch")
-    player.add_item("Sneaky Peeky Glasses")
+    player.add_item("Sneaky Peeky Shades")
     player.add_item("Quiet Sneakers")
     player.break_item("Faulty Insurance")
-    player.break_item("Sneaky Peeky Glasses")
+    player.break_item("Sneaky Peeky Shades")
     player.break_item("Golden Watch")
+    player.break_item("Quiet Sneakers")
     player.break_item("Delight Indicator")
     player.break_item("Dirty Old Hat")
+    player.break_item("Health Indicator")
     player.meet("Witch")
-    player.meet("Tom")
+    player.meet("Frank")
     player.increment_day()
-    player.hurt(99)
 
 
     while(True):
-        player.got_a_cold()
-        player.afternoon()
-        blackjackGame.play_round()
-        player.end_day()
+        player.visit_oswald()
     # Useful Functions
     """
     player.day_event()
