@@ -30,7 +30,13 @@ def main():
 
 
     while(True):
-        player.visit_oswald()
+        player.visit_frank()
+        player.increment_day()
+        player.increment_day()
+        player.visit_frank()
+        player.increment_day()
+
+
     # Useful Functions
     """
     player.day_event()
