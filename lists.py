@@ -51,7 +51,7 @@ class Lists:
         # One-Time
         a_list.append("lone_cowboy")
         a_list.append("whats_my_name")
-        a_list.append("Interrogation")
+        a_list.append("interrogation")
         random.shuffle(a_list)
         return a_list
     
@@ -62,17 +62,6 @@ class Lists:
         a_list.append("woodlands_path")
         random.shuffle(a_list)
         return a_list
-
-    def get_poor_day_event(self):
-        if len(self.__poor_day_events)==0:
-            self.__poor_day_events = self.make_poor_day_events_list()
-        return self.__poor_day_events.pop()
-    
-    def get_poor_night_event(self):
-        if len(self.__poor_night_events)==0:
-            self.__poor_night_events = self.make_poor_night_events_list()
-        return self.__poor_night_events.pop()
-    
 
 # Cheap Events (1,000 - 10,000)
     def make_cheap_day_events_list(self):
@@ -91,17 +80,6 @@ class Lists:
         a_list.append("woodlands_river")
         random.shuffle(a_list)
         return a_list
-
-    def get_cheap_day_event(self):
-        if len(self.__cheap_day_events)==0:
-            self.__cheap_day_events = self.make_cheap_day_events_list()
-        return self.__cheap_day_events.pop()
-    
-    def get_cheap_night_event(self):
-        if len(self.__cheap_night_events)==0:
-            self.__cheap_night_events = self.make_cheap_night_events_list()
-        return self.__cheap_night_events.pop()
-
     
 # Modest Events (10,000 - 100,000)
     def make_modest_day_events_list(self):
@@ -121,16 +99,6 @@ class Lists:
         a_list.append("empty_event")
         random.shuffle(a_list)
         return a_list
-
-    def get_modest_day_event(self):
-        if len(self.__modest_day_events)==0:
-            self.__modest_day_events = self.make_modest_day_events_list()
-        return self.__modest_day_events.pop()
-    
-    def get_modest_night_event(self):
-        if len(self.__modest_night_events)==0:
-            self.__modest_night_events = self.make_modest_night_events_list()
-        return self.__modest_night_events.pop()
     
 
 # Rich Events (100,000 - 500,000)
@@ -152,16 +120,6 @@ class Lists:
         random.shuffle(a_list)
         return a_list
 
-    def get_rich_day_event(self):
-        if len(self.__rich_day_events)==0:
-            self.__rich_day_events = self.make_rich_day_events_list()
-        return self.__rich_day_events.pop()
-    
-    def get_rich_night_event(self):
-        if len(self.__rich_night_events)==0:
-            self.__rich_night_events = self.make_rich_night_events_list()
-        return self.__rich_night_events.pop()
-
 
 # Doughman Events (500,000 - 900,000)
     def make_doughman_day_events_list(self):
@@ -179,17 +137,6 @@ class Lists:
         random.shuffle(a_list)
         return a_list
 
-    def get_doughman_day_event(self):
-        if len(self.__doughman_day_events)==0:
-            self.__doughman_day_events = self.make_doughman_day_events_list()
-        return self.__doughman_day_events.pop()
-
-    def get_doughman_night_event(self):
-        if len(self.__doughman_night_events)==0:
-            self.__doughman_night_events = self.make_doughman_night_events_list()
-        return self.__doughman_night_events.pop()
-    
-
 # Nearly There Events (900,000 +)
     def make_nearly_day_events_list(self):
         a_list = []
@@ -204,17 +151,65 @@ class Lists:
         a_list.append("empty_event")
         random.shuffle(a_list)
         return a_list
+    
+# Get Event
+    def get_day_event(self):
+        rank = self.__player.get_rank()
+        match rank:
+            case 0:
+                if len(self.__poor_day_events)==0:
+                    self.__poor_day_events = self.make_poor_day_events_list()
+                return self.__poor_day_events.pop()
+            case 1:
+                if len(self.__cheap_day_events)==0:
+                    self.__cheap_day_events = self.make_cheap_day_events_list()
+                return self.__cheap_day_events.pop()
+            case 2:
+                if len(self.__modest_day_events)==0:
+                    self.__modest_day_events = self.make_modest_day_events_list()
+                return self.__modest_day_events.pop()
+            case 3:
+                if len(self.__rich_day_events)==0:
+                    self.__rich_day_events = self.make_rich_day_events_list()
+                return self.__rich_day_events.pop()
+            case 4:
+                if len(self.__doughman_day_events)==0:
+                    self.__doughman_day_events = self.make_doughman_day_events_list()
+                return self.__doughman_day_events.pop()
+            case 5:
+                if len(self.__nearly_day_events)==0:
+                    self.__nearly_day_events = self.make_nearly_day_events_list()
+                return self.__nearly_day_events.pop()
+    
 
-    def get_nearly_day_event(self):
-        if len(self.__nearly_day_events)==0:
-            self.__nearly_day_events = self.make_nearly_day_events_list()
-        return self.__nearly_day_events.pop()
-    
-    def get_nearly_night_event(self):
-        if len(self.__nearly_night_events)==0:
-            self.__nearly_night_events = self.make_nearly_night_events_list()
-        return self.__nearly_night_events.pop()
-    
+    def get_night_event(self):
+        rank = self.__player.get_rank()
+        match rank:
+            case 0:
+                if len(self.__poor_night_events)==0:
+                    self.__poor_night_events = self.make_poor_night_events_list()
+                return self.__poor_night_events.pop()
+            case 1:
+                if len(self.__cheap_night_events)==0:
+                    self.__cheap_night_events = self.make_cheap_night_events_list()
+                return self.__cheap_night_events.pop()
+            case 2:
+                if len(self.__modest_night_events)==0:
+                    self.__modest_night_events = self.make_modest_night_events_list()
+                return self.__modest_night_events.pop()
+            case 3:
+                if len(self.__rich_night_events)==0:
+                    self.__rich_night_events = self.make_rich_night_events_list()
+                return self.__rich_night_events.pop()
+            case 4:
+                if len(self.__doughman_night_events)==0:
+                    self.__doughman_night_events = self.make_doughman_night_events_list()
+                return self.__doughman_night_events.pop()
+            case 5:
+                if len(self.__nearly_night_events)==0:
+                    self.__nearly_night_events = self.make_nearly_night_events_list()
+                return self.__nearly_night_events.pop()
+
     def make_shop_list(self):
         a_list = []
         if(not self.__player.has_danger("Doctor Ban")):

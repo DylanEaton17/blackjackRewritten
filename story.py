@@ -642,8 +642,7 @@ class Player:
     # Conditional
     def sore_throat(self):
         if self.has_status("Sore Throat"):
-            dayEvent = getattr(self, self.__lists.get_poor_day_event())
-            dayEvent()
+            self.day_event()
             return
             
         type.type("You wake up, and begin to have a coughing fit. Your throat is dry, and super sore. ")
@@ -661,8 +660,7 @@ class Player:
 
     def spider_bite(self):
         if not self.has_danger("Spider") or self.has_status("Spider Bite"):
-            dayEvent = getattr(self, self.__lists.get_poor_day_event())
-            dayEvent()
+            self.day_event()
             return
         
         type.type("You wake up to a sharp pain on your arm! ")
@@ -683,8 +681,7 @@ class Player:
     def hungry_cockroach(self):
         random_choice = random.randrange(2)
         if (random_choice != 0) or not self.has_danger("Cockroach"):
-            dayEvent = getattr(self, self.__lists.get_poor_day_event())
-            dayEvent()
+            self.day_event()
             return
 
         type.type("You wake up to the sound of a hiss in your pile of money. ")
@@ -706,8 +703,7 @@ class Player:
     # One-Time
     def lone_cowboy(self):
         if self.has_met("Cowboy"):
-            dayEvent = getattr(self, self.__lists.get_poor_day_event())
-            dayEvent()
+            self.day_event()
             return
 
         self.meet("Cowboy")
@@ -728,8 +724,7 @@ class Player:
 
     def whats_my_name(self):
         if not self.__name == None:
-            dayEvent = getattr(self, self.__lists.get_poor_day_event())
-            dayEvent()
+            self.day_event()
             return
         
         type.type("You wake up to the sound of sneakers scratching against the concrete. As you sit up from your seat, you notice a little girl, with blonde hair and pigtails, jump roping towards you.")
@@ -763,8 +758,7 @@ class Player:
 
     def interrogation(self):
         if self.has_met("Interrogator"):
-            dayEvent = getattr(self, self.__lists.get_poor_day_event())
-            dayEvent()
+            self.day_event()
             return
     
         self.meet("Interrogator")
@@ -789,6 +783,14 @@ class Player:
 
     # Cheap Day Events (1,000 - 10,000)
     # Everytime
+    def sun_visor_bills(self):
+        type.type("You wake up in the front seat, dripping in sweat. ")
+        type.type("As the sun shines through the car window, you notice a few bright green bills above you, peeking out of the sun visor. How long have they been there? ")
+        print("\n")
+        bill = random.choice([3, 15, 30, 60, 150, 300])
+        type.type("That's another " + green(bright("$" + str(bill))) + " dollars.")
+        self.change_balance(bill)
+
     def strong_winds(self):
         type.type("You wake up to a loud snap above you, followed by a massive branch crashing down from the treetops and into the street. The wind echoes throughout the trees around you, and many of them look to be on the verge of falling.")
         print("\n")
@@ -798,6 +800,10 @@ class Player:
 
     # Conditional
     def got_a_cold(self):
+        if self.has_status("Cold"):
+            self.day_event()
+            return
+        
         type.type("You wake up to a sneeze, followed by your nose running, droplets falling down from your chin and onto your shirt. Damn, must be a cold.")
         self.add_status("Cold")
         self.mark_day("Cold")
@@ -806,8 +812,7 @@ class Player:
     # One-Time
     def turn_to_god(self):
         if self.has_met("Ezekiel"):
-            dayEvent = getattr(self, self.__lists.get_cheap_day_event())
-            dayEvent()
+            self.day_event()
             return
         
         self.meet("Ezekiel")
@@ -832,8 +837,7 @@ class Player:
     
     def hungry_cow(self):
         if self.has_met("Betsy"):
-            dayEvent = getattr(self, self.__lists.get_cheap_day_event())
-            dayEvent()
+            self.day_event()
             return
         
         self.meet("Betsy")
@@ -885,8 +889,7 @@ class Player:
     # Conditional
     def another_spider_bite(self):
         if not self.has_danger("Spider") or self.has_status("Spider Bite"):
-            dayEvent = getattr(self, self.__lists.get_modest_day_event())
-            dayEvent()
+            self.day_event()
             return
         
         type.type("You wake up to a sharp pain on your neck! ")
@@ -905,8 +908,7 @@ class Player:
 
     def squirrel_invasion(self):
         if not self.has_danger("Squirrel") or self.has_status("Squirrel Bite") or self.has_status("Rabies") or self.has_item("Squirrely") or self.has_met("Squirrely"):
-            dayEvent = getattr(self, self.__lists.get_modest_day_event())
-            dayEvent()
+            self.day_event()
             return
 
         self.lose_danger("Squirrel")
@@ -944,8 +946,7 @@ class Player:
     # One-Time Conditional
     def further_interrogation(self):
         if not self.has_met("Interrogator") or not self.has_danger("Further Interrogation"):
-            dayEvent = getattr(self, self.__lists.get_modest_day_event())
-            dayEvent()
+            self.day_event()
             return
 
         self.lose_danger("Further Interrogation")
@@ -988,8 +989,7 @@ class Player:
     # Conditional
     def rat_bite(self):
         if self.has_status("Rabies") or not self.has_danger("Rat") or self.has_status("Rat Bite"):
-            dayEvent = getattr(self, self.__lists.get_rich_day_event())
-            dayEvent()
+            self.day_event()
             return
 
         type.type("You wake up to a sharp pain on your ankle! ")
@@ -1018,8 +1018,7 @@ class Player:
     def hungry_termites(self):
         random_choice = random.randrange(2)
         if (random_choice != 0) or not self.has_danger("Termite"):
-            dayEvent = getattr(self, self.__lists.get_rich_day_event())
-            dayEvent()
+            self.day_event()
             return
 
         type.type("You wake up to a clicking sound. Looking around, you notice that it's coming from your pile of money. ")
@@ -1043,8 +1042,7 @@ class Player:
     # One-Time Conditional
     def starving_cow(self):
         if not self.has_met("Betsy") or not self.has_danger("Betsy Tractor"):
-            dayEvent = getattr(self, self.__lists.get_rich_day_event())
-            dayEvent()
+            self.day_event()
             return
 
         self.add_danger("Betsy Army")
@@ -1096,8 +1094,7 @@ class Player:
     # One-Time Conditional
     def even_further_interrogation(self):
         if not self.has_met("Interrogator") or not self.has_danger("Even Further Interrogation"):
-            dayEvent = getattr(self, self.__lists.get_doughman_day_event())
-            dayEvent()
+            self.day_event()
             return
 
         self.lose_danger("Even Further Interrogation")
@@ -1133,8 +1130,7 @@ class Player:
     # One-Time Conditional
     def cow_army(self):
         if not self.has_met("Betsy") or not self.has_danger("Betsy Army"):
-            dayEvent = getattr(self, self.__lists.get_nearly_day_event())
-            dayEvent()
+            self.day_event()
             return
 
         self.lose_danger("Betsy Army")
@@ -1169,8 +1165,7 @@ class Player:
 
     def final_interrogation(self):
         if not self.has_met("Interrogator") or not self.has_danger("Final Interrogation"):
-            dayEvent = getattr(self, self.__lists.get_nearly_day_event())
-            dayEvent()
+            self.day_event()
             return
 
         self.lose_danger("Final Interrogation")
@@ -1599,7 +1594,7 @@ class Player:
         if self.has_item("Car"):
             self.__prereqs_done[0] = True
 
-    def day_event(self):
+    def start_day(self):
         self.update_rank()
         self.update_story_event_prereqs()
         ranStoryEvent = False
@@ -1623,14 +1618,7 @@ class Player:
                         break
 
         if ranStoryEvent == False:
-            match self.__rank:
-                case 0: dayEvent = getattr(self, self.__lists.get_poor_day_event())
-                case 1: dayEvent = getattr(self, self.__lists.get_cheap_day_event())
-                case 2: dayEvent = getattr(self, self.__lists.get_modest_day_event())
-                case 3: dayEvent = getattr(self, self.__lists.get_rich_day_event())
-                case 4: dayEvent = getattr(self, self.__lists.get_doughman_day_event())
-                case 5: dayEvent = getattr(self, self.__lists.get_nearly_day_event())
-            dayEvent()
+            self.day_event()
 
         self.update_rank()
 
@@ -2850,7 +2838,7 @@ class Player:
                 elif item == "Golden Watch":
                     type.type("You need me to repair that Golden Watch on your wrist?")
                     if golden_watch_price == 0:
-                        golden_watch_price = random.choice([13000, 14000, 15000, 16000, 17500, 18000])
+                        golden_watch_price = random.choice([13000, 14000, 15000, 16000, 17500, 19500])
                     price = golden_watch_price
                 elif item == "Faulty Insurance":
                     type.type("You need me to touch up your Faulty Insurance card?")
@@ -2979,37 +2967,37 @@ class Player:
                 if item == "Delight Indicator":
                     type.type("You'd like Stuart to repair your Delight Indicator?")
                     if delight_indicator_price == 0:
-                        delight_indicator_price = random.choice([4000, 4250, 4500, 5500, 6000, 9000])
+                        delight_indicator_price = random.choice([5500, 6000, 9000, 10000])
                     price = delight_indicator_price
                 elif item == "Health Indicator":
                     type.type("You'd like Stuart to repair your Health Indicator?")
                     if health_indicator_price == 0:
-                        health_indicator_price = random.choice([3000, 3200, 4000, 4500, 5500, 7000])
+                        health_indicator_price = random.choice([4500, 5500, 7000, 9000, 11000])
                     price = health_indicator_price
                 elif item == "Dirty Old Hat":
                     type.type("You'd like Stuart to repair the cloth on your Dirty Old Hat?")
                     if dirty_old_hat_price == 0:
-                        dirty_old_hat_price = random.choice([10000, 10500, 12500, 14000, 15000, 17000])
+                        dirty_old_hat_price = random.choice([14000, 15000, 17000, 20000])
                     price = dirty_old_hat_price
                 elif item == "Golden Watch":
                     type.type("You'd like Stuart to repair that Golden Watch you possess?")
                     if golden_watch_price == 0:
-                        golden_watch_price = random.choice([13000, 14000, 15000, 16000, 17500, 18000])
+                        golden_watch_price = random.choice([16000, 17500, 18000, 20000, 30000])
                     price = golden_watch_price
                 elif item == "Faulty Insurance":
                     type.type("You'd like Stuart to restore your Faulty Insurance card?")
                     if faulty_insurance_price == 0:
-                        faulty_insurance_price = random.choice([3500, 4000, 5000, 5500, 6000, 7000])
+                        faulty_insurance_price = random.choice([5500, 6000, 7000, 9000, 10000])
                     price = faulty_insurance_price
                 elif item == "Sneaky Peeky Shades":
                     type.type("You'd like Stuart to fix up those Sneaky Peeky Shades on top of your eyelids?")
                     if sneaky_peeky_glasses_price == 0:
-                        sneaky_peeky_glasses_price = random.choice([15500, 16500, 17000, 18000, 20000, 25000])
+                        sneaky_peeky_glasses_price = random.choice([18000, 20000, 25000, 30000])
                     price = sneaky_peeky_glasses_price
                 elif item == "Quiet Sneakers":
                     type.type("You'd like Stuart to sew up those Quiet Sneakers on your feet?")
                     if quiet_sneakers_price == 0:
-                       quiet_sneakers_price = random.choice([6000, 6500, 7500, 9000, 10000, 12000])
+                       quiet_sneakers_price = random.choice([9000, 10000, 12000])
                     price = quiet_sneakers_price
                 else: 
                     type.type("Welp, then I've done all I can possibly do. Good day, my friend.")
@@ -3064,7 +3052,7 @@ class Player:
                             if free_money < 2:
                                 random_chance = random.randrange(2)
                                 if random_chance == 0:
-                                    type.type("In fact, here, this is yours now.")
+                                    type.type("In fact, here, just take it, this is yours now.")
                                     self.change_balance(random.choice([50, 100, 200, 500, 1000]))
                                     free_money += 1
                                 else:
@@ -3097,12 +3085,12 @@ class Player:
         self.start_night()
         return
 
+    # Convenience Store
     def update_convenience_store_inventory(self):
         if self.__day == 2: self.__convenience_store_inventory = self.__lists.make_convenience_store_inventory()
         if (self.__day % 7) == 0:
             self.__convenience_store_inventory = self.__lists.make_convenience_store_inventory()
 
-    # Convenience Store
     def visit_convenience_store(self):
         type.type("You get in your car and drive to the Convenience Store. ")
         if not self.has_met("Convenience Store"):
@@ -3301,115 +3289,147 @@ class Player:
         type.type("That's all I've got to sell you tonight. Maybe try coming back another day. ")
         self.start_night()
 
-    def update_no_bust_durability(self):
-        if (self.has_flask_effect("No Bust")) and (self.__flask_durability[0] > 0):
-            self.__flask_durability[0] -= random.choice([1, 2])
-            if self.__flask_durability[0] <= 0:
-                self.__flask_durability[0] = 0
-                self.remove_flask_effect("No Bust")
-                print("\n")
-                type.slow(red(bright("Your Flask of No Bust effect ran out!")))
+    def update_no_bust_durability(self, invincible=False):
+        if (self.has_flask_effect("No Bust")):
+            if invincible:
+                self.__flask_durability[0] = -1
+                
+            if (self.__flask_durability[0] > 0):
+                self.__flask_durability[0] -= random.choice([1, 2])
+                if self.__flask_durability[0] <= 0:
+                    self.__flask_durability[0] = 0
+                    self.remove_flask_effect("No Bust")
+                    print("\n")
+                    type.slow(red(bright("Your Flask of No Bust effect ran out!")))
 
-        # Sets durability when you get the item, or if the item is fixed
-        if (self.has_flask_effect("No Bust")) and (self.__flask_durability[0] == 0):
-            self.__flask_durability[0] = 4
+            # Sets durability when you get the item, or if the item is fixed
+            if (self.__flask_durability[0] == 0):
+                self.__flask_durability[0] = 4
 
-    def update_delight_indicator_durability(self):
-        if self.has_item("Delight Indicator") and (self.__item_durability[0] > 0):
-            self.__item_durability[0] -= random.choice([1, 2, 3, 5])
-            if self.__item_durability[0] <= 0:
-                self.__item_durability[0] = 0
-                self.break_item("Delight Indicator")
-                print("\n")
-                type.slow(red(bright("Your Delight Indicator broke!")))
+    def update_delight_indicator_durability(self, invincible=False):
+        if self.has_item("Delight Indicator"):
+            if invincible:
+                self.__item_durability[0] = -1
+                
+            if (self.__item_durability[0] > 0):
+                self.__item_durability[0] -= random.choice([1, 2, 3, 5])
+                if self.__item_durability[0] <= 0:
+                    self.__item_durability[0] = 0
+                    self.break_item("Delight Indicator")
+                    print("\n")
+                    type.slow(red(bright("Your Delight Indicator broke!")))
 
-        # Sets durability when you get the item, or if the item is fixed
-        if (self.has_item("Delight Indicator")) and (self.__item_durability[0] == 0):
-            self.__item_durability[0] = 45
-
-
-    def update_health_indicator_durability(self):
-        if self.has_item("Health Indicator") and (self.__item_durability[1] > 0):
-            self.__item_durability[1] -= random.choice([1, 2, 3, 5])
-            if self.__item_durability[1] <= 0:
-                self.__item_durability[1] = 0
-                self.break_item("Health Indicator")
-                type.slow(red(bright("Your Health Indicator broke!")))
-                print("\n")
-
-        # Sets durability when you get the item, or if the item is fixed
-        if (self.has_item("Health Indicator")) and (self.__item_durability[1] == 0):
-            self.__item_durability[1] = 30
+            # Sets durability when you get the item, or if the item is fixed
+            if (self.__item_durability[0] == 0):
+                self.__item_durability[0] = 45
 
 
-    def update_dirty_old_hat_durability(self):
-        if self.has_item("Dirty Old Hat") and (self.__item_durability[2] > 0):
-            self.__item_durability[2] -= random.choice([1, 2, 3, 5])
-            if self.__item_durability[2] <= 0:
-                self.__item_durability[2] = 0
-                self.break_item("Dirty Old Hat")
-                type.slow(red(bright("Your Dirty Old Hat broke!")))
-                print("\n")
+    def update_health_indicator_durability(self, invincible=False):
+        if self.has_item("Health Indicator"):
+            if invincible:
+                self.__item_durability[1] = -1
+                
+            if (self.__item_durability[1] > 0):
+                self.__item_durability[1] -= random.choice([1, 2, 3, 5])
+                if self.__item_durability[1] <= 0:
+                    self.__item_durability[1] = 0
+                    self.break_item("Health Indicator")
+                    type.slow(red(bright("Your Health Indicator broke!")))
+                    print("\n")
 
-        # Sets durability when you get the item, or if the item is fixed
-        if (self.has_item("Dirty Old Hat")) and (self.__item_durability[2] == 0):
-            self.__item_durability[2] = 25
-
-
-    def update_golden_watch_durability(self):
-        if self.has_item("Golden Watch") and (self.__item_durability[3] > 0):
-            self.__item_durability[3] -= random.choice([1, 2, 3, 5])
-            if self.__item_durability[3] <= 0:
-                self.__item_durability[3] = 0
-                self.break_item("Golden Watch")
-                type.slow(red(bright("Your Golden Watch broke!")))
-                print("\n")
-
-        # Sets durability when you get the item, or if the item is fixed
-        if (self.has_item("Golden Watch")) and (self.__item_durability[3] == 0):
-            self.__item_durability[3] = 20
+            # Sets durability when you get the item, or if the item is fixed
+            if (self.__item_durability[1] == 0):
+                self.__item_durability[1] = 30
 
 
-    def update_sneaky_peeky_glasses_durability(self):
-        if self.has_item("Sneaky Peeky Shades") and (self.__item_durability[5] > 0):
-            self.__item_durability[5] -= random.choice([1, 2, 3, 5])
-            if self.__item_durability[5] <= 0:
-                self.__item_durability[5] = 0
-                self.break_item("Sneaky Peeky Shades")
-                type.slow(red(bright("Your Sneaky Peeky Shades broke!")))
-                print("\n")
+    def update_dirty_old_hat_durability(self, invincible=False):
+        if self.has_item("Dirty Old Hat"):
+            if invincible:
+                self.__item_durability[2] = -1
+                
+            if (self.__item_durability[2] > 0):
+                self.__item_durability[2] -= random.choice([1, 2, 3, 5])
+                if self.__item_durability[2] <= 0:
+                    self.__item_durability[2] = 0
+                    self.break_item("Dirty Old Hat")
+                    type.slow(red(bright("Your Dirty Old Hat broke!")))
+                    print("\n")
 
-        # Sets durability when you get the item, or if the item is fixed
-        if (self.has_item("Sneaky Peeky Shades")) and (self.__item_durability[5] == 0):
-            self.__item_durability[5] = 15
-
-
-    def update_quiet_sneakers_durability(self):
-        if self.has_item("Quiet Sneakers") and (self.__item_durability[6] > 0):
-            self.__item_durability[6] -= random.choice([1, 2, 3, 5])
-            if self.__item_durability[6] <= 0:
-                self.__item_durability[6] = 0
-                self.break_item("Quiet Sneakers")
-                type.slow(red(bright("Your Quiet Sneakers broke!")))
-                print("\n")
-
-        # Sets durability when you get the item, or if the item is fixed
-        if (self.has_item("Quiet Sneakers")) and (self.__item_durability[6] == 0):
-            self.__item_durability[6] = 15
+            # Sets durability when you get the item, or if the item is fixed
+            if (self.__item_durability[2] == 0):
+                self.__item_durability[2] = 25
 
 
-    def update_faulty_insurance_durability(self):
-        if self.has_item("Faulty Insurance") and (self.__item_durability[7] > 0):
-            self.__item_durability[7] -= random.choice([1, 2, 3, 5])
-            if self.__item_durability[7] <= 0:
-                self.__item_durability[7] = 0
-                self.break_item("Faulty Insurance")
-                type.slow(red(bright("Your Faulty Insurance broke!")))
-                print("\n")
+    def update_golden_watch_durability(self, invincible=False):
+        if self.has_item("Golden Watch"):
+            if invincible:
+                self.__item_durability[3] = -1
+                
+            if (self.__item_durability[3] > 0):
+                self.__item_durability[3] -= random.choice([1, 2, 3, 5])
+                if self.__item_durability[3] <= 0:
+                    self.__item_durability[3] = 0
+                    self.break_item("Golden Watch")
+                    type.slow(red(bright("Your Golden Watch broke!")))
+                    print("\n")
 
-        # Sets durability when you get the item, or if the item is fixed
-        if (self.has_item("Faulty Insurance")) and (self.__item_durability[7] == 0):
-            self.__item_durability[7] = 15
+            # Sets durability when you get the item, or if the item is fixed
+            if (self.__item_durability[3] == 0):
+                self.__item_durability[3] = 20
+
+
+    def update_sneaky_peeky_glasses_durability(self, invincible=False):
+        if self.has_item("Sneaky Peeky Shades"):
+            if invincible:
+                self.__item_durability[5] = -1
+
+            if (self.__item_durability[5] > 0):
+                self.__item_durability[5] -= random.choice([1, 2, 3, 5])
+                if self.__item_durability[5] <= 0:
+                    self.__item_durability[5] = 0
+                    self.break_item("Sneaky Peeky Shades")
+                    type.slow(red(bright("Your Sneaky Peeky Shades broke!")))
+                    print("\n")
+
+            # Sets durability when you get the item, or if the item is fixed
+            if (self.__item_durability[5] == 0):
+                self.__item_durability[5] = 15
+
+
+    def update_quiet_sneakers_durability(self, invincible=False):
+        if self.has_item("Quiet Sneakers"):
+            if invincible:
+                self.__item_durability[6] = -1
+
+            if (self.__item_durability[6] > 0):
+                self.__item_durability[6] -= random.choice([1, 2, 3, 5])
+                if self.__item_durability[6] <= 0:
+                    self.__item_durability[6] = 0
+                    self.break_item("Quiet Sneakers")
+                    type.slow(red(bright("Your Quiet Sneakers broke!")))
+                    print("\n")
+
+            # Sets durability when you get the item, or if the item is fixed
+            if (self.__item_durability[6] == 0):
+                self.__item_durability[6] = 15
+
+
+    def update_faulty_insurance_durability(self, invincible=False):
+        if self.has_item("Faulty Insurance"):
+            if invincible:
+                self.__item_durability[7] = -1
+                
+            if (self.__item_durability[7] > 0):
+                self.__item_durability[7] -= random.choice([1, 2, 3, 5])
+                if self.__item_durability[7] <= 0:
+                    self.__item_durability[7] = 0
+                    self.break_item("Faulty Insurance")
+                    type.slow(red(bright("Your Faulty Insurance broke!")))
+                    print("\n")
+
+            # Sets durability when you get the item, or if the item is fixed
+            if (self.__item_durability[7] == 0):
+                self.__item_durability[7] = 15
         
 
     def get_item_desc(self, item):
@@ -3447,15 +3467,15 @@ class Player:
         elif item == "Anti-Pathogen": return "A flask holding a glowing orange potion. It's infused with the power to heal you from any status effect."
         elif item == "Fortunate Life": return "A flask holding a glowing red potion. It's infused with the luck of the sun and the moon, and fills your life with good fortune."
 
+    def day_event(self):
+        self.update_rank()
+        dayEvent = getattr(self, self.__lists.get_day_event())
+        dayEvent()
+        return
+
     def night_event(self):
         self.update_rank()
-        match self.__rank:
-            case 0: nightEvent = getattr(self, self.__lists.get_poor_night_event())
-            case 1: nightEvent = getattr(self, self.__lists.get_cheap_night_event())
-            case 2: nightEvent = getattr(self, self.__lists.get_modest_night_event())
-            case 3: nightEvent = getattr(self, self.__lists.get_rich_night_event())
-            case 4: nightEvent = getattr(self, self.__lists.get_doughman_night_event())
-            case 5: nightEvent = getattr(self, self.__lists.get_nearly_night_event())
+        nightEvent = getattr(self, self.__lists.get_night_event())
         nightEvent()
         self.update_rank()
         self.start_night()

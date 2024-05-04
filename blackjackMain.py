@@ -9,7 +9,7 @@ def main():
     while(True):
         blackjackGame.play_round()
         player.end_day()
-        player.day_event()
+        player.start_day()
         player.afternoon()
 
 

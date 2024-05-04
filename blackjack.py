@@ -642,87 +642,103 @@ class Blackjack:
 
     def end_round_dealer_happiness(self, status):
         bet_ratio = self.__bet/self.__balance
+        if self.__player.get_rank() == 0:
+            modifier = 0
+        if self.__player.get_rank() == 1:
+            modifier = 1
+        elif self.__player.get_rank() == 2:
+            modifier = 2
+        elif self.__player.get_rank() == 3:
+            modifier = 3
+        elif self.__player.get_rank() == 4:
+            modifier = 4
+        elif self.__player.get_rank() == 5:
+            modifier = 5
 
+        print("Modifier:", modifier)
         match status:
             case "Player Blackjack": 
                 if bet_ratio >= 0.9:
-                    self.anger_dealer(20)
+                    value = 20
                 elif bet_ratio >= 0.6:
-                    self.anger_dealer(10)
+                    value = 10
                 elif bet_ratio >= 0.3:
-                    self.anger_dealer(7)
+                    value = 7
                 else:
-                    self.anger_dealer(5)
+                    value = 5
 
             case "Player Wins":
                 if bet_ratio >= 0.9:
-                    self.anger_dealer(10)
+                    value = 10
                 elif bet_ratio >= 0.6:
-                    self.anger_dealer(7)
+                    value = 7
                 elif bet_ratio >= 0.3:
-                    self.anger_dealer(4)
+                    value = 4
                 else:
-                    self.anger_dealer(2)
+                    value = 2
 
             case "Dealer Bust":
                 if bet_ratio >= 0.9:
-                    self.anger_dealer(12)
+                    value = 12
                 elif bet_ratio >= 0.6:
-                    self.anger_dealer(8)
+                    value = 8
                 elif bet_ratio >= 0.3:
-                    self.anger_dealer(4)
+                    value = 4
                 else:
-                    self.anger_dealer(2)
+                    value = 2
 
             case "Dealer Blackjack":
                 if bet_ratio >= 0.9:
-                    self.calm_dealer(25)
+                    value = -25
                 elif bet_ratio >= 0.6:
-                    self.calm_dealer(15)
+                    value = -15
                 elif bet_ratio >= 0.3:
-                    self.calm_dealer(7)
+                    value = -7
                 else:
-                    self.calm_dealer(5)
+                    value = -5
 
             case "Dealer Wins":
                 if bet_ratio >= 0.9:
-                    self.calm_dealer(10)
+                    value = -10
                 elif bet_ratio >= 0.6:
-                    self.calm_dealer(6)
+                    value = -6
                 elif bet_ratio >= 0.3:
-                    self.calm_dealer(3)
+                    value = -3
                 else:
-                    self.calm_dealer(2)
+                    value = -2
 
             case "Player Bust":
                 if bet_ratio >= 0.9:
-                    self.calm_dealer(12)
+                    value = -12
                 elif bet_ratio >= 0.6:
-                    self.calm_dealer(7)
+                    value = -7
                 elif bet_ratio >= 0.3:
-                    self.calm_dealer(3)
+                    value = -3
                 else:
-                    self.calm_dealer(2)
+                    value = -2
 
             case "Tie":
                 if bet_ratio >= 0.9:
-                    self.anger_dealer(3)
+                    value = 3
                 elif bet_ratio >= 0.6:
-                    self.anger_dealer(2)
+                    value = 2
                 elif bet_ratio >= 0.3:
-                    self.anger_dealer(1)
+                    value = 1
                 else:
-                    self.anger_dealer(1)
+                    value = 1
 
             case "Tie Blackjack":
                 if bet_ratio >= 0.9:
-                    self.anger_dealer(4)
+                    value = 4
                 elif bet_ratio >= 0.6:
-                    self.anger_dealer(3)
+                    value = 3
                 elif bet_ratio >= 0.3:
-                    self.anger_dealer(1)
+                    value = 1
                 else:
-                    self.anger_dealer(1)
+                    value = 1
+
+        if value > 0: self.anger_dealer(value + modifier)
+        elif value < 0: self.calm_dealer(-(value))
 
 
     def draw(self, hand):
