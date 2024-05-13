@@ -13,7 +13,7 @@ class Typing:
     def __init__(self):
         self.__type_speed = "Default"
 
-    def fast(self, *words):
+    def fast(self, punc=True, *words):
         str = ''
         for item in words:
             str = str + item
@@ -25,13 +25,13 @@ class Typing:
             ]))
             sys.stdout.write(char)
             sys.stdout.flush()
-            if (char == ".") or (char == "!") or (char == ":"):
+            if ((char == ".") or (char == "!") or (char == ":")) and punc:
                 time.sleep(0.5)
-            if char == ",":
+            if (char == ",") and punc:
                 time.sleep(0.4)
             self.cleanup()
 
-    def slow(self, *words):
+    def slow(self, punc=True, *words):
         str = ''
         for item in words:
             str = str + item
@@ -43,13 +43,13 @@ class Typing:
                 ]))
                 sys.stdout.write(char)
                 sys.stdout.flush()
-                if ((char == ".") or (char == "!") or (char == ":") or (char == ";")):
+                if ((char == ".") or (char == "!") or (char == ":") or (char == ";")) and punc:
                     time.sleep(0.7)
-                if (char == ","):
+                if (char == ",") and punc:
                     time.sleep(0.4)
                 self.cleanup()
 
-    def type(self, *words):
+    def type(self, punc=True, *words):
         str = ''
         for item in words:
             str = str + item
@@ -75,26 +75,27 @@ class Typing:
                 sys.stdout.write(char)
                 sys.stdout.flush()
 
-                if self.__type_speed =="Default" and ((char == ".") or (char == "!") or (char == ";")):
-                    time.sleep(0.7)
-                elif self.__type_speed =="Fast" and ((char == ".") or (char == "!") or (char == ";")):
-                    time.sleep(0.5)
-                elif self.__type_speed =="Fastest" and ((char == ".") or (char == "!") or (char == ";")):
-                    time.sleep(0.4)
+                if punc:
+                    if self.__type_speed =="Default" and ((char == ".") or (char == "!") or (char == ";")):
+                        time.sleep(0.7)
+                    elif self.__type_speed =="Fast" and ((char == ".") or (char == "!") or (char == ";")):
+                        time.sleep(0.5)
+                    elif self.__type_speed =="Fastest" and ((char == ".") or (char == "!") or (char == ";")):
+                        time.sleep(0.4)
 
-                if self.__type_speed =="Default" and (char == ","):
-                    time.sleep(0.4)
-                elif self.__type_speed =="Fast" and (char == ","):
-                    time.sleep(0.3)
-                elif self.__type_speed =="Fastest" and (char == ","):
-                    time.sleep(0.2)
+                    if self.__type_speed =="Default" and (char == ","):
+                        time.sleep(0.4)
+                    elif self.__type_speed =="Fast" and (char == ","):
+                        time.sleep(0.3)
+                    elif self.__type_speed =="Fastest" and (char == ","):
+                        time.sleep(0.2)
 
-                if self.__type_speed =="Default" and (char == "?") or (char == ":"):
-                    time.sleep(0.3)
-                elif self.__type_speed =="Fast" and (char == "?") or (char == ":"):
-                    time.sleep(0.2)
-                elif self.__type_speed =="Fastest" and (char == "?") or (char == ":"):
-                    time.sleep(0.1)
+                    if self.__type_speed =="Default" and (char == "?") or (char == ":"):
+                        time.sleep(0.3)
+                    elif self.__type_speed =="Fast" and (char == "?") or (char == ":"):
+                        time.sleep(0.2)
+                    elif self.__type_speed =="Fastest" and (char == "?") or (char == ":"):
+                        time.sleep(0.1)
                 
                 self.cleanup()
 
@@ -110,6 +111,15 @@ class Typing:
             elif byte == b'p':
                 self.__type_speed = "Print"
 
+    def press_continue(self):
+        self.type(False, "Press any key to continue: ")
+        is_pressed = False
+        while not is_pressed:
+            is_pressed = self.continue_cleanup()
+    
+    def continue_cleanup(self):
+        while msvcrt.kbhit():
+            return True
 
 type = Typing()
 
@@ -472,6 +482,7 @@ class Player:
         # Heals the player before the next day
         print("\n")
         self.heal(random.choice([1, 3, 5]))
+
 
     # Opening
     def first_setup(self):
@@ -1943,6 +1954,8 @@ class Player:
         self.update_status()
         self.update_rank()
         self.update_convenience_store_inventory()
+
+        # Wind Restriction (1,000-10,000)
         if self.has_travel_restriction("Wind"):
             random_chance = random.randrange(3)
             if random_chance == 0:
@@ -1970,12 +1983,37 @@ class Player:
                 type.slow(red("Wind didn't blow any of your money away, did it? Anyways, let's play."))
             print("\n")
 
+        # Rain Restriction (500,000-900,000)
         elif self.has_travel_restriction("Rain"):
-            type.type("You watch, as the rain pours, and pours, and pours. By nightfall, the rain hasn't let up, and flooding in the streets has only gotten worse. Unfortunately, you're gonna have to skip out on Blackjack for the night.")
+            type.type("You watch, as the rain pours, and pours, and pours. By nightfall, the rain hasn't let up, and the flooding in the streets has only gotten worse. Unfortunately, you're gonna have to skip out on Blackjack for the night.")
             print("\n")
-            type.type("You get cozy in your car, and begin to doze off. ")
+            type.type("You get cozy in your car, and begin to doze off. That's all for " + bright(yellow("Day " + str(self.__day))) + ".")
             print("\n")
-            type.type()
+            type.type("As you sleep, you dream and dream about the sand beneath your feet, the waterfall above you raining water down, splashing in the river, leading out to the ocean and the horizon before you. The sun looks so bright in the fading orange sky, and the hot sand began to cool below you. Before you get the chance to say goodbye, you wake up, having slept through all of " + bright(yellow("Day " + str(self.__day + 1))) + " and " + bright(yellow("Day " + str(self.__day + 2))) + "." )
+            random_chance = random.randrange(2)
+            if random_chance == 0:
+                self.__day += 3
+            else:
+                self.__day += 4
+                type.type(" And even " + bright(yellow("Day " + str(self.__day + 3))))
+            print("\n")
+            type.type("As you awake on " + bright(yellow("Day " + str(self.__day))) + ", you notice the raindrops begin to slow down, clouds begin to clear, and a golden ray of sunshine fills your soaked wagon. Looking in the seat next to you, your pile of green bills brings a sparkle to your eyes. You hear the money call to you. It's time. Let's go win some hands.")
+
+            print("\n")
+
+            type.type("As the sun begins to fall, you collect your money, and leave the safety of your wagon. You barrel out into the damp air, up the muddy dirt road, and into the casino.")
+
+            print("\n")
+            random_chance = random.randrange(3)
+            if random_chance == 1:
+                type.slow(red("Wipe those shoes. It's difficult to wash these carpets."))
+            elif random_chance == 2:
+                type.slow(red("Long time no see, yeah? Let's get back to it."))
+            elif random_chance == 3:
+                type.slow(red("You broke the streak you had going. Wanna make up for it in bets?"))
+            else:
+                type.slow(red("Glad the rain didn't permanently wash you away. That would have been a shame."))
+            print("\n")
 
         elif self.has_travel_restriction("Battery"):
             pass

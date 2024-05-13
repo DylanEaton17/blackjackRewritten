@@ -30,7 +30,7 @@ def main():
 
 
     while(True):
-        player.interrogation()
+        player.thunderstorm()
     
     # blackjackGame.play_round(1)
     # player.set_balance(1000)
