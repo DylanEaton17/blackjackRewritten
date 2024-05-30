@@ -13,7 +13,7 @@ class Typing:
     def __init__(self):
         self.__type_speed = "Default"
 
-    def fast(self, *words, punc=True):
+    def fast(self, *words):
         str = ''
         for item in words:
             str = str + item
@@ -25,13 +25,13 @@ class Typing:
             ]))
             sys.stdout.write(char)
             sys.stdout.flush()
-            if ((char == ".") or (char == "!") or (char == ":")) and punc:
+            if ((char == ".") or (char == "!") or (char == ":")):
                 time.sleep(0.5)
-            if (char == ",") and punc:
+            if (char == ","):
                 time.sleep(0.4)
             self.cleanup()
 
-    def slow(self, *words, punc=True):
+    def slow(self, *words):
         str = ''
         for item in words:
             str = str + item
@@ -43,13 +43,13 @@ class Typing:
                 ]))
                 sys.stdout.write(char)
                 sys.stdout.flush()
-                if ((char == ".") or (char == "!") or (char == ":") or (char == ";")) and punc:
+                if ((char == ".") or (char == "!") or (char == ":") or (char == ";")):
                     time.sleep(0.7)
-                if (char == ",") and punc:
+                if (char == ","):
                     time.sleep(0.4)
                 self.cleanup()
 
-    def type(self, *words, punc=True,):
+    def type(self, *words):
         str = ''
         for item in words:
             str = str + item
@@ -75,27 +75,26 @@ class Typing:
                 sys.stdout.write(char)
                 sys.stdout.flush()
 
-                if punc:
-                    if self.__type_speed =="Default" and ((char == ".") or (char == "!") or (char == ";")):
-                        time.sleep(0.7)
-                    elif self.__type_speed =="Fast" and ((char == ".") or (char == "!") or (char == ";")):
-                        time.sleep(0.5)
-                    elif self.__type_speed =="Fastest" and ((char == ".") or (char == "!") or (char == ";")):
-                        time.sleep(0.4)
+                if self.__type_speed =="Default" and ((char == ".") or (char == "!") or (char == ";")):
+                    time.sleep(0.7)
+                elif self.__type_speed =="Fast" and ((char == ".") or (char == "!") or (char == ";")):
+                    time.sleep(0.5)
+                elif self.__type_speed =="Fastest" and ((char == ".") or (char == "!") or (char == ";")):
+                    time.sleep(0.4)
 
-                    if self.__type_speed =="Default" and (char == ","):
-                        time.sleep(0.4)
-                    elif self.__type_speed =="Fast" and (char == ","):
-                        time.sleep(0.3)
-                    elif self.__type_speed =="Fastest" and (char == ","):
-                        time.sleep(0.2)
+                if self.__type_speed =="Default" and (char == ","):
+                    time.sleep(0.4)
+                elif self.__type_speed =="Fast" and (char == ","):
+                    time.sleep(0.3)
+                elif self.__type_speed =="Fastest" and (char == ","):
+                    time.sleep(0.2)
 
-                    if self.__type_speed =="Default" and (char == "?") or (char == ":"):
-                        time.sleep(0.3)
-                    elif self.__type_speed =="Fast" and (char == "?") or (char == ":"):
-                        time.sleep(0.2)
-                    elif self.__type_speed =="Fastest" and (char == "?") or (char == ":"):
-                        time.sleep(0.1)
+                if self.__type_speed =="Default" and (char == "?") or (char == ":"):
+                    time.sleep(0.3)
+                elif self.__type_speed =="Fast" and (char == "?") or (char == ":"):
+                    time.sleep(0.2)
+                elif self.__type_speed =="Fastest" and (char == "?") or (char == ":"):
+                    time.sleep(0.1)
                 
                 self.cleanup()
 
