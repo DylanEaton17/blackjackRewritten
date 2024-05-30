@@ -49,7 +49,7 @@ class Typing:
                     time.sleep(0.4)
                 self.cleanup()
 
-    def type(self, punc=True, *words):
+    def type(self, *words, punc=True,):
         str = ''
         for item in words:
             str = str + item
@@ -112,7 +112,7 @@ class Typing:
                 self.__type_speed = "Print"
 
     def press_continue(self):
-        self.type(False, "Press any key to continue: ")
+        self.type("Press any key to continue: ", punc=False)
         is_pressed = False
         while not is_pressed:
             is_pressed = self.continue_cleanup()

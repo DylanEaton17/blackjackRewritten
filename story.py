@@ -13,7 +13,7 @@ class Typing:
     def __init__(self):
         self.__type_speed = "Default"
 
-    def fast(self, punc=True, *words):
+    def fast(self, *words, punc=True):
         str = ''
         for item in words:
             str = str + item
@@ -31,7 +31,7 @@ class Typing:
                 time.sleep(0.4)
             self.cleanup()
 
-    def slow(self, punc=True, *words):
+    def slow(self, *words, punc=True):
         str = ''
         for item in words:
             str = str + item
@@ -49,7 +49,7 @@ class Typing:
                     time.sleep(0.4)
                 self.cleanup()
 
-    def type(self, punc=True, *words):
+    def type(self, *words, punc=True,):
         str = ''
         for item in words:
             str = str + item
@@ -1994,8 +1994,8 @@ class Player:
             if random_chance == 0:
                 self.__day += 3
             else:
-                self.__day += 4
                 type.type(" And even " + bright(yellow("Day " + str(self.__day + 3))))
+                self.__day += 4
             print("\n")
             type.type("As you awake on " + bright(yellow("Day " + str(self.__day))) + ", you notice the raindrops begin to slow down, clouds begin to clear, and a golden ray of sunshine fills your soaked wagon. Looking in the seat next to you, your pile of green bills brings a sparkle to your eyes. You hear the money call to you. It's time. Let's go win some hands.")
 

@@ -67,8 +67,10 @@ class Lists:
     def make_cheap_day_events_list(self):
         a_list = []
         # Everytime
+        a_list.append("sun_visor_bills")
         a_list.append("strong_winds")
         # Conditional
+        a_list.append("got_a_cold")
         # One-Time
         a_list.append("turn_to_god")
         a_list.append("hungry_cow")

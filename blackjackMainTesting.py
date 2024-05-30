@@ -31,6 +31,8 @@ def main():
 
     while(True):
         player.thunderstorm()
+        player.afternoon()
+        player.end_day()
     
     # blackjackGame.play_round(1)
     # player.set_balance(1000)
