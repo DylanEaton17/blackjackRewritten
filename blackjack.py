@@ -394,7 +394,7 @@ class Blackjack:
 
         # Prints player's starting hand value.
         type.fast(str(self.__hand))
-        if len(self.__hand)>1:
+        if self.__hand.has_ace():
             time.sleep(PAUSE)
         print()
 
@@ -433,7 +433,7 @@ class Blackjack:
         print()
         card = self.draw(self.__hand)
         self.print_draw("Player", "next", card)
-        if len(self.__hand)>1:
+        if self.__hand.has_ace():
             time.sleep(PAUSE)
         print()
         type.fast(str(self.__hand))
@@ -655,7 +655,6 @@ class Blackjack:
         elif self.__player.get_rank() == 5:
             modifier = 5
 
-        print("Modifier:", modifier)
         match status:
             case "Player Blackjack": 
                 if bet_ratio >= 0.9:
@@ -812,6 +811,9 @@ class Hand:
 
     def __len__(self):
         return len(self.__cards)
+    
+    def has_ace(self):
+        return len(self.__value==2)
 
     def add(self, card):
         # Adds cards to hand, then checks if aces affect the value

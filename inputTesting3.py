@@ -99,6 +99,56 @@ class Typing:
                 self.cleanup()
 
 
+    def retype(self, *words):
+        str = ''
+        for item in words:
+            str = str + item
+            for char in str:
+                if self.__type_speed == "Default":
+                    time.sleep(random.choice([
+                    0.06, 0.05, 0.03, 0.03,
+                    0.05, 0.03, 0.04, 0.05, 0.06, 0.04
+                    ]))
+                if self.__type_speed == "Fast":
+                    time.sleep(random.choice([
+                    0.06, 0.05, 0.03, 0.03,
+                    0.05, 0.03, 0.04, 0.05, 0.06, 0.04
+                    ]) - 0.01)
+                if self.__type_speed == "Fastest":
+                    time.sleep(random.choice([
+                    0.06, 0.05, 0.03, 0.03,
+                    0.05, 0.03, 0.04, 0.05, 0.06, 0.04
+                    ]) - 0.02)
+                if self.__type_speed == "Print":
+                    time.sleep(0.001)
+
+                sys.stdout.write(char)
+                sys.stdout.flush()
+
+                if self.__type_speed =="Default" and ((char == ".") or (char == "!") or (char == ";")):
+                    time.sleep(0.7)
+                elif self.__type_speed =="Fast" and ((char == ".") or (char == "!") or (char == ";")):
+                    time.sleep(0.5)
+                elif self.__type_speed =="Fastest" and ((char == ".") or (char == "!") or (char == ";")):
+                    time.sleep(0.4)
+
+                if self.__type_speed =="Default" and (char == ","):
+                    time.sleep(0.4)
+                elif self.__type_speed =="Fast" and (char == ","):
+                    time.sleep(0.3)
+                elif self.__type_speed =="Fastest" and (char == ","):
+                    time.sleep(0.2)
+
+                if self.__type_speed =="Default" and (char == "?") or (char == ":"):
+                    time.sleep(0.3)
+                elif self.__type_speed =="Fast" and (char == "?") or (char == ":"):
+                    time.sleep(0.2)
+                elif self.__type_speed =="Fastest" and (char == "?") or (char == ":"):
+                    time.sleep(0.1)
+                
+                self.cleanup()
+
+
     def print_key(self):
         while True:
             while msvcrt.kbhit():
@@ -158,7 +208,7 @@ class Typing:
         
         for _ in range(4):
             print('\033[1A')
-            
+
         key = None
         while True:
             if key == "Up" and index > 0:
@@ -176,19 +226,13 @@ class Typing:
     def continue_cleanup(self):
         while msvcrt.kbhit():
             return True
-        
-            
-            
+                    
 
 
 def main():
     type = Typing()
     # type.print_key_int()
     type.type("Hello")
-    print("\n")
-    options = ["Duck", "Cat", "Goose", "Sheep"]
-    choice = type.select_one("Choose one, wisely!", options)
-    print("\n")
-    type.type("Wow you chose " + options[choice])
+    type.retype("Hi bro whats up")
 
 main()

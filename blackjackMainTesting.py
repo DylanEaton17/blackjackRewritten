@@ -28,11 +28,55 @@ def main():
     player.meet("Frank")
     player.increment_day()
 
+    tests = []
+    tests.append("basic")
+    tests.append("thunderstorm")
+    tests.append("end_day")
 
-    while(True):
-        player.thunderstorm()
-        player.afternoon()
-        player.end_day()
+    choice = None
+    while True:
+
+        for i in range(len(tests)+1):
+            if(i<len(tests)):
+                print(str(i+1) + ". " + tests[i])
+            else:
+                print(str(i+1) + ". Exit")
+
+        while choice is None:
+            try:
+                choice = int(input("Choose a number: "))
+            except ValueError:
+                print()
+                print("Try again")
+                print()
+        if(1<=choice<=len(tests)):
+            test_choice = tests[choice-1]
+            break
+        elif choice==len(tests)+1:
+            exit()
+        else:
+            choice = None
+            print()
+            print("Try again")
+            print()
+    print()
+
+    while True:
+        match test_choice:
+            case "basic":
+                blackjackGame.play_round(1)
+                player.end_day()
+                player.start_day()
+                player.afternoon()
+            case "thunderstorm":
+                player.thunderstorm()
+                player.afternoon()
+                player.end_day()
+            case "end_day":
+                player.increment_day()
+                player.end_day()
+                player.start_day()
+
     
     # blackjackGame.play_round(1)
     # player.set_balance(1000)

@@ -5,6 +5,8 @@ from colorama import Fore, Back, Style
 import lists
 import msvcrt
 
+PAR = "\n\n"
+
 """
 Below are all of the typing/color functions, used
 for terminal outputs and making my text pretty
@@ -110,8 +112,8 @@ class Typing:
             elif byte == b'p':
                 self.__type_speed = "Print"
 
-    def press_continue(self):
-        self.type(False, "Press any key to continue: ")
+    def press_continue(self, message="Press any key to continue: "):
+        self.type(message)
         is_pressed = False
         while not is_pressed:
             is_pressed = self.continue_cleanup()
@@ -119,6 +121,15 @@ class Typing:
     def continue_cleanup(self):
         while msvcrt.kbhit():
             return True
+        
+    def typeover(self, old, new, started=False):
+        if not started:
+            self.type(old)
+        print("", end="\r")
+        type.type(" "*len(old))
+        print("", end="\r")
+        type.type(new)
+        print("\n")
 
 type = Typing()
 
@@ -481,6 +492,8 @@ class Player:
         # Heals the player before the next day
         print("\n")
         self.heal(random.choice([1, 3, 5]))
+
+        type.press_continue("Press a key to continue: ")
 
 
     # Opening
@@ -1605,6 +1618,8 @@ class Player:
             self.__prereqs_done[0] = True
 
     def start_day(self):
+        type.typeover("Press a key to continue:", bright(yellow("~ ~ ~ Morning, Day " + str(self.__day) + " ~ ~ ~ ")), True)
+
         self.update_rank()
         self.update_story_event_prereqs()
         ranStoryEvent = False
@@ -1634,9 +1649,7 @@ class Player:
 
 
     def has_pests(self):
-        if self.has_danger("Spider"):
-            return True
-        elif self.has_danger("Cockroach"):
+        if self.has_danger("Spider") or self.has_danger("Cockroach") or self.has_danger("Rat") or self.has_danger("Termite"):
             return True
         else:
             return False
