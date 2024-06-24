@@ -813,7 +813,7 @@ class Hand:
         return len(self.__cards)
     
     def has_ace(self):
-        return len(self.__value==2)
+        return len(self.__value)==2
 
     def add(self, card):
         # Adds cards to hand, then checks if aces affect the value

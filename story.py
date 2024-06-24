@@ -1,9 +1,10 @@
 import random
 import time
 import sys
-from colorama import Fore, Back, Style
 import lists
 import msvcrt
+from colorama import Fore, Back, Style, init
+init(convert=True)
 
 PAR = "\n\n"
 
@@ -126,9 +127,9 @@ class Typing:
         if not started:
             self.type(old)
         print("", end="\r")
-        type.type(" "*len(old))
+        self.type(" "*len(old))
         print("", end="\r")
-        type.type(new)
+        self.type(new)
         print("\n")
 
 type = Typing()
@@ -2085,6 +2086,7 @@ class Player:
         if not self.has_met("Doctor's Office"):
             self.meet("Doctor's Office")
             type.type("As you pull up closer to the bright blue building, you notice that the parking lot is concerningly empty. You park your wagon right up front next to the entrance, and step out towards the doors. ")
+            print("\n")
             type.type("When you enter into the lobby, you're immediately hit with the strong smell of hand sanitizer in the air. The carpets are dull and brown, the light above you is flickering, and the walls are filled with posters telling you to 'Floss More Often!' and 'Wash Your Hands Before You Eat!' ")
             type.type("If you didn't know any better, you would have guessed you were on a movie set.")
             print("\n")
@@ -3147,6 +3149,7 @@ class Player:
             self.meet("Convenience Store")
             type.type("When pulling into the parking lot, you have to grip the wheel tightly to keep control of the wagon, as the concrete beneath you is littered with potholes. As you drive closer to bright red brick building, you begin to read the sign 'Convenience Store' written in bold. ")
             type.type("Really? This place really called 'Convenience Store'? They couldn't have come up with anything more creative? You park nearby, and get out, being sure not to trip on the loose chunks of road. ")
+            print("\n")
             type.type("Walking closer to the store, you notice there's a poster with a smiling dude on it, holding his thumbs up, with the caption 'We Love our Customers! That's why we're limiting each customer to one item per visit. That means there's more for everyone! Sharing is caring!' ")
             type.type("Looking through the window, the store is barren, with only a few items on the shelf. If not for someone standing at the register, you would have thought the place to be abandoned.")
             print("\n")

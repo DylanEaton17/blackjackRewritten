@@ -32,6 +32,8 @@ def main():
     tests.append("basic")
     tests.append("thunderstorm")
     tests.append("end_day")
+    tests.append("afternoon")
+
 
     choice = None
     while True:
@@ -76,6 +78,14 @@ def main():
                 player.increment_day()
                 player.end_day()
                 player.start_day()
+            case "afternoon":
+                player.add_item("Car")
+                player.add_item("Map")
+                player.meet("Frank")
+                player.meet("Oswald")
+                player.meet("Tom")
+                player.meet("Witch")
+                player.afternoon()
 
     
     # blackjackGame.play_round(1)
