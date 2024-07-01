@@ -1,0 +1,64 @@
+{
+	"files": [
+		{
+			"path": "story.py",
+			"bookmarks": [
+				{
+					"line": 297,
+					"column": 0,
+					"label": "End Day"
+				},
+				{
+					"line": 676,
+					"column": 0,
+					"label": "Cheap Days"
+				},
+				{
+					"line": 767,
+					"column": 0,
+					"label": "Modest Days"
+				},
+				{
+					"line": 867,
+					"column": 0,
+					"label": "Rich Days"
+				},
+				{
+					"line": 972,
+					"column": 0,
+					"label": "Doughman Days"
+				},
+				{
+					"line": 1015,
+					"column": 0,
+					"label": "Nearly Days"
+				},
+				{
+					"line": 1133,
+					"column": 0,
+					"label": "Poor Nights"
+				},
+				{
+					"line": 1215,
+					"column": 0,
+					"label": "Cheap Nights"
+				},
+				{
+					"line": 1263,
+					"column": 0,
+					"label": "Modest Nights"
+				},
+				{
+					"line": 1564,
+					"column": 0,
+					"label": "Update Status"
+				},
+				{
+					"line": 1822,
+					"column": 22,
+					"label": "Afternoon"
+				}
+			]
+		}
+	]
+}

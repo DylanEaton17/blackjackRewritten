@@ -1,0 +1,277 @@
+import msvcrt
+import time
+import random
+import sys
+from colorama import Fore, Back, Style, init
+
+
+def red(text):
+    return (Fore.RED + text + Fore.WHITE)
+
+def green(text):
+    return (Fore.GREEN + text + Fore.WHITE)
+            
+def magenta(text):
+    return (Fore.MAGENTA + text + Fore.WHITE)
+
+def yellow(text):
+    return (Fore.YELLOW + text + Fore.WHITE)
+
+def cyan(text):
+    return (Fore.CYAN + text + Fore.WHITE)
+            
+def bright(text):
+    return (Style.BRIGHT + text + Style.NORMAL)
+
+class Type:
+    def __init__(self):
+        self.__type_speed = "Default"
+
+    def fast(self, *words):
+        str = ''
+        for item in words:
+            str = str + item
+        # str += "\n"
+        for char in str:
+            time.sleep(random.choice([
+            0.03, 0.05, 0.04, 0.02,
+            0.05, 0.03, 0.02, 0.05, 0.04, 0.01
+            ]))
+            sys.stdout.write(char)
+            sys.stdout.flush()
+            if ((char == ".") or (char == "!") or (char == ":")):
+                time.sleep(0.5)
+            if (char == ","):
+                time.sleep(0.4)
+            self.cleanup()
+
+    def fast_clean(self, *words):
+        str = ''
+        for item in words:
+            str = str + item
+        # str += "\n"
+        for char in str:
+            time.sleep(random.choice([
+            0.03, 0.05, 0.04, 0.02,
+            0.05, 0.03, 0.02, 0.05, 0.04, 0.01
+            ]))
+            sys.stdout.write(char)
+            sys.stdout.flush()
+            if ((char == ".") or (char == "!") or (char == ":")):
+                time.sleep(0.5)
+            if (char == ","):
+                time.sleep(0.4)
+            self.cleanup()
+
+    def slow(self, *words):
+        str = ''
+        for item in words:
+            str = str + item
+        # str += "\n"
+            for char in str:
+                time.sleep(random.choice([
+                0.06, 0.05, 0.03, 0.03,
+                0.05, 0.03, 0.04, 0.05, 0.06, 0.04
+                ]))
+                sys.stdout.write(char)
+                sys.stdout.flush()
+                if ((char == ".") or (char == "!") or (char == ":") or (char == ";")):
+                    time.sleep(0.7)
+                if (char == ","):
+                    time.sleep(0.4)
+                self.cleanup()
+
+    def slow_clean(self, *words):
+        str = ''
+        for item in words:
+            str = str + item
+        # str += "\n"
+            for char in str:
+                time.sleep(random.choice([
+                0.06, 0.05, 0.03, 0.03,
+                0.05, 0.03, 0.04, 0.05, 0.06, 0.04
+                ]))
+                sys.stdout.write(char)
+                sys.stdout.flush()
+                self.cleanup()
+
+    def suspense(self, *words):
+        str = ''
+        for item in words:
+            str = str + item
+        # str += "\n"
+            for char in str:
+                time.sleep(random.choice([
+                0.06, 0.05, 0.03, 0.03,
+                0.05, 0.03, 0.04, 0.05, 0.06, 0.04
+                ]) + 0.05)
+                sys.stdout.write(char)
+                sys.stdout.flush()
+                if ((char == ".") or (char == "!") or (char == ":") or (char == ";")):
+                    time.sleep(0.7)
+                if (char == ","):
+                    time.sleep(0.4)
+                self.cleanup()
+
+    def suspense_clean(self, *words):
+        str = ''
+        for item in words:
+            str = str + item
+        # str += "\n"
+            for char in str:
+                time.sleep(random.choice([
+                0.06, 0.05, 0.03, 0.03,
+                0.05, 0.03, 0.04, 0.05, 0.06, 0.04
+                ]) + 0.05)
+                sys.stdout.write(char)
+                sys.stdout.flush()
+                self.cleanup()
+
+    def type(self, *words):
+        str = ''
+        for item in words:
+            str = str + item
+            for char in str:
+                if self.__type_speed == "Default":
+                    time.sleep(random.choice([
+                    0.06, 0.05, 0.03, 0.03,
+                    0.05, 0.03, 0.04, 0.05, 0.06, 0.04
+                    ]))
+                if self.__type_speed == "Fast":
+                    time.sleep(random.choice([
+                    0.06, 0.05, 0.03, 0.03,
+                    0.05, 0.03, 0.04, 0.05, 0.06, 0.04
+                    ]) - 0.01)
+                if self.__type_speed == "Fastest":
+                    time.sleep(random.choice([
+                    0.06, 0.05, 0.03, 0.03,
+                    0.05, 0.03, 0.04, 0.05, 0.06, 0.04
+                    ]) - 0.02)
+                if self.__type_speed == "Print":
+                    time.sleep(0.001)
+
+                sys.stdout.write(char)
+                sys.stdout.flush()
+
+                if self.__type_speed =="Default" and ((char == ".") or (char == "!") or (char == ";")):
+                    time.sleep(0.7)
+                elif self.__type_speed =="Fast" and ((char == ".") or (char == "!") or (char == ";")):
+                    time.sleep(0.5)
+                elif self.__type_speed =="Fastest" and ((char == ".") or (char == "!") or (char == ";")):
+                    time.sleep(0.4)
+
+                if self.__type_speed =="Default" and (char == ","):
+                    time.sleep(0.4)
+                elif self.__type_speed =="Fast" and (char == ","):
+                    time.sleep(0.3)
+                elif self.__type_speed =="Fastest" and (char == ","):
+                    time.sleep(0.2)
+
+                if self.__type_speed =="Default" and (char == "?") or (char == ":"):
+                    time.sleep(0.3)
+                elif self.__type_speed =="Fast" and (char == "?") or (char == ":"):
+                    time.sleep(0.2)
+                elif self.__type_speed =="Fastest" and (char == "?") or (char == ":"):
+                    time.sleep(0.1)
+                
+                self.cleanup()
+
+    def type_clean(self, *words):
+        str = ''
+        for item in words:
+            str = str + item
+            for char in str:
+                if self.__type_speed == "Default":
+                    time.sleep(random.choice([
+                    0.06, 0.05, 0.03, 0.03,
+                    0.05, 0.03, 0.04, 0.05, 0.06, 0.04
+                    ]))
+                if self.__type_speed == "Fast":
+                    time.sleep(random.choice([
+                    0.06, 0.05, 0.03, 0.03,
+                    0.05, 0.03, 0.04, 0.05, 0.06, 0.04
+                    ]) - 0.01)
+                if self.__type_speed == "Fastest":
+                    time.sleep(random.choice([
+                    0.06, 0.05, 0.03, 0.03,
+                    0.05, 0.03, 0.04, 0.05, 0.06, 0.04
+                    ]) - 0.02)
+                if self.__type_speed == "Print":
+                    time.sleep(0.001)
+
+                sys.stdout.write(char)
+                sys.stdout.flush()
+
+                if self.__type_speed =="Default" and (char == ","):
+                    time.sleep(0.4)
+                elif self.__type_speed =="Fast" and (char == ","):
+                    time.sleep(0.3)
+                elif self.__type_speed =="Fastest" and (char == ","):
+                    time.sleep(0.2)
+
+                self.cleanup()
+
+    def cleanup(self):
+        while msvcrt.kbhit():
+            byte = msvcrt.getch()
+            if byte == b',':
+                self.__type_speed = "Default"
+            elif byte == b'.':
+                self.__type_speed = "Fast"
+            elif byte == b'/':
+                self.__type_speed = "Fastest"
+            elif byte == b'p':
+                self.__type_speed = "Print"
+                    
+    def typeover(self, old, new, started=False):
+        if not started:
+            self.type(old)
+        print("", end="\r")
+        self.type(" "*len(old))
+        print("", end="\r")
+        self.type(new)
+        print("\n")
+
+type = Type()
+class Ask:
+    def choose_a_number(self, a, b):
+        while True:
+            lucky_number = None
+            while lucky_number is None:
+                type.fast("Choose a number between " + str(a) + " and " + str(b) + ": ")
+                try:
+                    lucky_number = int(input(""))
+                except ValueError:
+                    print("")
+                    type.fast(red("That's, like, not a number."))
+                    print("\n")
+
+    def choose_an_option(self, options, reiterate="What? ", first_letter=True, ):
+        while True:
+            choice = input("").lower()
+            for option in options:
+                if (choice == option.lower()) or (choice == option[0].lower()):
+                    return option
+            type.type(reiterate) # type: ignore
+
+    def yes_or_no(self, reiterate="What? "):
+        while True:
+            yes_or_no = input("").lower()
+            if (yes_or_no == "y") or (yes_or_no == "yes"):
+                print()
+                return "yes"
+            elif (yes_or_no == "n") or (yes_or_no == "no"):
+                print()
+                return "no"
+            else:
+                type.type(reiterate) # type: ignore
+
+    def press_continue(self, message="Press any key to continue: "):
+        self.type(message)
+        is_pressed = False
+        while not is_pressed:
+            is_pressed = self.continue_cleanup()
+
+    def continue_cleanup(self):
+        while msvcrt.kbhit():
+            return True
