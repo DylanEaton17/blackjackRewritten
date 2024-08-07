@@ -51,9 +51,7 @@ def main():
                 player.meet("Oswald")
                 player.meet("Tom")
                 player.meet("Witch")
-                player.afternoon()
-            case "guess_the_number":
-                
+                player.afternoon()                
 
     
     # blackjackGame.play_round(1)

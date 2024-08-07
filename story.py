@@ -638,7 +638,7 @@ class Player:
         type.type(space_quote("Howdy stranger! My name's Suzy! Do you like my name?"))
         answer = ask.yes_or_no("\"What was that?\" ")
         if answer == "yes":
-            type.type(quote("Thanks! My mom gave it to me, before she dissapeared. Who knows where she ran off to!"))
+            type.type(quote("Thanks! My mom gave it to me, before she disappeared. Who knows where she ran off to!"))
         elif answer == "no":
             type.type(quote("Wow! That's not very nice of you. You're rude, stranger."))
 
@@ -700,7 +700,7 @@ class Player:
     def strong_winds(self):
         type.type("You wake up to a loud snap above you, followed by a massive branch crashing down from the treetops and into the street. The wind echoes throughout the trees around you, and many of them look to be on the verge of falling.")
         print("\n")
-        type.type("With the weater being this bad, you make the executive decision to just chill in the wagon for the day.")
+        type.type("With the weather being this bad, you make the executive decision to just chill in the wagon for the day.")
         self.add_travel_restriction("Wind")
         print("\n")
 
@@ -734,7 +734,7 @@ class Player:
             type.type("Father Ezekiel hands you his bible. ")
             type.type(quote("I will pray for you, and I know that Jesus will always be with you. Amen."))
         elif answer == "no":
-            type.type(open_quote("Well, to each their own. I certainly cast no judgements. "))
+            type.type(open_quote("Well, to each their own. I certainly cast no judgments. "))
             type.type(close_quote("I will pray for you, and I know that Jesus will always be with you. Amen."))
         print("\n")
         type.type("And with that, Father Ezekiel walks down the road, and out of sight.")
@@ -749,7 +749,7 @@ class Player:
         self.meet("Betsy")
         self.add_danger("Betsy Tractor")
         type.type("You wake up to your whole car shaking. As you jump up from your seat, you see a beautiful black and white cow, staring you down through your window. ")
-        type.type("The cow moos at you aggressively, and you open the door. On its back is a note, that reads 'This is Betsy. Betsy gets hungry. Please feed Betsy.'")
+        type.type("The cow moos at you aggressively, and you open the door. On its back is a note that reads 'This is Betsy. Betsy gets hungry. Please feed Betsy.'")
         print("\n")
         type.type("Betsy stares into your soul, then looks over at the seat next to you. It appears Betsy is interested in your pile of money. ")
         print()
@@ -827,7 +827,7 @@ class Player:
                 print("\n")
                 return
             else:
-                type.type("The squirrel notices you, and jumps from the bag, and over to your center console. He peers up at you, with an acorn in hand, holding it up in your direction. You sick your hand out, and the squirrel give you the acorn. This must be a sign of peace.")
+                type.type("The squirrel notices you, and jumps from the bag, and over to your center console. He peers up at you, with an acorn in hand, holding it up in your direction. You stick your hand out, and the squirrel gives you the acorn. This must be a sign of peace.")
                 print("\n")
                 type.type("After an hour of watching the squirrel eat the acorns, climb around your car, and jump from your arm to the dashboard over and over, you decide that this squirrel is now yours. You name him 'Squirrely', in honor of him being a squirrel.")
                 print("\n")
@@ -837,7 +837,7 @@ class Player:
         else:
             type.type("You wake up to a sharp pain on your leg! ")
             type.type("You swing the hurt leg, and you watch as a squirrel goes flying into the air. ")
-            type.type("The littel rodent starts climbing around your car, scurrying around the walls, desperately trying to get out. ")
+            type.type("The little rodent starts climbing around your car, scurrying around the walls, desperately trying to get out. ")
             type.type("You open the backseat windows, and the squirrel jumps out, and darts into the woods. Hopefully, that bite isn't too serious.")
             self.add_status("Squirrel Bite")
             random_chance = random.randrange(4)
@@ -899,7 +899,7 @@ class Player:
             return
 
         type.type("You wake up to a sharp pain on your ankle! ")
-        type.type("You look down to see a skinny gray rat nibling your foot. You kick at it, but the little rodent runs under the seat. ")
+        type.type("You look down to see a skinny gray rat nibbling your foot. You kick at it, but the little rodent runs under the seat. ")
         print("\n")
         type.type("The rat jumps up onto your backseat, and begins to laugh at you. Now that's just cruel. This rat must be crazy.")
         print("\n")
@@ -987,7 +987,7 @@ class Player:
     # Everytime
     def thunderstorm(self):
         self.add_travel_restriction("Rain")
-        type.type("You wake up to the sound of raindrops hitting the roof of your wagon. It starts with a couple, then a few, and before you even get the chance to stretch, it begins to pour. The sky is a dark, dark grey, and streams start to form along the road.")
+        type.type("You wake up to the sound of raindrops hitting the roof of your wagon. It starts with a couple, then a few, and before you even get the chance to stretch, it begins to pour. The sky is a dark, dark gray, and streams start to form along the road.")
         print("\n")
         type.type("The pitter-patter of the rain on your car lulls you back to sleep. When a strike of lightning wakes you once more, you look out the windows to see a few inches of rain covering the street. Welp, there goes your plans for the day.")
         print("\n")
@@ -1017,7 +1017,7 @@ class Player:
         type.type(space_quote("Are you gonna leave?"))
         answer = ask.yes_or_no(space_quote("Are you? Gonna leave?"))
         if answer == "yes":
-            type.type(quote("Good, you better do what I say, I'm super powerful. I hope you actually move and stop living here, because it's really getting on my nervers. I'll be back to make sure you do it, mark my words."))
+            type.type(quote("Good, you better do what I say, I'm super powerful. I hope you actually move and stop living here, because it's really getting on my nerves. I'll be back to make sure you do it, mark my words."))
             print()
         elif answer == "no":
             type.type(quote("What? But you have to! This badge says so! You better listen to me, because I'm really starting to get upset. I'll be back, and if you haven't moved yet, I'll make you, mark my words."))
@@ -1064,7 +1064,7 @@ class Player:
             elif answer == "no":
                 type.type("Betsy moos, then charges your vehicle. The rest of the cows start attacking your wagon, shattering the windows, knocking off the tires, and pummeling the doors.")
                 print("\n")
-                type.slow(red(bright("A pane of glass explodes next to you, sending shards into your face. One catches your eye, and you scream in pain. The cows continue to attack you, and your money is spiring all around you. Unable to see, and covered in blood, you close your eyes, and let yourself succumb to the army of cows. You won, Betsy, you won.")))
+                type.slow(red(bright("A pane of glass explodes next to you, sending shards into your face. One catches your eye, and you scream in pain. The cows continue to attack you, and your money is spiraling all around. Unable to see, and covered in blood, you close your eyes, and let yourself succumb to the army of cows. You won, Betsy, you won.")))
                 self.kill()
                 break
         print("\n")
@@ -1075,7 +1075,7 @@ class Player:
             return
 
         self.lose_danger("Final Interrogation")
-        type.type("You wake up, and through your windshield, you see a car parked right in front of you. You can feel your blood start to boil. What's this guys problem? As you open the door and get out of your car, you notice the man in his bright red suit, once again peering into your trunk.")
+        type.type("You wake up, and through your windshield, you see a car parked right in front of you. You can feel your blood start to boil. What's this guy's problem? As you open the door and get out of your car, you notice the man in his bright red suit, once again peering into your trunk.")
         print("\n")
         type.type("The man sees you, and walks up to you, with a pistol holstered to his waist.")
         print("\n")
@@ -1087,7 +1087,7 @@ class Player:
         type.type(space_quote("Will you leave?"))
         answer = ask.yes_or_no(space_quote("Answer me. "))
         if answer == "yes":
-            type.type(quote("That's great. Fantastic. But I don't believe a word that comes out of your filty mouth. Prove it. Leave. Go away. GET OUT."))
+            type.type(quote("That's great. Fantastic. But I don't believe a word that comes out of your filthy mouth. Prove it. Leave. Go away. GET OUT."))
             print("\n")
             type.type("You are fueled with anger. Who is this guy, and what gives him the right to harass you? All for being homeless? No longer. You reach for the gun on his waist.")
             print("\n")
@@ -1109,7 +1109,7 @@ class Player:
                 type.type(space_quote("Please, I have a family. I have children. My name is Phil. I don't wanna die. I'm too young. I can't die. I can't die. I ca-"))
                 type.type("You watch as the freight truck crushes Phil, and continues down the road. Nothing remained but the splotches of blood that splattered the road where he once stood.")
                 print("\n")
-                type.type("After sitting a while, and recollecting your thoughts, you bring the pistol over to Phil's car, and throw it onto the passengers seat. Looking inside, the car has dice hanging on the mirror, and is filled to the brim with red suits. On the dashboard sits a photo, of Phil, his wife, and his three kids, all wearing bright red suits. Phil might've been crazy, but at least he was consistent.")
+                type.type("After sitting a while, and recollecting your thoughts, you bring the pistol over to Phil's car, and throw it onto the passenger seat. Looking inside, the car has dice hanging on the mirror, and is filled to the brim with red suits. On the dashboard sits a photo of Phil, his wife, and his three kids, all wearing bright red suits. Phil might've been crazy, but at least he was consistent.")
                 print("\n")
                 type.type("You get in the car, and drive it down the road, before turning into the woods. You drive a mile in, before parking the car before the lake. You get out, and push the car into the water, watching as it submerges.")
                 print("\n")
@@ -1137,7 +1137,7 @@ class Player:
                 type.type(space_quote("Please, I have a family. I have children. My name is Phil. I don't wanna die. I'm too young. I can't die. I can't die. I ca-"))
                 type.type("You pull the trigger, and Phil becomes quiet. His blood covers the street, but at least his red suit still looks good as new.")
                 print("\n")
-                type.type("After sitting a while, and recollecting your thoughts, you drag Phil over to his car. You stuff him into the trunk, and throw his pistol onto the passengers seat. Looking inside, the car has dice hanging on the mirror, and is filled to the brim with red suits. On the dashboard sits a photo, of Phil, his wife, and his three kids, all wearing bright red suits. Phil might've been crazy, but at least he was consistent.")
+                type.type("After sitting a while, and recollecting your thoughts, you drag Phil over to his car. You stuff him into the trunk, and throw his pistol onto the passenger seat. Looking inside, the car has dice hanging on the mirror, and is filled to the brim with red suits. On the dashboard sits a photo, of Phil, his wife, and his three kids, all wearing bright red suits. Phil might've been crazy, but at least he was consistent.")
                 print("\n")
                 type.type("You get in the car, and drive it down the road, before turning into the woods. You drive a mile in, before parking the car before the lake. You get out, and push the car into the water, watching as it submerges.")
                 print("\n")
@@ -1159,7 +1159,7 @@ class Player:
         self.change_balance(worth)
 
     def went_jogging(self):
-        type.type("After spending an hour sitting in your car doing nothing, you feel like you should get some exersize. You get out of the wagon, and begin to jog down the road.")
+        type.type("After spending an hour sitting in your car doing nothing, you feel like you should get some exercise. You get out of the wagon, and begin to jog down the road.")
         print("\n")
         type.type("A couple hours go by, and while jogging back, you see the wagon in the distance. ")
         random_chance = random.randrange(3)
@@ -1189,7 +1189,7 @@ class Player:
             print("\n")
             return
         elif random_chance == 1:
-            type.type("As you walk along the path, you notice someone laying against a tree in front of you. As you get closer, you notice that the person's face is blue, their eyes are bloodshot, and they don't appear to be breathing.")
+            type.type("As you walk along the path, you notice someone leaning against a tree in front of you. As you get closer, you notice that the person's face is blue, their eyes are bloodshot, and they don't appear to be breathing.")
             print("\n")
             type.type("You begin to panic, before thinking through the situation. They're already dead, so there's nothing you can do to help them. Maybe they had some money on them? I mean, they're not gonna use it. Why shouldn't you?")
             print()
