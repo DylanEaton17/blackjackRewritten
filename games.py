@@ -36,6 +36,10 @@ def quote(text):
 def space_quote(text):
     return ("\"" + text + "\" ")
 
+def guess_the_number(min=1, max=100, guesses=6):
+    type.type("I'm thinking of a number between " + bright(magenta(str(min))) + " and " + bright(magenta(str(max))))
+    ask.choose_a_number(min, max, guess=True)
+
 
 def rock_paper_scissors():
     options = ["Rock", "Paper", "Scissors"]
@@ -67,42 +71,45 @@ def rock_paper_scissors():
     return winner
 
 def main():
-    player_wins = 0
-    cpu_wins = 0
-    win_count=2
+    guess_the_number()
 
-    while True:
-        winner = rock_paper_scissors()
-        if winner == "Player":
-            player_wins += 1
-        elif winner == "CPU":
-            cpu_wins += 1
+# def main():
+#     player_wins = 0
+#     cpu_wins = 0
+#     win_count=2
 
-        score = str(player_wins) + "-" + str(cpu_wins)
-        type.type("Best of " + str((win_count*2)-1) + ": ")
-        if player_wins == win_count:
-            type.type(bright(yellow("You Win " + score)))
-            print("")
-            break
-        if cpu_wins == win_count:
-            type.type(bright(red("The CPU Wins " + score)))
-            print("")
-            break
-        elif player_wins > cpu_wins:
-            type.type(bright(magenta("You are winning " + score)))
-        elif player_wins < cpu_wins:
-            type.type(bright(red("You are losing " + score)))
-        elif player_wins == cpu_wins:
-            type.type(bright(cyan("Tied " + score)))
+#     while True:
+#         winner = rock_paper_scissors()
+#         if winner == "Player":
+#             player_wins += 1
+#         elif winner == "CPU":
+#             cpu_wins += 1
 
-        print("\n")
-        type.fast("Let's play another round!")
-        print()
+#         score = str(player_wins) + "-" + str(cpu_wins)
+#         type.type("Best of " + str((win_count*2)-1) + ": ")
+#         if player_wins == win_count:
+#             type.type(bright(yellow("You Win " + score)))
+#             print("")
+#             break
+#         if cpu_wins == win_count:
+#             type.type(bright(red("The CPU Wins " + score)))
+#             print("")
+#             break
+#         elif player_wins > cpu_wins:
+#             type.type(bright(magenta("You are winning " + score)))
+#         elif player_wins < cpu_wins:
+#             type.type(bright(red("You are losing " + score)))
+#         elif player_wins == cpu_wins:
+#             type.type(bright(cyan("Tied " + score)))
 
-    if player_wins == win_count:
-        type.type(bright(yellow("You have won!")))
-    else:
-        type.type(bright(red("The CPU has won!")))
+#         print("\n")
+#         type.fast("Let's play another round!")
+#         print()
+
+#     if player_wins == win_count:
+#         type.type(bright(yellow("You have won!")))
+#     else:
+#         type.type(bright(red("The CPU has won!")))
 
 if __name__ == "__main__":
     main()

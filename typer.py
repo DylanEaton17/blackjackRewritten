@@ -57,7 +57,7 @@ class Type:
             ]))
             sys.stdout.write(char)
             sys.stdout.flush()
-            if ((char == ".") or (char == "!") or (char == ":")):
+            if ((char == ".") or (char == "!")):
                 time.sleep(0.5)
             if (char == ","):
                 time.sleep(0.4)
@@ -234,17 +234,29 @@ class Type:
 
 type = Type()
 class Ask:
-    def choose_a_number(self, a, b):
+    def choose_a_number(self, a, b, guess=False):
         while True:
             lucky_number = None
             while lucky_number is None:
-                type.fast("Choose a number between " + str(a) + " and " + str(b) + ": ")
+                if guess==True:
+                    type.fast_clean("What's your guess? ")
+                else:
+                    type.fast_clean("Choose a number between " + str(a) + " and " + str(b) + ": ")
+
                 try:
                     lucky_number = int(input(""))
                 except ValueError:
                     print("")
                     type.fast(red("That's, like, not a number."))
                     print("\n")
+            if a<=lucky_number<=b:
+                return lucky_number
+            elif guess==True:
+                type.type("The number is between " + str(a) + " and " + str(b) + "!")
+                print("\n")
+            else:
+                type.type("That number isn't in the range!")
+                print("\n")
 
     def choose_an_option(self, options, reiterate="What? ", first_letter=True, ):
         while True:

@@ -89,14 +89,14 @@ class Player:
     def hurt(self, value):
         if(self.__health - value <= 0):
             self.__health = 0
-            typer.slow(red(bright("You have succumbed to your wounds.")))
+            type.slow(red(bright("You have succumbed to your wounds.")))
             self.kill()
         else:
             self.__health -= value
         if self.has_item("Health Indicator"):
-            typer.type("The " + magenta(bright("Health Indicator")) + " on your wrist makes a loud beep.")
+            type.type("The " + magenta(bright("Health Indicator")) + " on your wrist makes a loud beep.")
             print()
-            typer.type("You took damage!")
+            type.type("You took damage!")
             print()
             self.health_indicator()
 
@@ -106,9 +106,9 @@ class Player:
         else:
             self.__health += value
         if self.has_item("Health Indicator"):
-            typer.type("The " + magenta(bright("Health Indicator")) + " on your wrist makes a subtle vibration.")
+            type.type("The " + magenta(bright("Health Indicator")) + " on your wrist makes a subtle vibration.")
             print()
-            typer.type("You regained health!")
+            type.type("You regained health!")
             print()
             self.health_indicator()
 
@@ -120,42 +120,42 @@ class Player:
 
     def health_indicator(self):
         if self.__health > 66:
-            typer.type("Your current health: " + bright(green(str(self.__health) + "%")))
+            type.type("Your current health: " + bright(green(str(self.__health) + "%")))
         elif self.__health > 33:
-            typer.type("Your current health: " + bright(yellow(str(self.__health) + "%")))
+            type.type("Your current health: " + bright(yellow(str(self.__health) + "%")))
         else:
-            typer.type("Your current health: " + bright(red(str(self.__health) + "%")))
+            type.type("Your current health: " + bright(red(str(self.__health) + "%")))
         print("\n")
         self.update_health_indicator_durability()
 
     def status(self):
         if not self.__alive:
             print("\n")
-            typer.slow("You have died!")
+            type.slow("You have died!")
             print()
-            if self.__day == 1: typer.slow("You didn't even last " + bright(yellow(str(self.__day) + " day")) + ". That's embarrasing.")
-            elif self.__day == 2: typer.slow("You lasted " + bright(yellow(str(self.__day-1) + " day")) + ".")
-            else: typer.slow("You lasted " + bright(yellow(str(self.__day) + " days")) + "!")
+            if self.__day == 1: type.slow("You didn't even last " + bright(yellow(str(self.__day) + " day")) + ". That's embarrasing.")
+            elif self.__day == 2: type.slow("You lasted " + bright(yellow(str(self.__day-1) + " day")) + ".")
+            else: type.slow("You lasted " + bright(yellow(str(self.__day) + " days")) + "!")
             print()
-            typer.slow("You met your fate with a final balance of " + green(bright("${:,}".format(self.__balance))))
+            type.slow("You met your fate with a final balance of " + green(bright("${:,}".format(self.__balance))))
             print()
-            typer.slow("The police were able to recover your body, but nobody cared enough to show up to your funeral.")
+            type.slow("The police were able to recover your body, but nobody cared enough to show up to your funeral.")
             quit()
         elif (self.__balance == 0):
             print("\n")
-            typer.slow("You have run out of money!")
+            type.slow("You have run out of money!")
             print()
-            if self.__day == 1: typer.slow("You didn't even last " + bright(yellow(str(self.__day) + " day")) + ". That's absurdly sad.")
-            elif self.__day == 2: typer.slow("You lasted " + bright(yellow(str(self.__day-1) + " day")) + ".")
-            else: typer.slow("You lasted " + bright(yellow(str(self.__day) + " days")) + "!")
+            if self.__day == 1: type.slow("You didn't even last " + bright(yellow(str(self.__day) + " day")) + ". That's absurdly sad.")
+            elif self.__day == 2: type.slow("You lasted " + bright(yellow(str(self.__day-1) + " day")) + ".")
+            else: type.slow("You lasted " + bright(yellow(str(self.__day) + " days")) + "!")
             print()
-            typer.slow("With no cash left to play Blackjack, your source of income has been rendered useless.")
+            type.slow("With no cash left to play Blackjack, your source of income has been rendered useless.")
             print()
-            typer.slow("You spend your remaining days going hungry, wondering what life could've been, if you didn't lose that one hand.")
+            type.slow("You spend your remaining days going hungry, wondering what life could've been, if you didn't lose that one hand.")
             quit()
         elif (self.__balance >= 1000000):
             print("\n")
-            typer.slow("u win lol look at u millionaire go girl")
+            type.slow("u win lol look at u millionaire go girl")
             quit()
     
     def get_name(self):
@@ -274,14 +274,14 @@ class Player:
         print("\n")
         if (self.__balance + value) <= 0:
             self.__balance = 0
-            typer.type("Your new balance is " + red(bright("$0")))
+            type.type("Your new balance is " + red(bright("$0")))
         else:
             previous_balance = self.__balance
             self.__balance += value
             if value > 0:
-                typer.type("Your new balance is " + green(bright("${:,}".format(previous_balance) + " + ${:,}".format(value)) + bright(green(" = " + "${:,}".format(self.__balance)))))
+                type.type("Your new balance is " + green(bright("${:,}".format(previous_balance) + " + ${:,}".format(value)) + bright(green(" = " + "${:,}".format(self.__balance)))))
             elif value < 0:
-                typer.type("Your new balance is " + green(bright("${:,}".format(previous_balance))) + red(bright(" - ${:,}".format(abs(value)))) + green(bright(" = ${:,}".format(self.__balance))))
+                type.type("Your new balance is " + green(bright("${:,}".format(previous_balance))) + red(bright(" - ${:,}".format(abs(value)))) + green(bright(" = ${:,}".format(self.__balance))))
         print("\n")
 
     def get_rank(self):
@@ -323,17 +323,17 @@ class Player:
         self.update_golden_watch_durability()
 
         # Starting cheer (eg. Yippee!)
-        typer.type(self.__lists.get_cheer())
+        type.type(self.__lists.get_cheer())
 
         # Tells day count and previous day's balance
         if self.__day == 1:
-            typer.type(" You've survived " + yellow(bright(str(self.__day) + " day")) + "!")
+            type.type(" You've survived " + yellow(bright(str(self.__day) + " day")) + "!")
             print("\n")
-            typer.type("You started your journey with just " + green(bright("$" + str(self.__previous_balance))) + ". ")
+            type.type("You started your journey with just " + green(bright("$" + str(self.__previous_balance))) + ". ")
         else:
-            typer.type(" You've survived " + yellow(bright(str(self.__day) + " days")) + "!")
+            type.type(" You've survived " + yellow(bright(str(self.__day) + " days")) + "!")
             print("\n")
-            typer.type("Yesterday, at this time, you had " + green(bright("$" + str(self.__previous_balance))) + ". ")
+            type.type("Yesterday, at this time, you had " + green(bright("$" + str(self.__previous_balance))) + ". ")
         # increments day
         self.__day += 1
 
@@ -341,9 +341,9 @@ class Player:
 
         # Tells you the change in your balance, and if you gained or lost money
         change_in_balance = self.__balance - self.__previous_balance
-        if change_in_balance > 0: typer.type("Since then, you've accumulated " + green(bright("$" + str(change_in_balance))) + ". ")
-        elif change_in_balance < 0: typer.type("Since then, you've managed to lose " + red(bright("$" + str(abs(change_in_balance)))) + ". ")
-        else: typer.type("Somehow, your net earnings today was 0. Goose egg. No money. Disappointing. ")
+        if change_in_balance > 0: type.type("Since then, you've accumulated " + green(bright("$" + str(change_in_balance))) + ". ")
+        elif change_in_balance < 0: type.type("Since then, you've managed to lose " + red(bright("$" + str(abs(change_in_balance)))) + ". ")
+        else: type.type("Somehow, your net earnings today was 0. Goose egg. No money. Disappointing. ")
 
         # Sets previous balance to current balance, so that it's ready for next day
         self.__previous_balance = self.__balance
@@ -351,38 +351,38 @@ class Player:
         print("")
 
         # Tells you your current balance
-        typer.type("That brings you to a grand total of " + green(bright("$" + str(self.__balance))) + "! ")
+        type.type("That brings you to a grand total of " + green(bright("$" + str(self.__balance))) + "! ")
 
         match self.__rank:
-            case 0: typer.type("Let's not get too far ahead of ourselves though, you're still quite poor.")
-            case 1: typer.type("You definately have some money. The keyword is 'some'.")
-            case 2: typer.type("You've amassed signifigant earnings. Nicely done.")
-            case 3: typer.type("You must have some heavy pockets, huh.")
-            case 4: typer.type("Where do you even keep all that?")
-            case 5: typer.type("So close to being a millionaire! Can you do it?")
+            case 0: type.type("Let's not get too far ahead of ourselves though, you're still quite poor.")
+            case 1: type.type("You definately have some money. The keyword is 'some'.")
+            case 2: type.type("You've amassed signifigant earnings. Nicely done.")
+            case 3: type.type("You must have some heavy pockets, huh.")
+            case 4: type.type("Where do you even keep all that?")
+            case 5: type.type("So close to being a millionaire! Can you do it?")
 
         print("\n")
 
         # Gives a little personal advice, support, etc
-        typer.type(self.__lists.get_advice())
+        type.type(self.__lists.get_advice())
 
         print()
 
         # Gives one last quote before starting the next day
-        typer.type(self.__lists.get_quote_setup())
-        typer.type(self.__lists.get_quote())
+        type.type(self.__lists.get_quote_setup())
+        type.type(self.__lists.get_quote())
 
         # Heals the player before the next day
         print("\n")
         self.heal(random.choice([1, 3, 5]))
 
-        typer.press_continue("Press a key to continue: ")
+        type.press_continue("Press a key to continue: ")
 
 
     # Opening
     def first_setup(self):
         while (True):
-            typer.type("Type 'y' or 'yes', not case sensitive, to say yes to a question: ")
+            type.type("Type 'y' or 'yes', not case sensitive, to say yes to a question: ")
             yes_or_no = input("").lower()
             if (yes_or_no == "y") or (yes_or_no == "yes"):
                 break
@@ -391,7 +391,7 @@ class Player:
         print()
 
         while (True):
-            typer.type("Type 'n' or 'no', not case sensitive, to say no to a question: ")
+            type.type("Type 'n' or 'no', not case sensitive, to say no to a question: ")
             yes_or_no = input("").lower()
             if (yes_or_no == "n") or (yes_or_no == "no"):
                 break
@@ -400,7 +400,7 @@ class Player:
         print()
 
         while (True):
-            typer.type("Type 'h' or 'hit', not case sensitive, to hit your hand: ")
+            type.type("Type 'h' or 'hit', not case sensitive, to hit your hand: ")
             hit_or_stand = input("").lower()
             if (hit_or_stand == "h") or (hit_or_stand == "hit"):
                 break
@@ -409,7 +409,7 @@ class Player:
         print()
 
         while (True):
-            typer.type("Type 's' or 'stand', not case sensitive, to stand with your hand's value: ")
+            type.type("Type 's' or 'stand', not case sensitive, to stand with your hand's value: ")
             hit_or_stand = input("").lower()
             if (hit_or_stand == "s") or (hit_or_stand == "stand"):
                 break
@@ -418,53 +418,53 @@ class Player:
         print()
 
     def opening_lines(self):
-        typer.type("\"Ugh, not again,\" you spout as the old wagon shutters, then dies. ")
-        typer.type("Stranded on the road again, but this time, your money has gone dry. ")
-        typer.type("All but your 50 dollar bill that Grandma gave you on her last Christmas. ")
-        typer.type("You've been saving it for when you needed it most, but surely, it won't be enough.")
+        type.type("\"Ugh, not again,\" you spout as the old wagon shutters, then dies. ")
+        type.type("Stranded on the road again, but this time, your money has gone dry. ")
+        type.type("All but your 50 dollar bill that Grandma gave you on her last Christmas. ")
+        type.type("You've been saving it for when you needed it most, but surely, it won't be enough.")
         print('\n')
-        typer.type("The door creaks open, and you step out into the night sky, coughing up the smoke from your fried vehicle. ")
-        typer.type("After pushing your car off the road and between the trees, there isn't much else left for you to do, ")
-        typer.type("so you begin to wander down the dark, lonely street.")
+        type.type("The door creaks open, and you step out into the night sky, coughing up the smoke from your fried vehicle. ")
+        type.type("After pushing your car off the road and between the trees, there isn't much else left for you to do, ")
+        type.type("so you begin to wander down the dark, lonely street.")
         print('\n')
-        typer.type("But at the end of the road, where concrete turned to stone turned to dirt, you notice a light up ahead, on the top of a hill. ")
+        type.type("But at the end of the road, where concrete turned to stone turned to dirt, you notice a light up ahead, on the top of a hill. ")
         print('\n')
-        typer.type("As you waltz into the old, wooden shack, your eyes begin to light up with the fire of a thousand suns. ")
-        typer.type("Roulette wheels! Poker tables! And in a dark corner of the abandoned casino, sits a dealer, shuffling cards for a new round of Blackjack. ")
-        typer.type("That 50 dollars might just come in handy after all. Thanks, Grandma!")
+        type.type("As you waltz into the old, wooden shack, your eyes begin to light up with the fire of a thousand suns. ")
+        type.type("Roulette wheels! Poker tables! And in a dark corner of the abandoned casino, sits a dealer, shuffling cards for a new round of Blackjack. ")
+        type.type("That 50 dollars might just come in handy after all. Thanks, Grandma!")
         print('\n')
-        typer.type("As you go to sit down at the table, you hear the Dealer cough, then watch as he sits up.")
+        type.type("As you go to sit down at the table, you hear the Dealer cough, then watch as he sits up.")
         print("\n")
-        typer.type("In a deep, and yet strained voice, the Dealer, cloaked in darkness, poses a question to you.")
+        type.type("In a deep, and yet strained voice, the Dealer, cloaked in darkness, poses a question to you.")
         print("\n")
         self.start_night()
 
     # End Days
     def end_day_1(self):
-        typer.type("After playing a few rounds of Blackjack, the dealer points to the door. ")
-        typer.type("Without questing his word, and with your winnings in hand, you scurry to the door, eager to get some sleep after such a long day. ")
-        typer.type("Making it back to your car, ditched on the side of the road, but no longer engulfed in smoke, you lay down, and close your eyes. It's time to rest.")
+        type.type("After playing a few rounds of Blackjack, the dealer points to the door. ")
+        type.type("Without questing his word, and with your winnings in hand, you scurry to the door, eager to get some sleep after such a long day. ")
+        type.type("Making it back to your car, ditched on the side of the road, but no longer engulfed in smoke, you lay down, and close your eyes. It's time to rest.")
 
     def end_day_car_broken(self):
-        typer.type("After playing a few rounds of Blackjack, the dealer points to the door. ")
-        typer.type("Without questing his word, and with your winnings in hand, you scurry to the door, eager to get some sleep. ")
-        typer.type("Making it back to your car, ditched on the side of the road, you lay down, and close your eyes. It's time to rest.")
+        type.type("After playing a few rounds of Blackjack, the dealer points to the door. ")
+        type.type("Without questing his word, and with your winnings in hand, you scurry to the door, eager to get some sleep. ")
+        type.type("Making it back to your car, ditched on the side of the road, you lay down, and close your eyes. It's time to rest.")
 
     def end_day_car_fixed(self):
-        typer.type("After playing a few rounds of Blackjack, the dealer points to the door. ")
-        typer.type("Without questing his word, and with your winnings in hand, you scurry to the door, eager to get some sleep. ")
-        typer.type("You make it to your car and drive away from the casino, and you park in a little alcove on the side of the road. You lay down, and close your eyes. It's time to rest.")
+        type.type("After playing a few rounds of Blackjack, the dealer points to the door. ")
+        type.type("Without questing his word, and with your winnings in hand, you scurry to the door, eager to get some sleep. ")
+        type.type("You make it to your car and drive away from the casino, and you park in a little alcove on the side of the road. You lay down, and close your eyes. It's time to rest.")
 
     def end_day_wind(self):
         self.remove_travel_restriction("Wind")
-        typer.type("After playing a few rounds of Blackjack, the dealer points to the door. ")
-        typer.type("Without questing his word, and with your winnings in hand, you scurry to the door, eager to get some sleep. ")
-        typer.type("Stepping outside, you notice that the wind has calmed down. That's a relief. ")
-        typer.type("Making it back to your car, ditched on the side of the road, you lay down, and close your eyes. It's time to rest.")
+        type.type("After playing a few rounds of Blackjack, the dealer points to the door. ")
+        type.type("Without questing his word, and with your winnings in hand, you scurry to the door, eager to get some sleep. ")
+        type.type("Stepping outside, you notice that the wind has calmed down. That's a relief. ")
+        type.type("Making it back to your car, ditched on the side of the road, you lay down, and close your eyes. It's time to rest.")
 
 
     def end_day_angry_dealer(self):
-        typer.type("You've never seen the dealer quite so angry. Fortunately, you make it back to your car, and immediately pass out for the night. It's time to rest.")
+        type.type("You've never seen the dealer quite so angry. Fortunately, you make it back to your car, and immediately pass out for the night. It's time to rest.")
 
     def start_night(self):
         if(self.__day==1):
@@ -477,24 +477,24 @@ class Player:
             self.start_night_car_fixed()
 
     def start_night_1(self):
-        typer.slow(red("Would you like to play a game of Blackjack? "))
+        type.slow(red("Would you like to play a game of Blackjack? "))
         yes_or_no = input("").lower()
         print()
         if (yes_or_no == "n") or (yes_or_no == "no"):
-            typer.slow(red(bright("Well that's just too bad, isn't it. ")))
-            typer.slow(red("The Dealer fires three shots into your chest. You bleed out, and as you fade from reality, you see the Dealer reach into your pockets, and take the last 50 dollars from your lifeless body."))
+            type.slow(red(bright("Well that's just too bad, isn't it. ")))
+            type.slow(red("The Dealer fires three shots into your chest. You bleed out, and as you fade from reality, you see the Dealer reach into your pockets, and take the last 50 dollars from your lifeless body."))
             self.kill()
 
     def start_night_car(self):
-        typer.type("As the sun begins to set, and the stars light up in the night sky, you walk to the casino, eager to play more Blackjack. ")
+        type.type("As the sun begins to set, and the stars light up in the night sky, you walk to the casino, eager to play more Blackjack. ")
         print("\n")
-        typer.slow(red(self.__lists.get_dealer_welcome()))
+        type.slow(red(self.__lists.get_dealer_welcome()))
         print("\n")
 
     def start_night_car_fixed(self):
-        typer.type("As the sun begins to set, and the stars light up in the night sky, you drive over to the casino, eager to play more Blackjack. ")
+        type.type("As the sun begins to set, and the stars light up in the night sky, you drive over to the casino, eager to play more Blackjack. ")
         print("\n")
-        typer.slow(red(self.__lists.get_dealer_welcome()))
+        type.slow(red(self.__lists.get_dealer_welcome()))
         print("\n")
 
 
@@ -502,18 +502,18 @@ class Player:
     # Poor Day Events (1 - 1,000)
     # Everytime
     def seat_cash(self):
-        typer.type("You wake up in the front seat, covered in sweat. ")
-        typer.type("As the sun shines through the car window, you notice a bright green bill tucked between the seat cushions. Must be your lucky day. ")
+        type.type("You wake up in the front seat, covered in sweat. ")
+        type.type("As the sun shines through the car window, you notice a bright green bill tucked between the seat cushions. Must be your lucky day. ")
         print("\n")
         bill = random.choice([5, 10, 20, 50, 100])
-        typer.type("That's another " + green(bright("$" + str(bill))) + " dollars.")
+        type.type("That's another " + green(bright("$" + str(bill))) + " dollars.")
         self.change_balance(bill)
 
     def left_window_down(self):
-        typer.type("You wake up in the front seat, with a chill going down your spine. ")
-        typer.type("Had the window really been open all night? ")
-        typer.type("Hopefully nothing had gotten in. ")
-        typer.type("You roll the window up, just to be safe. ")
+        type.type("You wake up in the front seat, with a chill going down your spine. ")
+        type.type("Had the window really been open all night? ")
+        type.type("Hopefully nothing had gotten in. ")
+        type.type("You roll the window up, just to be safe. ")
         random_chance = random.randrange(5)
         if random_chance == 0:
                 self.add_danger("Spider")
@@ -522,26 +522,26 @@ class Player:
         print("\n")
 
     def estranged_dog(self):
-        typer.type("You wake up to the sound of barking outside your car. You get up, to see a golden retriever licking your window. ")
-        typer.type("You open the door, and pet the doggo on the head. He seems happy. You're happy, too.")
+        type.type("You wake up to the sound of barking outside your car. You get up, to see a golden retriever licking your window. ")
+        type.type("You open the door, and pet the doggo on the head. He seems happy. You're happy, too.")
         print("\n")
         if self.has_item("Dog Treat"):
             self.use_item("Dog Treat")
-            typer.type("You throw your " + bright(magenta("Dog Treat")) + " into the air, and the dog jumps up, and catches it in his mouth. He wags his tail in excitement. It's super cute.")
+            type.type("You throw your " + bright(magenta("Dog Treat")) + " into the air, and the dog jumps up, and catches it in his mouth. He wags his tail in excitement. It's super cute.")
             print("\n")
             self.heal(random.choice([15, 20]))
         else:
             self.heal(random.choice([5, 10]))
-        typer.type("Before you get a chance to check the dog's collar to see where it came from, the dog bolts down the road, eager to cheer up someone else. It was a good dog.")
+        type.type("Before you get a chance to check the dog's collar to see where it came from, the dog bolts down the road, eager to cheer up someone else. It was a good dog.")
         print("\n")
         return
     
     def freight_truck(self):
-        typer.type("You are jolted away by the sound of a horn blaring outside your car. Looking out your window, you see a man, in a bright red hat, inside of a freight truck that's parked just outside of your vehicle.")
+        type.type("You are jolted away by the sound of a horn blaring outside your car. Looking out your window, you see a man, in a bright red hat, inside of a freight truck that's parked just outside of your vehicle.")
         print("\n")
-        typer.type(quote("Hey, you. Wake the fuck up! Hahahaha!"))
+        type.type(quote("Hey, you. Wake the fuck up! Hahahaha!"))
         print("\n")
-        typer.type("You watch as the man honks his horn one more time, laughs, and drives off into the distance. What a jerk.")
+        type.type("You watch as the man honks his horn one more time, laughs, and drives off into the distance. What a jerk.")
         print("\n")
         return
 
@@ -551,16 +551,16 @@ class Player:
             self.day_event()
             return
             
-        typer.type("You wake up, and begin to have a coughing fit. Your throat is dry, and super sore. ")
+        type.type("You wake up, and begin to have a coughing fit. Your throat is dry, and super sore. ")
         if self.has_item("Cough Drops"):
             self.use_item("Cough Drops")
-            typer.type("Luckily, you have some " + magenta(bright("Cough Drops")) + " on hand, and you empty the box into your mouth. Almost like magic, your throat doesn't hurt anymore.")
+            type.type("Luckily, you have some " + magenta(bright("Cough Drops")) + " on hand, and you empty the box into your mouth. Almost like magic, your throat doesn't hurt anymore.")
             print("\n")
             return
         else:
             self.add_status("Sore Throat")
             self.mark_day("Sore Throat")
-            typer.type("You cough, and cough, and cough some more, but the burning itch in your throat just won't go away.")
+            type.type("You cough, and cough, and cough some more, but the burning itch in your throat just won't go away.")
             print("\n")
             return
 
@@ -569,16 +569,16 @@ class Player:
             self.day_event()
             return
         
-        typer.type("You wake up to a sharp pain on your arm! ")
-        typer.type("Swinging your arm to scratch the pain, you watch as a spider jumps to your dashboard. ")
+        type.type("You wake up to a sharp pain on your arm! ")
+        type.type("Swinging your arm to scratch the pain, you watch as a spider jumps to your dashboard. ")
         if self.has_item("Pest Control"):
             self.kill_pests()
-            typer.type("You grab your " + magenta(bright("Pest Control")) + " and spray in the direction of the spider. ")
-            typer.type("A cloud of white liquid covers the spider, and you watch as it slows, and dies. ")
-            typer.type("Hopefully, that's the end of your spider problems.")
+            type.type("You grab your " + magenta(bright("Pest Control")) + " and spray in the direction of the spider. ")
+            type.type("A cloud of white liquid covers the spider, and you watch as it slows, and dies. ")
+            type.type("Hopefully, that's the end of your spider problems.")
         else:
-            typer.type("You attempt to swat it with your hand, but it sneaks into your heater. ")
-            typer.type("You start the engine and blast the heat, but you aren't sure if the spider has died, or if it has a family nearby. This sucks.")
+            type.type("You attempt to swat it with your hand, but it sneaks into your heater. ")
+            type.type("You start the engine and blast the heat, but you aren't sure if the spider has died, or if it has a family nearby. This sucks.")
         self.add_status("Spider Bite")
         self.mark_day("Spider Bite")
         print("\n")
@@ -590,20 +590,20 @@ class Player:
             self.day_event()
             return
 
-        typer.type("You wake up to the sound of a hiss in your pile of money. ")
-        typer.type("You jump up to check your cash, and you find a cockroach eating away at your cash. ")
+        type.type("You wake up to the sound of a hiss in your pile of money. ")
+        type.type("You jump up to check your cash, and you find a cockroach eating away at your cash. ")
         if self.has_item("Pest Control"):
             self.kill_pests()
-            typer.type("You grab your " + magenta(bright("Pest Control")) + " and spray in the direction of the cockroach. ")
-            typer.type("A cloud of white liquid covers the cockroach, and you watch as it slows down, twitches, and dies. ")
-            typer.type("Hopefully, that's the end of your cockroach problems.")
+            type.type("You grab your " + magenta(bright("Pest Control")) + " and spray in the direction of the cockroach. ")
+            type.type("A cloud of white liquid covers the cockroach, and you watch as it slows down, twitches, and dies. ")
+            type.type("Hopefully, that's the end of your cockroach problems.")
         else:
-            typer.type("You attempt to swat it with your hand, but it falls under your car seat. ")
-            typer.type("You stick your head under the seat, but you aren't sure where the cockroach went, or if it has a family nearby. This is terrible.")
+            type.type("You attempt to swat it with your hand, but it falls under your car seat. ")
+            type.type("You stick your head under the seat, but you aren't sure where the cockroach went, or if it has a family nearby. This is terrible.")
         print("\n")
-        typer.type("The cockroach ate through some of your money. ")
+        type.type("The cockroach ate through some of your money. ")
         losses = int(self.get_balance() * (random.randint(10, 40)/100))
-        typer.type("You lost " + green(bright("${:,}".format(losses))) + ".")
+        type.type("You lost " + green(bright("${:,}".format(losses))) + ".")
         self.change_balance(-losses)
 
     # One-Time
@@ -613,53 +613,53 @@ class Player:
             return
 
         self.meet("Cowboy")
-        typer.type("You wake up to the sounds trotting, and distant whistling. You sit up, and through your windshield, you see a man wearing a full cowboy suit, with matching black hat and boots, and a short brown beard. ")
-        typer.type("He's riding a magnificent horse, muscular, but nimble, each step powerful, but precise. The man reaches your window, and in a deep southern accent, he begins to talk to you.")
+        type.type("You wake up to the sounds trotting, and distant whistling. You sit up, and through your windshield, you see a man wearing a full cowboy suit, with matching black hat and boots, and a short brown beard. ")
+        type.type("He's riding a magnificent horse, muscular, but nimble, each step powerful, but precise. The man reaches your window, and in a deep southern accent, he begins to talk to you.")
         print("\n")
-        typer.type(open_quote("Howdy, partner! The name's Jameson. Davey Jameson. I happen to notice you were admiring my steed. He's a beauty, isn't he. You see, it's common courtesy when a cowboy rides by, "))
-        typer.type(close_quote("to give their mighty steed a carrot, as a way to express your gratitude for their hardwork and commitment to the job."))
+        type.type(open_quote("Howdy, partner! The name's Jameson. Davey Jameson. I happen to notice you were admiring my steed. He's a beauty, isn't he. You see, it's common courtesy when a cowboy rides by, "))
+        type.type(close_quote("to give their mighty steed a carrot, as a way to express your gratitude for their hardwork and commitment to the job."))
         print("\n")
-        typer.type(quote("You my friend, you are carrotless. That's quite a disrespectful showing towards my steed. My, my, this can't do at all. What if another cowboy comes by, you're just gonna disrespect their steed, too? Tell you what, I happen to have one spare carrot in my pouch. Take this, and be ready. You never know when a cowboy's gonna come trotting by."))
+        type.type(quote("You my friend, you are carrotless. That's quite a disrespectful showing towards my steed. My, my, this can't do at all. What if another cowboy comes by, you're just gonna disrespect their steed, too? Tell you what, I happen to have one spare carrot in my pouch. Take this, and be ready. You never know when a cowboy's gonna come trotting by."))
         print("\n")
         self.add_item("Carrot")
-        typer.type("Davey Jameson hands you his " + bright(magenta("Carrot")) + ", and smiles.")
+        type.type("Davey Jameson hands you his " + bright(magenta("Carrot")) + ", and smiles.")
         print("\n")
-        typer.type(quote("See, with this carrot in your possession, you're ready for anytime a cowboy strolls on down this road. Just give their steed a carrot, and they'll be very grateful."))
+        type.type(quote("See, with this carrot in your possession, you're ready for anytime a cowboy strolls on down this road. Just give their steed a carrot, and they'll be very grateful."))
         print("\n")
-        typer.type("And with that, Jameson reins his horse high into the air, gives you a yee-haw, then dashes off down the road.")
+        type.type("And with that, Jameson reins his horse high into the air, gives you a yee-haw, then dashes off down the road.")
 
     def whats_my_name(self):
         if not self.__name == None:
             self.day_event()
             return
         
-        typer.type("You wake up to the sound of sneakers scratching against the concrete. As you sit up from your seat, you notice a little girl, with blonde hair and pigtails, jump roping towards you.")
+        type.type("You wake up to the sound of sneakers scratching against the concrete. As you sit up from your seat, you notice a little girl, with blonde hair and pigtails, jump roping towards you.")
         print("\n")
-        typer.type(space_quote("Howdy stranger! My name's Suzy! Do you like my name?"))
+        type.type(space_quote("Howdy stranger! My name's Suzy! Do you like my name?"))
         answer = ask.yes_or_no("\"What was that?\" ")
         if answer == "yes":
-            typer.type(quote("Thanks! My mom gave it to me, before she dissapeared. Who knows where she ran off to!"))
+            type.type(quote("Thanks! My mom gave it to me, before she dissapeared. Who knows where she ran off to!"))
         elif answer == "no":
-            typer.type(quote("Wow! That's not very nice of you. You're rude, stranger."))
+            type.type(quote("Wow! That's not very nice of you. You're rude, stranger."))
 
         print("\n")
-        typer.type(space_quote("Hey, what's your name, anyways?"))
+        type.type(space_quote("Hey, what's your name, anyways?"))
         while True:
             name = str(input())
-            typer.type(space_quote("So your name is " + name + "?"))
+            type.type(space_quote("So your name is " + name + "?"))
             answer = ask.yes_or_no(space_quote("What was that?"))
             if answer == "yes":
                 self.__name = name
-                typer.type("\"" + name + "...I like that name! Hello, " + name + "!\"")
+                type.type("\"" + name + "...I like that name! Hello, " + name + "!\"")
                 print("\n")
-                typer.type(space_quote("Well, " + name + ", I've got to get going now. Wouldn't want the bears to eat me!"))
-                typer.type("And with that, Suzy, without missing a beat, continues to jump rope down the street.")
+                type.type(space_quote("Well, " + name + ", I've got to get going now. Wouldn't want the bears to eat me!"))
+                type.type("And with that, Suzy, without missing a beat, continues to jump rope down the street.")
                 print("\n")
                 break
             elif answer == "no":
-                typer.type(quote("So you lied to me? You're a liar, stranger!"))
+                type.type(quote("So you lied to me? You're a liar, stranger!"))
                 print("\n")
-                typer.type(space_quote("Come on, tell me your real name!"))
+                type.type(space_quote("Come on, tell me your real name!"))
     
 
     def interrogation(self):
@@ -669,38 +669,38 @@ class Player:
     
         self.meet("Interrogator")
         self.add_danger("Further Interrogation")
-        typer.type("You wake up, and through your windshield, you see a car parked right in front of you. Confused, and dazed, you sit up. As you open the door and get out of your car, you notice a man, in a bright red suit, peering into your trunk.")
+        type.type("You wake up, and through your windshield, you see a car parked right in front of you. Confused, and dazed, you sit up. As you open the door and get out of your car, you notice a man, in a bright red suit, peering into your trunk.")
         print("\n")
-        typer.type("The man sees you, and walks up to you.")
+        type.type("The man sees you, and walks up to you.")
         print("\n")
-        typer.type(quote("You. You're awake. Good. You know that you aren't supposed to be here? This isn't a spot for people to live. This is a road for people to drive. I hope you know this."))
+        type.type(quote("You. You're awake. Good. You know that you aren't supposed to be here? This isn't a spot for people to live. This is a road for people to drive. I hope you know this."))
         print("\n")
-        typer.type(space_quote("Do you know this?"))
+        type.type(space_quote("Do you know this?"))
         answer = ask.yes_or_no(space_quote("Do you? Know this?"))
         if answer == "yes":
-            typer.type(quote("So you do know this. Then why do you live here? You shouldn't. It's not right, man. I'd suggest you stop living here. Maybe live somewhere else instead. Just not here."))
+            type.type(quote("So you do know this. Then why do you live here? You shouldn't. It's not right, man. I'd suggest you stop living here. Maybe live somewhere else instead. Just not here."))
             print()
         elif answer == "no":
-            typer.type(quote("You don't know this? How don't you know this? It's super obvious stuff, man. People don't live at places where they're not supposed to, and that's exactly what you're doing right now. I'd suggest you stop it, right this instant."))
+            type.type(quote("You don't know this? How don't you know this? It's super obvious stuff, man. People don't live at places where they're not supposed to, and that's exactly what you're doing right now. I'd suggest you stop it, right this instant."))
             print()
-        typer.type("After the man tells you this, he looks up, and stares at the sun. And after about 20 seconds, he rubs his eyes, walks back to his car, and drives off.")
+        type.type("After the man tells you this, he looks up, and stares at the sun. And after about 20 seconds, he rubs his eyes, walks back to his car, and drives off.")
         print("\n")
         return
 
     # Cheap Day Events (1,000 - 10,000)
     # Everytime
     def sun_visor_bills(self):
-        typer.type("You wake up in the front seat, dripping in sweat. ")
-        typer.type("As the sun shines through the car window, you notice a few bright green bills above you, peeking out of the sun visor. How long have they been there? ")
+        type.type("You wake up in the front seat, dripping in sweat. ")
+        type.type("As the sun shines through the car window, you notice a few bright green bills above you, peeking out of the sun visor. How long have they been there? ")
         print("\n")
         bill = random.choice([3, 15, 30, 60, 150, 300])
-        typer.type("That's another " + green(bright("$" + str(bill))) + " dollars.")
+        type.type("That's another " + green(bright("$" + str(bill))) + " dollars.")
         self.change_balance(bill)
 
     def strong_winds(self):
-        typer.type("You wake up to a loud snap above you, followed by a massive branch crashing down from the treetops and into the street. The wind echoes throughout the trees around you, and many of them look to be on the verge of falling.")
+        type.type("You wake up to a loud snap above you, followed by a massive branch crashing down from the treetops and into the street. The wind echoes throughout the trees around you, and many of them look to be on the verge of falling.")
         print("\n")
-        typer.type("With the weater being this bad, you make the executive decision to just chill in the wagon for the day.")
+        type.type("With the weater being this bad, you make the executive decision to just chill in the wagon for the day.")
         self.add_travel_restriction("Wind")
         print("\n")
 
@@ -710,7 +710,7 @@ class Player:
             self.day_event()
             return
         
-        typer.type("You wake up to a sneeze, followed by your nose running, droplets falling down from your chin and onto your shirt. Damn, must be a cold.")
+        type.type("You wake up to a sneeze, followed by your nose running, droplets falling down from your chin and onto your shirt. Damn, must be a cold.")
         self.add_status("Cold")
         self.mark_day("Cold")
         print("\n")
@@ -722,22 +722,22 @@ class Player:
             return
         
         self.meet("Ezekiel")
-        typer.type("You wake up to someone knocking on your window. You sit up, and see a man, holding a bible, and wearing a cross on a chain around his neck.")
+        type.type("You wake up to someone knocking on your window. You sit up, and see a man, holding a bible, and wearing a cross on a chain around his neck.")
         print("\n")
-        typer.type(quote("Hello! I'm Father Ezekiel. You seem to be in a tough spot, living in your car? I was just wondering if you wanted me to give you my copy of The Bible. It has the word of God, and I hope it could help you understand that you aren't alone on this journey of life."))
+        type.type(quote("Hello! I'm Father Ezekiel. You seem to be in a tough spot, living in your car? I was just wondering if you wanted me to give you my copy of The Bible. It has the word of God, and I hope it could help you understand that you aren't alone on this journey of life."))
         print()
-        typer.type(space_quote("Do you accept my offer, and Jesus as your savior?"))
+        type.type(space_quote("Do you accept my offer, and Jesus as your savior?"))
         answer = ask.yes_or_no(space_quote("Do you?"))
         if answer == "yes":
             self.__is_religious = True
-            typer.type(space_quote("Why, that's wonderful!"))
-            typer.type("Father Ezekiel hands you his bible. ")
-            typer.type(quote("I will pray for you, and I know that Jesus will always be with you. Amen."))
+            type.type(space_quote("Why, that's wonderful!"))
+            type.type("Father Ezekiel hands you his bible. ")
+            type.type(quote("I will pray for you, and I know that Jesus will always be with you. Amen."))
         elif answer == "no":
-            typer.type(open_quote("Well, to each their own. I certainly cast no judgements. "))
-            typer.type(close_quote("I will pray for you, and I know that Jesus will always be with you. Amen."))
+            type.type(open_quote("Well, to each their own. I certainly cast no judgements. "))
+            type.type(close_quote("I will pray for you, and I know that Jesus will always be with you. Amen."))
         print("\n")
-        typer.type("And with that, Father Ezekiel walks down the road, and out of sight.")
+        type.type("And with that, Father Ezekiel walks down the road, and out of sight.")
         print("\n")
         return
     
@@ -748,31 +748,31 @@ class Player:
         
         self.meet("Betsy")
         self.add_danger("Betsy Tractor")
-        typer.type("You wake up to your whole car shaking. As you jump up from your seat, you see a beautiful black and white cow, staring you down through your window. ")
-        typer.type("The cow moos at you aggressively, and you open the door. On its back is a note, that reads 'This is Betsy. Betsy gets hungry. Please feed Betsy.'")
+        type.type("You wake up to your whole car shaking. As you jump up from your seat, you see a beautiful black and white cow, staring you down through your window. ")
+        type.type("The cow moos at you aggressively, and you open the door. On its back is a note, that reads 'This is Betsy. Betsy gets hungry. Please feed Betsy.'")
         print("\n")
-        typer.type("Betsy stares into your soul, then looks over at the seat next to you. It appears Betsy is interested in your pile of money. ")
+        type.type("Betsy stares into your soul, then looks over at the seat next to you. It appears Betsy is interested in your pile of money. ")
         print()
-        typer.type("Do you feed Betsy? ")
+        type.type("Do you feed Betsy? ")
         while True:
             answer = ask.yes_or_no("Moo? ")
             if answer == "yes":
-                typer.type("You put a " + green(bright("$100")) + " dollar bill into Betsy's mouth. She chews it up, then spits it out in front of you.")
+                type.type("You put a " + green(bright("$100")) + " dollar bill into Betsy's mouth. She chews it up, then spits it out in front of you.")
                 self.change_balance(-100)
                 random_chance = random.randrange(4)
                 if (random_chance == 0) or (self.__balance < 500):
-                    typer.type("Betsy moos, then smiles. She walks down the road, happy as can be.")
+                    type.type("Betsy moos, then smiles. She walks down the road, happy as can be.")
                     break
                 else:
-                    typer.type("Betsy moos, then stares you down. She doesn't seem to be done with you.")
+                    type.type("Betsy moos, then stares you down. She doesn't seem to be done with you.")
                     print()
-                    typer.type("Do you feed Betsy? ")
+                    type.type("Do you feed Betsy? ")
             elif answer == "no":
-                typer.type("Betsy moos, then charges at you. She slams into your wagon hard, and your leg gets caught in the door. That hurt. Really, really bad.")
+                type.type("Betsy moos, then charges at you. She slams into your wagon hard, and your leg gets caught in the door. That hurt. Really, really bad.")
                 print("\n")
                 self.hurt(40)
                 self.add_injury("Broken Leg")
-                typer.type("Betsy moos loudly, wags her tail, then walks down the road. Oh well.")
+                type.type("Betsy moos loudly, wags her tail, then walks down the road. Oh well.")
                 break
         print("\n")
 
@@ -781,10 +781,10 @@ class Player:
     # Modest Day Events (10,000 - 100,000)
     # Everytime
     def left_door_open(self):
-        typer.type("You wake up in the front seat, with a chill throughout your body. ")
-        typer.type("Had the passenger door really been open all night? ")
-        typer.type("Hopefully nothing had gotten in. ")
-        typer.type("You reach over and close the door, just to be safe.")
+        type.type("You wake up in the front seat, with a chill throughout your body. ")
+        type.type("Had the passenger door really been open all night? ")
+        type.type("Hopefully nothing had gotten in. ")
+        type.type("You reach over and close the door, just to be safe.")
         random_chance = random.randrange(6)
         if random_chance <= 3:
                 self.add_danger("Spider")
@@ -798,16 +798,16 @@ class Player:
             self.day_event()
             return
         
-        typer.type("You wake up to a sharp pain on your neck! ")
-        typer.type("Swinging your arm to scratch the pain, you watch as a spider jumps to the backseat. ")
+        type.type("You wake up to a sharp pain on your neck! ")
+        type.type("Swinging your arm to scratch the pain, you watch as a spider jumps to the backseat. ")
         if self.has_item("Pest Control"):
             self.kill_pests()
-            typer.type("You grab your " + magenta(bright("Pest Control")) + " and spray in the direction of the spider. ")
-            typer.type("A cloud of white liquid covers the spider, and you watch as it slows, and dies. ")
-            typer.type("Hopefully, that's the end of your spider problems.")
+            type.type("You grab your " + magenta(bright("Pest Control")) + " and spray in the direction of the spider. ")
+            type.type("A cloud of white liquid covers the spider, and you watch as it slows, and dies. ")
+            type.type("Hopefully, that's the end of your spider problems.")
         else:
-            typer.type("The spider, now out of reach, crawls off the seat and onto the floor. ")
-            typer.type("You stick your head out back, but you aren't sure where the spider went, or if it has a family nearby. This is unfortunate.")
+            type.type("The spider, now out of reach, crawls off the seat and onto the floor. ")
+            type.type("You stick your head out back, but you aren't sure where the spider went, or if it has a family nearby. This is unfortunate.")
         self.add_status("Spider Bite")
         self.mark_day("Spider Bite")
         print("\n")
@@ -820,25 +820,25 @@ class Player:
         self.lose_danger("Squirrel")
         if self.has_item("Bag of Acorns"):
             self.use("Bag of Acorns")
-            typer.type("You wake up to the sound of something rummaging through your car. Looking in the backseat, you notice a little squirrel, chewing through your " + bright(magenta("Bag of Acorns")) + ". He looks pretty cute.")
+            type.type("You wake up to the sound of something rummaging through your car. Looking in the backseat, you notice a little squirrel, chewing through your " + bright(magenta("Bag of Acorns")) + ". He looks pretty cute.")
             print("\n")
             if self.has_met("Dead Squirrely"):
-                typer.type("The squirrel notices you, and jumps from the bag, and over to your center console. He peers up at you, but your eyes are filled with tears. Nothing can ever replace Squirrely. You pick up the squirrel, open the door, and let it free.")
+                type.type("The squirrel notices you, and jumps from the bag, and over to your center console. He peers up at you, but your eyes are filled with tears. Nothing can ever replace Squirrely. You pick up the squirrel, open the door, and let it free.")
                 print("\n")
                 return
             else:
-                typer.type("The squirrel notices you, and jumps from the bag, and over to your center console. He peers up at you, with an acorn in hand, holding it up in your direction. You sick your hand out, and the squirrel give you the acorn. This must be a sign of peace.")
+                type.type("The squirrel notices you, and jumps from the bag, and over to your center console. He peers up at you, with an acorn in hand, holding it up in your direction. You sick your hand out, and the squirrel give you the acorn. This must be a sign of peace.")
                 print("\n")
-                typer.type("After an hour of watching the squirrel eat the acorns, climb around your car, and jump from your arm to the dashboard over and over, you decide that this squirrel is now yours. You name him 'Squirrely', in honor of him being a squirrel.")
+                type.type("After an hour of watching the squirrel eat the acorns, climb around your car, and jump from your arm to the dashboard over and over, you decide that this squirrel is now yours. You name him 'Squirrely', in honor of him being a squirrel.")
                 print("\n")
                 self.add_item("Squirrely")
                 self.mark_day("Squirrely Fed")
                 return
         else:
-            typer.type("You wake up to a sharp pain on your leg! ")
-            typer.type("You swing the hurt leg, and you watch as a squirrel goes flying into the air. ")
-            typer.type("The littel rodent starts climbing around your car, scurrying around the walls, desperately trying to get out. ")
-            typer.type("You open the backseat windows, and the squirrel jumps out, and darts into the woods. Hopefully, that bite isn't too serious.")
+            type.type("You wake up to a sharp pain on your leg! ")
+            type.type("You swing the hurt leg, and you watch as a squirrel goes flying into the air. ")
+            type.type("The littel rodent starts climbing around your car, scurrying around the walls, desperately trying to get out. ")
+            type.type("You open the backseat windows, and the squirrel jumps out, and darts into the woods. Hopefully, that bite isn't too serious.")
             self.add_status("Squirrel Bite")
             random_chance = random.randrange(4)
             if random_chance == 1:
@@ -857,34 +857,34 @@ class Player:
 
         self.lose_danger("Further Interrogation")
         self.add_danger("Even Further Interrogation")
-        typer.type("You wake up, and through your windshield, you see a car parked right in front of you. Tired, and concerned, you sit up. As you open the door and get out of your car, you notice a man you've met before, in his bright red suit, once again peering into your trunk.")
+        type.type("You wake up, and through your windshield, you see a car parked right in front of you. Tired, and concerned, you sit up. As you open the door and get out of your car, you notice a man you've met before, in his bright red suit, once again peering into your trunk.")
         print("\n")
-        typer.type("The man sees you, and walks up to you, with a clipboard in his hand.")
+        type.type("The man sees you, and walks up to you, with a clipboard in his hand.")
         print("\n")
-        typer.type(space_quote("You. You're awake. Good. You see this clipboard? It says you can't be here."))
-        typer.type("You begin to read the paper on the clipboard. It's a message, written in Comic Sans.")
+        type.type(space_quote("You. You're awake. Good. You see this clipboard? It says you can't be here."))
+        type.type("You begin to read the paper on the clipboard. It's a message, written in Comic Sans.")
         print("\n")
-        typer.type("It reads 'This offical message from the government and the military and the army says that you can't be here. That's right, you, the person reading this message right now, living on this land right here. It's not for you. It won't ever be for you. So, you can't live here. You need to move right now, or I'll be very very angry.'")
+        type.type("It reads 'This offical message from the government and the military and the army says that you can't be here. That's right, you, the person reading this message right now, living on this land right here. It's not for you. It won't ever be for you. So, you can't live here. You need to move right now, or I'll be very very angry.'")
         print("\n")
-        typer.type(space_quote("Did you read it?"))
+        type.type(space_quote("Did you read it?"))
         answer = ask.yes_or_no(space_quote("Did you? Read it?"))
         if answer == "yes":
-            typer.type(quote("Good, so you know that all these powerful people want yo- are demanding that you move from where you're currently living, right this instant! I'd suggest you do so. I certainly wouldn't want to upset the government."))
+            type.type(quote("Good, so you know that all these powerful people want yo- are demanding that you move from where you're currently living, right this instant! I'd suggest you do so. I certainly wouldn't want to upset the government."))
             print()
         elif answer == "no":
-            typer.type(quote("You didn't read it? Come on, I worked so hard on it. You really should read a clipboard with words on it if someone asks you to. Regardless, it says that you need to move! Or the consequences will be scary!"))
+            type.type(quote("You didn't read it? Come on, I worked so hard on it. You really should read a clipboard with words on it if someone asks you to. Regardless, it says that you need to move! Or the consequences will be scary!"))
             print()
-        typer.type("After the man tells you this, he looks up, and stares at the sun. And after about 25 seconds, he rubs his eyes, walks back to his car, and drives off.")
+        type.type("After the man tells you this, he looks up, and stares at the sun. And after about 25 seconds, he rubs his eyes, walks back to his car, and drives off.")
         print("\n")
         return
         
     # Rich Day Events (100,000 - 500,000)
     # Everytime
     def left_trunk_open(self):
-        typer.type("You wake up in the front seat, with a chill throughout the whole wagon. ")
-        typer.type("Had the trunk really been open all night? ")
-        typer.type("Hopefully nothing had gotten in. ")
-        typer.type("You get out of the car and close the trunk, just to be safe.")
+        type.type("You wake up in the front seat, with a chill throughout the whole wagon. ")
+        type.type("Had the trunk really been open all night? ")
+        type.type("Hopefully nothing had gotten in. ")
+        type.type("You get out of the car and close the trunk, just to be safe.")
         random_chance = random.randrange(6)
         if random_chance < 2:
                 self.add_danger("Rat")
@@ -898,19 +898,19 @@ class Player:
             self.day_event()
             return
 
-        typer.type("You wake up to a sharp pain on your ankle! ")
-        typer.type("You look down to see a skinny gray rat nibling your foot. You kick at it, but the little rodent runs under the seat. ")
+        type.type("You wake up to a sharp pain on your ankle! ")
+        type.type("You look down to see a skinny gray rat nibling your foot. You kick at it, but the little rodent runs under the seat. ")
         print("\n")
-        typer.type("The rat jumps up onto your backseat, and begins to laugh at you. Now that's just cruel. This rat must be crazy.")
+        type.type("The rat jumps up onto your backseat, and begins to laugh at you. Now that's just cruel. This rat must be crazy.")
         print("\n")
         if self.has_item("Pest Control"):
             self.kill_pests()
-            typer.type("You grab your " + magenta(bright("Pest Control")) + " and spray the rat down. ")
-            typer.type("A cloud of white liquid covers the rat, and you watch as it spazzes out, and dies. ")
-            typer.type("Hopefully, that's it for your rat problems. Except for that bite. You might wanna get that checked out.")
+            type.type("You grab your " + magenta(bright("Pest Control")) + " and spray the rat down. ")
+            type.type("A cloud of white liquid covers the rat, and you watch as it spazzes out, and dies. ")
+            type.type("Hopefully, that's it for your rat problems. Except for that bite. You might wanna get that checked out.")
         else:
-            typer.type("You jump at the seat towards the rat, but it sneaks back under the passenger seat, and you can't find it. ")
-            typer.type("That damn rat. Hopefully, the bite isn't too serious, but it's probably worth getting checked out.")
+            type.type("You jump at the seat towards the rat, but it sneaks back under the passenger seat, and you can't find it. ")
+            type.type("That damn rat. Hopefully, the bite isn't too serious, but it's probably worth getting checked out.")
         self.add_status("Rat Bite")
         random_chance = random.randrange(2)
         if random_chance == 1:
@@ -927,20 +927,20 @@ class Player:
             self.day_event()
             return
 
-        typer.type("You wake up to a clicking sound. Looking around, you notice that it's coming from your pile of money. ")
-        typer.type("You jump up to check your cash, and you find a termite eating away at your cash. ")
+        type.type("You wake up to a clicking sound. Looking around, you notice that it's coming from your pile of money. ")
+        type.type("You jump up to check your cash, and you find a termite eating away at your cash. ")
         if self.has_item("Pest Control"):
             self.kill_pests()
-            typer.type("You grab your " + magenta(bright("Pest Control")) + " and spray in the direction of the termite. ")
-            typer.type("A cloud of white liquid covers the termite, and you watch as it slows down, twitches, and dies. ")
-            typer.type("Hopefully, that's the end of your termite problems.")
+            type.type("You grab your " + magenta(bright("Pest Control")) + " and spray in the direction of the termite. ")
+            type.type("A cloud of white liquid covers the termite, and you watch as it slows down, twitches, and dies. ")
+            type.type("Hopefully, that's the end of your termite problems.")
         else:
-            typer.type("You attempt to swat it with your hand, but it falls under your car seat. ")
-            typer.type("You stick your head under the seat, but you aren't sure where the termite went, or if it has a family nearby. This is just brutal.")
+            type.type("You attempt to swat it with your hand, but it falls under your car seat. ")
+            type.type("You stick your head under the seat, but you aren't sure where the termite went, or if it has a family nearby. This is just brutal.")
         print("\n")
-        typer.type("The termite ate through a lot of your money. ")
+        type.type("The termite ate through a lot of your money. ")
         losses = int(self.get_balance() * (random.randint(20, 50)/100))
-        typer.type("You lost " + green(bright("${:,}".format(losses))) + ".")
+        type.type("You lost " + green(bright("${:,}".format(losses))) + ".")
         self.change_balance(-losses)
 
     # One-Time
@@ -953,33 +953,33 @@ class Player:
 
         self.add_danger("Betsy Army")
         self.lose_danger("Betsy Tractor")
-        typer.type("You wake up to the sound of a tractor barrling closer. As you jump up from your seat, you see the tractor getting closer to your wagon. ")
-        typer.type("The tractor drives beside your vehicle, and pushes right up against you, grinding the paint off your car. That's just mean. ")
+        type.type("You wake up to the sound of a tractor barrling closer. As you jump up from your seat, you see the tractor getting closer to your wagon. ")
+        type.type("The tractor drives beside your vehicle, and pushes right up against you, grinding the paint off your car. That's just mean. ")
         print("\n")
-        typer.type("You look up at the driver to see a beautiful black and white cow. Good god, it's Betsy. Why, Betsy, why. The cow moos at you aggressively, and you roll down the window. ")
+        type.type("You look up at the driver to see a beautiful black and white cow. Good god, it's Betsy. Why, Betsy, why. The cow moos at you aggressively, and you roll down the window. ")
         print("\n")
-        typer.type("Betsy stares into your soul, then looks over at the seat next to you. It appears Betsy is interested in your pile of money. ")
+        type.type("Betsy stares into your soul, then looks over at the seat next to you. It appears Betsy is interested in your pile of money. ")
         print()
-        typer.type("Do you feed Betsy? ")
+        type.type("Do you feed Betsy? ")
         while True:
             answer = ask.yes_or_no("Moo? ")
             if answer == "yes":
-                typer.type("You reach out your window, and put a stack of bills, worth " + green(bright("$10,000")) + " into Betsy's mouth. She chews them up, then spits them out into your wagon.")
+                type.type("You reach out your window, and put a stack of bills, worth " + green(bright("$10,000")) + " into Betsy's mouth. She chews them up, then spits them out into your wagon.")
                 self.change_balance(-10000)
                 random_chance = random.randrange(4)
                 if (random_chance == 0) or (self.__balance <50000):
-                    typer.type("Betsy moos, then smiles. She pulls away from the car, and drives the tractor down the road, happy as can be.")
+                    type.type("Betsy moos, then smiles. She pulls away from the car, and drives the tractor down the road, happy as can be.")
                     break
                 else:
-                    typer.type("Betsy moos, then stares you down. She doesn't seem to be done with you.")
+                    type.type("Betsy moos, then stares you down. She doesn't seem to be done with you.")
                     print()
-                    typer.type("Do you feed Betsy? ")
+                    type.type("Do you feed Betsy? ")
             elif answer == "no":
-                typer.type("Betsy moos, then backs the tractor up. She then proceeds to step on the gas, and drives the tractor forward at your vehicle, slamming into the front of your wagon hard. She moos and moos and moos, pushing your car further back. The jolt of the vehicles smashing into each other kills, and your spine begins to fracture.")
+                type.type("Betsy moos, then backs the tractor up. She then proceeds to step on the gas, and drives the tractor forward at your vehicle, slamming into the front of your wagon hard. She moos and moos and moos, pushing your car further back. The jolt of the vehicles smashing into each other kills, and your spine begins to fracture.")
                 print("\n")
                 self.hurt(80)
                 self.add_injury("Fractured Spine")
-                typer.type("Betsy laughs a laugh, almost maniacal, before driving the tractor down the road.")
+                type.type("Betsy laughs a laugh, almost maniacal, before driving the tractor down the road.")
                 break
         print("\n")
 
@@ -987,9 +987,9 @@ class Player:
     # Everytime
     def thunderstorm(self):
         self.add_travel_restriction("Rain")
-        typer.type("You wake up to the sound of raindrops hitting the roof of your wagon. It starts with a couple, then a few, and before you even get the chance to stretch, it begins to pour. The sky is a dark, dark grey, and streams start to form along the road.")
+        type.type("You wake up to the sound of raindrops hitting the roof of your wagon. It starts with a couple, then a few, and before you even get the chance to stretch, it begins to pour. The sky is a dark, dark grey, and streams start to form along the road.")
         print("\n")
-        typer.type("The pitter-patter of the rain on your car lulls you back to sleep. When a strike of lightning wakes you once more, you look out the windows to see a few inches of rain covering the street. Welp, there goes your plans for the day.")
+        type.type("The pitter-patter of the rain on your car lulls you back to sleep. When a strike of lightning wakes you once more, you look out the windows to see a few inches of rain covering the street. Welp, there goes your plans for the day.")
         print("\n")
         return
     
@@ -1005,24 +1005,24 @@ class Player:
 
         self.lose_danger("Even Further Interrogation")
         self.add_danger("Final Interrogation")
-        typer.type("You wake up, and through your windshield, you see a car parked right in front of you. Not this again. As you open the door and get out of your car, you notice the man in his bright red suit, once again peering into your trunk.")
+        type.type("You wake up, and through your windshield, you see a car parked right in front of you. Not this again. As you open the door and get out of your car, you notice the man in his bright red suit, once again peering into your trunk.")
         print("\n")
-        typer.type("The man sees you, and walks up to you, with a badge in his hand.")
+        type.type("The man sees you, and walks up to you, with a badge in his hand.")
         print("\n")
-        typer.type(space_quote("You. You're awake. Good. You see this badge? It says I have the authority to make you not live here."))
-        typer.type("You look at the badge. It's a piece of paper, colored gold, with the letters 'FBI' and 'CIA' written in pencil.")
+        type.type(space_quote("You. You're awake. Good. You see this badge? It says I have the authority to make you not live here."))
+        type.type("You look at the badge. It's a piece of paper, colored gold, with the letters 'FBI' and 'CIA' written in pencil.")
         print("\n")
-        typer.type(quote("See? I'm allowed to make you leave. And I'm invoking my right to do this right now!"))
+        type.type(quote("See? I'm allowed to make you leave. And I'm invoking my right to do this right now!"))
         print("\n")
-        typer.type(space_quote("Are you gonna leave?"))
+        type.type(space_quote("Are you gonna leave?"))
         answer = ask.yes_or_no(space_quote("Are you? Gonna leave?"))
         if answer == "yes":
-            typer.type(quote("Good, you better do what I say, I'm super powerful. I hope you actually move and stop living here, because it's really getting on my nervers. I'll be back to make sure you do it, mark my words."))
+            type.type(quote("Good, you better do what I say, I'm super powerful. I hope you actually move and stop living here, because it's really getting on my nervers. I'll be back to make sure you do it, mark my words."))
             print()
         elif answer == "no":
-            typer.type(quote("What? But you have to! This badge says so! You better listen to me, because I'm really starting to get upset. I'll be back, and if you haven't moved yet, I'll make you, mark my words."))
+            type.type(quote("What? But you have to! This badge says so! You better listen to me, because I'm really starting to get upset. I'll be back, and if you haven't moved yet, I'll make you, mark my words."))
             print()
-        typer.type("After the man tells you this, he looks up, and stares at the sun. And after about 30 seconds, he rubs his eyes, walks back to his car, and drives off.")
+        type.type("After the man tells you this, he looks up, and stares at the sun. And after about 30 seconds, he rubs his eyes, walks back to his car, and drives off.")
         print("\n")
         return
         
@@ -1040,31 +1040,31 @@ class Player:
             return
 
         self.lose_danger("Betsy Army")
-        typer.type("You wake up to the sound of thousands of hoofsteps, getting closer to your wagon. You jump out of your seat, to see the street flooded with cows, all getting closer to your vehicle. ")
-        typer.type("At the front of the crowd, is a cow, distinct from the rest. It's Betsy. Of course, it's Betsy. God fucking dammit.")
+        type.type("You wake up to the sound of thousands of hoofsteps, getting closer to your wagon. You jump out of your seat, to see the street flooded with cows, all getting closer to your vehicle. ")
+        type.type("At the front of the crowd, is a cow, distinct from the rest. It's Betsy. Of course, it's Betsy. God fucking dammit.")
         print("\n")
-        typer.type("Betsy leads the herd to your wagon, and as you roll the window down, all you can hear are the hundreds upon hundreds of moos, from each of the angry cows. ")
+        type.type("Betsy leads the herd to your wagon, and as you roll the window down, all you can hear are the hundreds upon hundreds of moos, from each of the angry cows. ")
         print("\n")
-        typer.type("Betsy, and the rest of the cows, all stare into your soul, then look over at the seat next to you. It appears Betsy and her friends are interested in your pile of money. ")
+        type.type("Betsy, and the rest of the cows, all stare into your soul, then look over at the seat next to you. It appears Betsy and her friends are interested in your pile of money. ")
         print()
-        typer.type("Do you feed Betsy and her friends? ")
+        type.type("Do you feed Betsy and her friends? ")
         while True:
             answer = ask.yes_or_no("Moo? ")
             if answer == "yes":
-                typer.type("You throw a bunch of bills into the crowd of cows, worth " + green(bright("$100,000")) + ". Betsy catches a bill, chews it up, then spits it out into your face.")
+                type.type("You throw a bunch of bills into the crowd of cows, worth " + green(bright("$100,000")) + ". Betsy catches a bill, chews it up, then spits it out into your face.")
                 self.change_balance(-100000)
                 random_chance = random.randrange(4)
                 if (random_chance == 0) or (self.__balance <100001):
-                    typer.type("Betsy moos, then smiles. The rest of the cows moo in harmony, and the crowd begins to march down the road, happy as can be.")
+                    type.type("Betsy moos, then smiles. The rest of the cows moo in harmony, and the crowd begins to march down the road, happy as can be.")
                     break
                 else:
-                    typer.type("Betsy moos, then stares you down. The rest of the cows begin to moo. They don't seem to be done with you.")
+                    type.type("Betsy moos, then stares you down. The rest of the cows begin to moo. They don't seem to be done with you.")
                     print()
-                    typer.type("Do you feed Betsy? ")
+                    type.type("Do you feed Betsy? ")
             elif answer == "no":
-                typer.type("Betsy moos, then charges your vehicle. The rest of the cows start attacking your wagon, shattering the windows, knocking off the tires, and pummeling the doors.")
+                type.type("Betsy moos, then charges your vehicle. The rest of the cows start attacking your wagon, shattering the windows, knocking off the tires, and pummeling the doors.")
                 print("\n")
-                typer.slow(red(bright("A pane of glass explodes next to you, sending shards into your face. One catches your eye, and you scream in pain. The cows continue to attack you, and your money is spiring all around you. Unable to see, and covered in blood, you close your eyes, and let yourself succumb to the army of cows. You won, Betsy, you won.")))
+                type.slow(red(bright("A pane of glass explodes next to you, sending shards into your face. One catches your eye, and you scream in pain. The cows continue to attack you, and your money is spiring all around you. Unable to see, and covered in blood, you close your eyes, and let yourself succumb to the army of cows. You won, Betsy, you won.")))
                 self.kill()
                 break
         print("\n")
@@ -1075,71 +1075,71 @@ class Player:
             return
 
         self.lose_danger("Final Interrogation")
-        typer.type("You wake up, and through your windshield, you see a car parked right in front of you. You can feel your blood start to boil. What's this guys problem? As you open the door and get out of your car, you notice the man in his bright red suit, once again peering into your trunk.")
+        type.type("You wake up, and through your windshield, you see a car parked right in front of you. You can feel your blood start to boil. What's this guys problem? As you open the door and get out of your car, you notice the man in his bright red suit, once again peering into your trunk.")
         print("\n")
-        typer.type("The man sees you, and walks up to you, with a pistol holstered to his waist.")
+        type.type("The man sees you, and walks up to you, with a pistol holstered to his waist.")
         print("\n")
-        typer.type(space_quote("You. I'm done playing around. It's time to move. I mean it."))
-        typer.type("You look down at the gun on his waist. It looks fancy, and certainly deadly.")
+        type.type(space_quote("You. I'm done playing around. It's time to move. I mean it."))
+        type.type("You look down at the gun on his waist. It looks fancy, and certainly deadly.")
         print("\n")
-        typer.type(quote("I wouldn't test me if I were you. It's time to go, now."))
+        type.type(quote("I wouldn't test me if I were you. It's time to go, now."))
         print("\n")
-        typer.type(space_quote("Will you leave?"))
+        type.type(space_quote("Will you leave?"))
         answer = ask.yes_or_no(space_quote("Answer me. "))
         if answer == "yes":
-            typer.type(quote("That's great. Fantastic. But I don't believe a word that comes out of your filty mouth. Prove it. Leave. Go away. GET OUT."))
+            type.type(quote("That's great. Fantastic. But I don't believe a word that comes out of your filty mouth. Prove it. Leave. Go away. GET OUT."))
             print("\n")
-            typer.type("You are fueled with anger. Who is this guy, and what gives him the right to harass you? All for being homeless? No longer. You reach for the gun on his waist.")
+            type.type("You are fueled with anger. Who is this guy, and what gives him the right to harass you? All for being homeless? No longer. You reach for the gun on his waist.")
             print("\n")
             random_chance = random.randrange(4)
             if random_chance == 0:
-                typer.slow(red("Before you get the chance to grab it, the man steps back, unholsters the pistol, then fires three shots into your chest. The glass behind you shatters, and you fall to your knees in the street."))
+                type.slow(red("Before you get the chance to grab it, the man steps back, unholsters the pistol, then fires three shots into your chest. The glass behind you shatters, and you fall to your knees in the street."))
                 print("\n")
-                typer.slow(red(quote("You should've just listened to me man! All you had to do was listen! Move, live somewhere else. Find a home, anything. But no! You just had to live in your car, like the homeless piece of shit that you are!")))
+                type.slow(red(quote("You should've just listened to me man! All you had to do was listen! Move, live somewhere else. Find a home, anything. But no! You just had to live in your car, like the homeless piece of shit that you are!")))
                 print("\n")
-                typer.slow(red(bright("The man kicks you down, and steps on your chest, causing the bullet holes to leak blood onto the concrete below you. As you feel yourself beginning to fade away, you watch the man lift his pistol to your head, and pull the trigger.")))
+                type.slow(red(bright("The man kicks you down, and steps on your chest, causing the bullet holes to leak blood onto the concrete below you. As you feel yourself beginning to fade away, you watch the man lift his pistol to your head, and pull the trigger.")))
                 self.kill()
             else:
-                typer.type("You snatch the gun from his holster, and he tackles you to the ground. You fight and struggle, each of you with both hands on the pistol. In the distance, you hear the horn of a freight truck beginning to drive closer. The man punches you in the arm, and it stings. Without thinking twice, you give the man a headbutt, and he falls backwards into the road. You point the gun at the man, and he begins to cry.")
+                type.type("You snatch the gun from his holster, and he tackles you to the ground. You fight and struggle, each of you with both hands on the pistol. In the distance, you hear the horn of a freight truck beginning to drive closer. The man punches you in the arm, and it stings. Without thinking twice, you give the man a headbutt, and he falls backwards into the road. You point the gun at the man, and he begins to cry.")
                 print("\n")
-                typer.type(quote("Please, I'm sorry. I didn't mean to cause any of this. I just, I hate seeing people living on the streets, all alone. I was just trying to help you. Just, please, for the love of god, don't hurt me."))
+                type.type(quote("Please, I'm sorry. I didn't mean to cause any of this. I just, I hate seeing people living on the streets, all alone. I was just trying to help you. Just, please, for the love of god, don't hurt me."))
                 print("\n")
-                typer.type("As the man begs for his life, the freight truck continues to draw closer, and the horn gets louder. You point at the truck in the distance, but the man can't see through the tears in his eyes.")
+                type.type("As the man begs for his life, the freight truck continues to draw closer, and the horn gets louder. You point at the truck in the distance, but the man can't see through the tears in his eyes.")
                 print("\n")
-                typer.type(space_quote("Please, I have a family. I have children. My name is Phil. I don't wanna die. I'm too young. I can't die. I can't die. I ca-"))
-                typer.type("You watch as the freight truck crushes Phil, and continues down the road. Nothing remained but the splotches of blood that splattered the road where he once stood.")
+                type.type(space_quote("Please, I have a family. I have children. My name is Phil. I don't wanna die. I'm too young. I can't die. I can't die. I ca-"))
+                type.type("You watch as the freight truck crushes Phil, and continues down the road. Nothing remained but the splotches of blood that splattered the road where he once stood.")
                 print("\n")
-                typer.type("After sitting a while, and recollecting your thoughts, you bring the pistol over to Phil's car, and throw it onto the passengers seat. Looking inside, the car has dice hanging on the mirror, and is filled to the brim with red suits. On the dashboard sits a photo, of Phil, his wife, and his three kids, all wearing bright red suits. Phil might've been crazy, but at least he was consistent.")
+                type.type("After sitting a while, and recollecting your thoughts, you bring the pistol over to Phil's car, and throw it onto the passengers seat. Looking inside, the car has dice hanging on the mirror, and is filled to the brim with red suits. On the dashboard sits a photo, of Phil, his wife, and his three kids, all wearing bright red suits. Phil might've been crazy, but at least he was consistent.")
                 print("\n")
-                typer.type("You get in the car, and drive it down the road, before turning into the woods. You drive a mile in, before parking the car before the lake. You get out, and push the car into the water, watching as it submerges.")
+                type.type("You get in the car, and drive it down the road, before turning into the woods. You drive a mile in, before parking the car before the lake. You get out, and push the car into the water, watching as it submerges.")
                 print("\n")
                 return
         elif answer == "no":
-            typer.type(quote("Really? You really want to do that? I warned you, man."))
+            type.type(quote("Really? You really want to do that? I warned you, man."))
             print("\n")
-            typer.type("The man pulls out his pistol, and points it at you. You lift your hands above your head, before quickly reaching for the pistol.")
+            type.type("The man pulls out his pistol, and points it at you. You lift your hands above your head, before quickly reaching for the pistol.")
             print("\n")
             random_chance = random.randrange(3)
             if random_chance == 0:
-                typer.slow(red("Before you get the chance to grab it, the man steps back, then fires three shots into your chest. The glass behind you shatters, and you fall to your knees in the street."))
+                type.slow(red("Before you get the chance to grab it, the man steps back, then fires three shots into your chest. The glass behind you shatters, and you fall to your knees in the street."))
                 print("\n")
-                typer.slow(red(quote("Nice try, man! You should've just listened to me! All you had to do was listen! Move, live somewhere else. Find a home, anything. But no! You just had to live in your car, like the homeless piece of shit that you are!")))
+                type.slow(red(quote("Nice try, man! You should've just listened to me! All you had to do was listen! Move, live somewhere else. Find a home, anything. But no! You just had to live in your car, like the homeless piece of shit that you are!")))
                 print("\n")
-                typer.slow(red(bright("The man kicks you down, and steps on your chest, causing the bullet holes to leak blood onto the concrete below you. As you feel yourself beginning to fade away, you watch the man lift his pistol to your hand, and pull the trigger.")))
+                type.slow(red(bright("The man kicks you down, and steps on your chest, causing the bullet holes to leak blood onto the concrete below you. As you feel yourself beginning to fade away, you watch the man lift his pistol to your hand, and pull the trigger.")))
                 self.kill()
             else:
-                typer.type("You snatch the gun from his hands, and he tackles you to the ground. You fight and struggle, each of you with both hands on the pistol. The man punches you in the arm, and it stings. Without thinking twice, you give the man a headbutt, and he falls backwards into the road. You point the gun at the man, and he begins to cry.")
+                type.type("You snatch the gun from his hands, and he tackles you to the ground. You fight and struggle, each of you with both hands on the pistol. The man punches you in the arm, and it stings. Without thinking twice, you give the man a headbutt, and he falls backwards into the road. You point the gun at the man, and he begins to cry.")
                 print("\n")
-                typer.type(quote("Please, I'm sorry. I didn't mean to cause any of this. I just, I hate seeing people living on the streets, all alone. I was just trying to help you. Just, please, for the love of god, don't hurt me."))
+                type.type(quote("Please, I'm sorry. I didn't mean to cause any of this. I just, I hate seeing people living on the streets, all alone. I was just trying to help you. Just, please, for the love of god, don't hurt me."))
                 print("\n")
-                typer.type("As the man begs for his life, you cock the gun. You point pistol at the man, and he continues to cry.")
+                type.type("As the man begs for his life, you cock the gun. You point pistol at the man, and he continues to cry.")
                 print("\n")
-                typer.type(space_quote("Please, I have a family. I have children. My name is Phil. I don't wanna die. I'm too young. I can't die. I can't die. I ca-"))
-                typer.type("You pull the trigger, and Phil becomes quiet. His blood covers the street, but at least his red suit still looks good as new.")
+                type.type(space_quote("Please, I have a family. I have children. My name is Phil. I don't wanna die. I'm too young. I can't die. I can't die. I ca-"))
+                type.type("You pull the trigger, and Phil becomes quiet. His blood covers the street, but at least his red suit still looks good as new.")
                 print("\n")
-                typer.type("After sitting a while, and recollecting your thoughts, you drag Phil over to his car. You stuff him into the trunk, and throw his pistol onto the passengers seat. Looking inside, the car has dice hanging on the mirror, and is filled to the brim with red suits. On the dashboard sits a photo, of Phil, his wife, and his three kids, all wearing bright red suits. Phil might've been crazy, but at least he was consistent.")
+                type.type("After sitting a while, and recollecting your thoughts, you drag Phil over to his car. You stuff him into the trunk, and throw his pistol onto the passengers seat. Looking inside, the car has dice hanging on the mirror, and is filled to the brim with red suits. On the dashboard sits a photo, of Phil, his wife, and his three kids, all wearing bright red suits. Phil might've been crazy, but at least he was consistent.")
                 print("\n")
-                typer.type("You get in the car, and drive it down the road, before turning into the woods. You drive a mile in, before parking the car before the lake. You get out, and push the car into the water, watching as it submerges.")
+                type.type("You get in the car, and drive it down the road, before turning into the woods. You drive a mile in, before parking the car before the lake. You get out, and push the car into the water, watching as it submerges.")
                 print("\n")
                 return
 
@@ -1147,81 +1147,81 @@ class Player:
     # Poor Nights (1 - 1,000)
     # Everytime
     def ditched_wallet(self):
-        typer.type("Bored out of your mind, you decide to wander along the side of the road, just to get a change of scenery from the dusty leather seats of your wagon. ")
-        typer.type("As you take step after step over the asphalt, you notice a ditched wallet, just laying there. I guess it's yours now. ")
+        type.type("Bored out of your mind, you decide to wander along the side of the road, just to get a change of scenery from the dusty leather seats of your wagon. ")
+        type.type("As you take step after step over the asphalt, you notice a ditched wallet, just laying there. I guess it's yours now. ")
         print("\n")
         random_chance = random.randrange(2)
         if random_chance == 0:
             worth = random.randint(65, 120)
         else:
             worth = random.randint(7, 50)
-        typer.type("Inside the wallet, you find " + green(bright("$" + str(worth))) + " dollars.")
+        type.type("Inside the wallet, you find " + green(bright("$" + str(worth))) + " dollars.")
         self.change_balance(worth)
 
     def went_jogging(self):
-        typer.type("After spending an hour sitting in your car doing nothing, you feel like you should get some exersize. You get out of the wagon, and begin to jog down the road.")
+        type.type("After spending an hour sitting in your car doing nothing, you feel like you should get some exersize. You get out of the wagon, and begin to jog down the road.")
         print("\n")
-        typer.type("A couple hours go by, and while jogging back, you see the wagon in the distance. ")
+        type.type("A couple hours go by, and while jogging back, you see the wagon in the distance. ")
         random_chance = random.randrange(3)
         if random_chance == 0:
-            typer.type("But, right as you get to your car, you trip over a stone on the ground, and scrape your knee hard. Blood begins to drip down your leg. That's a bummer.")
+            type.type("But, right as you get to your car, you trip over a stone on the ground, and scrape your knee hard. Blood begins to drip down your leg. That's a bummer.")
             print("\n")
             self.hurt(random.choice([5, 10, 15]))
             self.add_injury("Scraped Knee")
             return
         else:
-            typer.type("You get back to the car, and get in, out of breath from your trip. You start the wagon and run the AC, and you feel good inside.")
+            type.type("You get back to the car, and get in, out of breath from your trip. You start the wagon and run the AC, and you feel good inside.")
             print("\n")
             self.heal(random.choice([5, 10, 15]))
             return
 
     def woodlands_path(self):
-        typer.type("After wandering from your vehicle, you find yourself deep in the woods. Squirrels run by and up into the trees. The sun hits every branch and casts a shadow below. And you wander on a natural path, journeying into the unknown.")
+        type.type("After wandering from your vehicle, you find yourself deep in the woods. Squirrels run by and up into the trees. The sun hits every branch and casts a shadow below. And you wander on a natural path, journeying into the unknown.")
         print("\n")
         random_chance = random.randrange(3)
         if random_chance == 0:
-            typer.type("As you walk along the path, you find a mother deer, with two children, walking the path towards you. As you get closer, the mother appears cautious, but then runs in your direction, before stopping before you. ")
-            typer.type("Her two children follow behind, and before you know it, the three of them wait in front of you.")
+            type.type("As you walk along the path, you find a mother deer, with two children, walking the path towards you. As you get closer, the mother appears cautious, but then runs in your direction, before stopping before you. ")
+            type.type("Her two children follow behind, and before you know it, the three of them wait in front of you.")
             print("\n")
-            typer.type("You put your hand out, and pet the mother deer. She makes a happy squeak noise, and wags her tail. She touches her head to yours, then continues down the path, with her two children following.")
+            type.type("You put your hand out, and pet the mother deer. She makes a happy squeak noise, and wags her tail. She touches her head to yours, then continues down the path, with her two children following.")
             print("\n")
-            typer.type("Eventually, you get to the end of the path, and find the main road. You follow it back to your wagon, and take a seat, to rest for a moment.")
+            type.type("Eventually, you get to the end of the path, and find the main road. You follow it back to your wagon, and take a seat, to rest for a moment.")
             print("\n")
             return
         elif random_chance == 1:
-            typer.type("As you walk along the path, you notice someone laying against a tree in front of you. As you get closer, you notice that the person's face is blue, their eyes are bloodshot, and they don't appear to be breathing.")
+            type.type("As you walk along the path, you notice someone laying against a tree in front of you. As you get closer, you notice that the person's face is blue, their eyes are bloodshot, and they don't appear to be breathing.")
             print("\n")
-            typer.type("You begin to panic, before thinking through the situation. They're already dead, so there's nothing you can do to help them. Maybe they had some money on them? I mean, they're not gonna use it. Why shouldn't you?")
+            type.type("You begin to panic, before thinking through the situation. They're already dead, so there's nothing you can do to help them. Maybe they had some money on them? I mean, they're not gonna use it. Why shouldn't you?")
             print()
-            typer.type("Do you search the body? ")
+            type.type("Do you search the body? ")
             answer = ask.yes_or_no()
             if answer == "yes":
-                typer.type("You rummage through the pockets, trying to find anything worthwhile. ")
+                type.type("You rummage through the pockets, trying to find anything worthwhile. ")
                 random_chance = random.randrange(4)
                 if random_chance == 0:
                     self.add_status("Hepatitus")
-                    typer.type("As you do so, you notice the body begin to move. It looks up at you, screams, then coughs blood all over you. You freak out, before running back down the path the way you came.")
+                    type.type("As you do so, you notice the body begin to move. It looks up at you, screams, then coughs blood all over you. You freak out, before running back down the path the way you came.")
                     print("\n")
-                    typer.type("You make it back to your car, and find some old clothes to wipe the blood off your face. Great, just great. You already start to feel under the weather.")
+                    type.type("You make it back to your car, and find some old clothes to wipe the blood off your face. Great, just great. You already start to feel under the weather.")
                     print("\n")
                     return
                 else:
-                    typer.type("After a minute of digging, you manage to find a wallet. Score!")
+                    type.type("After a minute of digging, you manage to find a wallet. Score!")
                     print("\n")
                     worth = random.randint(100, 150)
-                    typer.type("Inside the wallet, you find " + green(bright("$" + str(worth))) + " dollars.")
+                    type.type("Inside the wallet, you find " + green(bright("$" + str(worth))) + " dollars.")
                     self.change_balance(worth)
-                    typer.type("You leave the dead body, and continue down the path, until the forest opens up to the main road. You follow the road back to your wagon, with your winnings in hand.")
+                    type.type("You leave the dead body, and continue down the path, until the forest opens up to the main road. You follow the road back to your wagon, with your winnings in hand.")
                     print("\n")
                     return
             elif answer == "no":
-                typer.type("While this body might be the body of a rich man, judging by the situation, it's very unlikely. Plus, dead bodies tend to be unsanitary. No, this body was simply not worth searching.")
+                type.type("While this body might be the body of a rich man, judging by the situation, it's very unlikely. Plus, dead bodies tend to be unsanitary. No, this body was simply not worth searching.")
                 print("\n")
-                typer.type("You continue down the path, before the forest opens up to the main road. You follow the road back to your wagon, and sit. You rest for a while.")
+                type.type("You continue down the path, before the forest opens up to the main road. You follow the road back to your wagon, and sit. You rest for a while.")
                 print("\n")
                 return
         else:
-            typer.type("You walk, and walk, and walk further down the path, before the forest opens up to the main road. You follow the road back to your wagon, wondering if there was anything you missed. At least you made it back safe and sound.")
+            type.type("You walk, and walk, and walk further down the path, before the forest opens up to the main road. You follow the road back to your wagon, wondering if there was anything you missed. At least you made it back safe and sound.")
             print("\n")
             return
                 
@@ -1229,48 +1229,48 @@ class Player:
     # Cheap Nights (1,000 - 10,000)
     # Everytime
     def woodlands_river(self):
-        typer.type("After wandering from your vehicle, you find yourself deep in the woods. Deer dart by you. Trees branches sway back and forth. And you wander along a river, journeying into the unknown.")
+        type.type("After wandering from your vehicle, you find yourself deep in the woods. Deer dart by you. Trees branches sway back and forth. And you wander along a river, journeying into the unknown.")
         print("\n")
         random_chance = random.randrange(3)
         if random_chance == 0:
-            typer.type("As you walk further, you stumble across a large brown bear, bathing in the river. ")
+            type.type("As you walk further, you stumble across a large brown bear, bathing in the river. ")
             if self.has_item("Quiet Sneakers"):
                 print("\n")
-                typer.type("Thank goodness you're wearing your " + magenta(bright("Quiet Sneakers")) + "!")
+                type.type("Thank goodness you're wearing your " + magenta(bright("Quiet Sneakers")) + "!")
                 print("\n")
-                typer.type("You turn and run back up the riverbank, never looking back. Eventually, you make it out of the woods, and return to your car, safe and sound.")
+                type.type("You turn and run back up the riverbank, never looking back. Eventually, you make it out of the woods, and return to your car, safe and sound.")
                 print("\n")
                 self.update_quiet_sneakers_durability()
                 return
             else:
-                typer.type("Right as you're about to turn around, you step on a branch, which makes a loud crunching noise. ")
+                type.type("Right as you're about to turn around, you step on a branch, which makes a loud crunching noise. ")
                 print("\n")
                 random_chance_2 = random.randrange(2)
                 if random_chance_2 == 0:
-                    typer.type("The bear sits up from the water, and glares at you. Before you get a chance to react, the bear charges at you. He swipes at your leg. He bites your arm. He punches your neck. My, what a beating he gave you.")
+                    type.type("The bear sits up from the water, and glares at you. Before you get a chance to react, the bear charges at you. He swipes at your leg. He bites your arm. He punches your neck. My, what a beating he gave you.")
                     print("\n")
                     self.hurt(75)
-                    typer.type("Thankfully, you're able to play dead, just long enough for the bear to walk away without killing you. Somehow, you get up, and limp your way back to your wagon.")
+                    type.type("Thankfully, you're able to play dead, just long enough for the bear to walk away without killing you. Somehow, you get up, and limp your way back to your wagon.")
                     print("\n")
-                    typer.type("The damage inflicted from the bear is serious and severe. It's probably a good idea to see the doctor tomorrow, when they're open again. In the meantime, you wrap yourself up with spare clothes, and go on with your life.")
+                    type.type("The damage inflicted from the bear is serious and severe. It's probably a good idea to see the doctor tomorrow, when they're open again. In the meantime, you wrap yourself up with spare clothes, and go on with your life.")
                     self.add_injury("Severed Skin")
                     print("\n")
                     return
                 elif random_chance_2 == 1:
-                    typer.type("Thankfully, it seems that the bear doesn't notice you. You quietly step away, before running back up the riverbank. Eventually, you make it out of the woods, and back to your wagon, safe and sound. That could've gone a lot worse!")
+                    type.type("Thankfully, it seems that the bear doesn't notice you. You quietly step away, before running back up the riverbank. Eventually, you make it out of the woods, and back to your wagon, safe and sound. That could've gone a lot worse!")
                     print("\n")
                     return
         elif (random_chance == 1) and not (self.has_item("Map")):
-            typer.type("As you walk further, you stumble across an old treasure chest, sitting in the river, the water flowing around it. ")
-            typer.type("Walking closer, you wade the water to get to the chest, and open up the lid. Inside, you find a large paper drawing. Opening it up, you realize that it's a map that resembles the town you're parked just outside of. Down one of the side roads, there's an old bridge with a star underneath it. The caption reads 'To those who wish to visit Marvin, just go to the bridge, and follow the stars.'")
+            type.type("As you walk further, you stumble across an old treasure chest, sitting in the river, the water flowing around it. ")
+            type.type("Walking closer, you wade the water to get to the chest, and open up the lid. Inside, you find a large paper drawing. Opening it up, you realize that it's a map that resembles the town you're parked just outside of. Down one of the side roads, there's an old bridge with a star underneath it. The caption reads 'To those who wish to visit Marvin, just go to the bridge, and follow the stars.'")
             print("\n")
             self.add_item("Map")
-            typer.type("You got the " + magenta(bright("Map")) + "! You can now drive to Marvin's Mystical Merchandise!")
-            typer.type("Without a second thought, you pocket the map, and turn back, following the riverbank home.")
+            type.type("You got the " + magenta(bright("Map")) + "! You can now drive to Marvin's Mystical Merchandise!")
+            type.type("Without a second thought, you pocket the map, and turn back, following the riverbank home.")
             print("\n")
             return
         else:
-            typer.type("You keep walking, and keep walking, and keep walking, and eventually, the woods clear up, and you're back on the main road. You follow it back to your car, wondering if there was anything else to see. Well, at least you're home, safe and sound.")
+            type.type("You keep walking, and keep walking, and keep walking, and eventually, the woods clear up, and you're back on the main road. You follow it back to your car, wondering if there was anything else to see. Well, at least you're home, safe and sound.")
             print("\n")
             return
    
@@ -1283,203 +1283,203 @@ class Player:
     # Nearly There Nights (900,000+)
 
     def empty_event(self):
-        typer.type("This day's events are empty. Therefore, this played. Thank you.")
+        type.type("This day's events are empty. Therefore, this played. Thank you.")
         print("\n")
 
     # Story Events
     def trusty_tom(self):
         self.meet("Tom Event")
-        typer.type("You wake up to a blaring engine, roaring down the road towards you. ")
-        typer.type("As you scratch your eyes awake, you read \'Tom's Trusty Trucks and Tires\' painted on the hood of a bright gold truck. ")
-        typer.type("Waving the vehicle down, the truck slows, then halts, and an old, jolly man jumps out. ")
+        type.type("You wake up to a blaring engine, roaring down the road towards you. ")
+        type.type("As you scratch your eyes awake, you read \'Tom's Trusty Trucks and Tires\' painted on the hood of a bright gold truck. ")
+        type.type("Waving the vehicle down, the truck slows, then halts, and an old, jolly man jumps out. ")
         print("\n")
-        typer.type("\"Well, howdy! The name's Tom. It appears you've gotten yourself in a bit of a pickle, ya think?\" ")
-        typer.type("Tom pulls a big red wrench out of his pocket, and walks to the hood of your beaten down wagon. ")
+        type.type("\"Well, howdy! The name's Tom. It appears you've gotten yourself in a bit of a pickle, ya think?\" ")
+        type.type("Tom pulls a big red wrench out of his pocket, and walks to the hood of your beaten down wagon. ")
         repair_price = random.choice([150, 200, 250, 300, 350])
-        typer.type("\"Yep, this thing's busted alright! Tell ya what, for, I don't know, " + green(bright(str(repair_price) + " bucks")) + ", I'll get this thing replaced for ya, good as new! Whaddya say?\" ")
+        type.type("\"Yep, this thing's busted alright! Tell ya what, for, I don't know, " + green(bright(str(repair_price) + " bucks")) + ", I'll get this thing replaced for ya, good as new! Whaddya say?\" ")
         while(True):
             yes_or_no = input("").lower()
             print()
             if(yes_or_no == "n") or (yes_or_no == "no"):
-                typer.type("\"Really? No dice, huh. Yunno, I think you're makin' a mistake, but I ain't one to judge. You have a nice day now.\" ")
-                typer.type("Tom has a sad look in his eye. It's clear that he wanted to help you. ")
-                typer.type("You watch as his big golden truck stutters, starts, then drives away.")
+                type.type("\"Really? No dice, huh. Yunno, I think you're makin' a mistake, but I ain't one to judge. You have a nice day now.\" ")
+                type.type("Tom has a sad look in his eye. It's clear that he wanted to help you. ")
+                type.type("You watch as his big golden truck stutters, starts, then drives away.")
                 print("\n")
                 return
             elif((yes_or_no == "y") or (yes_or_no == "yes")):
                 if self.__balance >= repair_price:
                     self.meet("Tom")
-                    typer.type("\"Really? Awesome! I'll be the best dang mechanic this ol' automobile has ever seen!\" ")
-                    typer.type("You watch in awe, as Tom, a man who has clearly perfected his craft, fixes up your wagon in no time. Sweet. ")
+                    type.type("\"Really? Awesome! I'll be the best dang mechanic this ol' automobile has ever seen!\" ")
+                    type.type("You watch in awe, as Tom, a man who has clearly perfected his craft, fixes up your wagon in no time. Sweet. ")
                     self.change_balance(-repair_price)
                     self.add_item("Car")
-                    typer.type(magenta(bright("Your car has been fixed! You can now drive around!")))
+                    type.type(magenta(bright("Your car has been fixed! You can now drive around!")))
                     print("\n")
-                    typer.type("\"Well, gee, this has been fun. Be seein' you around, ya know?\" ")
-                    typer.type("And with that, you watch as his big golden truck stutters, starts, then drives away.")
+                    type.type("\"Well, gee, this has been fun. Be seein' you around, ya know?\" ")
+                    type.type("And with that, you watch as his big golden truck stutters, starts, then drives away.")
                     print("\n")
                     return
                 else:
-                    typer.type("\"Aww man, sorry to tell you, but you just don't got enough funds for this, yunno?\" ")
+                    type.type("\"Aww man, sorry to tell you, but you just don't got enough funds for this, yunno?\" ")
                     random_chance = random.randrange(2)
                     # Broke, and Tom offers discount
                     if random_chance == 0:
                         print("\n")
-                        typer.type("\"You know what? I'm feelin' generous, and the shop's been doing well lately. ")
-                        typer.type("Tell ya what, I can take the offer down " + green(bright(str(50) + " dollars")) + " just for you. ")
-                        typer.type("Could ya do " + green(bright(str(repair_price-50) + " bucks")) + "?\" ")
+                        type.type("\"You know what? I'm feelin' generous, and the shop's been doing well lately. ")
+                        type.type("Tell ya what, I can take the offer down " + green(bright(str(50) + " dollars")) + " just for you. ")
+                        type.type("Could ya do " + green(bright(str(repair_price-50) + " bucks")) + "?\" ")
                         while True:
                             yes_or_no_2 = input("").lower()
                             print()
                             # Declining Tom's second offer
                             if(yes_or_no_2 == "n") or (yes_or_no_2=="no"):
                                 print()
-                                typer.type("\"Really? No dice, huh. Even with the discount? Yunno, I think you're makin' a mistake, but I ain't one to judge. You have a nice day now.\" ")
-                                typer.type("Tom has a dissapointed look in his eye. It's clear that he wanted to help you. ")
-                                typer.type("You watch as his big golden truck stutters, starts, then drives away.")
+                                type.type("\"Really? No dice, huh. Even with the discount? Yunno, I think you're makin' a mistake, but I ain't one to judge. You have a nice day now.\" ")
+                                type.type("Tom has a dissapointed look in his eye. It's clear that he wanted to help you. ")
+                                type.type("You watch as his big golden truck stutters, starts, then drives away.")
                                 print("\n")
                                 return
                             elif((yes_or_no_2 == "y") or (yes_or_no_2 == "yes")):
                                 if self.__balance >= (repair_price-50):
                                     self.meet("Tom")
-                                    typer.type("\"Really? Awesome! I'll be the best dang mechanic this ol' automobile has ever seen!\" ")
-                                    typer.type("You watch in awe, as Tom, a man who has clearly perfected his craft, fixes up your wagon in no time. Sweet. ")
+                                    type.type("\"Really? Awesome! I'll be the best dang mechanic this ol' automobile has ever seen!\" ")
+                                    type.type("You watch in awe, as Tom, a man who has clearly perfected his craft, fixes up your wagon in no time. Sweet. ")
                                     self.change_balance(-(repair_price-50))
                                     self.add_item("Car")
-                                    typer.type(magenta(bright("Your car has been fixed! You can now drive around!")))
+                                    type.type(magenta(bright("Your car has been fixed! You can now drive around!")))
                                     print("\n")
-                                    typer.type("\"Well, gee, this has been fun. Be seein' you around, ya know?\" ")
-                                    typer.type("And with that, you watch as his big golden truck stutters, starts, then drives away.")
+                                    type.type("\"Well, gee, this has been fun. Be seein' you around, ya know?\" ")
+                                    type.type("And with that, you watch as his big golden truck stutters, starts, then drives away.")
                                     print("\n")
                                     return
                                 else:
-                                    typer.type("\"Still can't afford it? That's a real shame. I really wish there was something I could do. Best of luck my friend. Be seeing ya around, ya know?\" ")
-                                    typer.type("And with that, you watch as his big golden truck stutters, starts, then drives away.")
+                                    type.type("\"Still can't afford it? That's a real shame. I really wish there was something I could do. Best of luck my friend. Be seeing ya around, ya know?\" ")
+                                    type.type("And with that, you watch as his big golden truck stutters, starts, then drives away.")
                                     print("\n")
                                 return
                             else:
-                                typer.type("\"Whaddya say?\" ")
+                                type.type("\"Whaddya say?\" ")
 
                     # Broke, and Tom can't offer discount
                     elif random_chance == 1:
                         print("\n")
-                        typer.type("\"I really wish there was something I could do. Best of luck my friend. Be seeing ya around, ya know?\" ")
-                        typer.type("And with that, you watch as his big golden truck stutters, starts, then drives away.")
+                        type.type("\"I really wish there was something I could do. Best of luck my friend. Be seeing ya around, ya know?\" ")
+                        type.type("And with that, you watch as his big golden truck stutters, starts, then drives away.")
                         print("\n")
                         return
             else:
-                typer.type("\"Whaddya say?\" ")
+                type.type("\"Whaddya say?\" ")
 
 
 
     def filthy_frank(self):
         self.meet("Frank Event")
-        typer.type("You wake up to a roaring engine, blasting into your eardrums. ")
-        typer.type("As you jump up out of the front seat, you read \'Filthy Frank's Flawless Fixtures\' painted on the hood of a...well...a beater. ")
-        typer.type("Waving the vehicle down, the beater slows, then appears to break down, and an old man with tattoo sleeves and long black hair steps out. He kicks his car, and the engine starts blaring once more. ")
+        type.type("You wake up to a roaring engine, blasting into your eardrums. ")
+        type.type("As you jump up out of the front seat, you read \'Filthy Frank's Flawless Fixtures\' painted on the hood of a...well...a beater. ")
+        type.type("Waving the vehicle down, the beater slows, then appears to break down, and an old man with tattoo sleeves and long black hair steps out. He kicks his car, and the engine starts blaring once more. ")
         print("\n")
-        typer.type("\"Hello, the name's Frank. Now I've got a baseball game to catch, but it looks like you could use some help.\" ")
-        typer.type("Frank pulls a shiny silver hammer out of his pocket, and walks to the hood of your beaten down wagon. ")
+        type.type("\"Hello, the name's Frank. Now I've got a baseball game to catch, but it looks like you could use some help.\" ")
+        type.type("Frank pulls a shiny silver hammer out of his pocket, and walks to the hood of your beaten down wagon. ")
         repair_price = random.choice([50, 75, 100])
-        typer.type("\"My god. This is just awful. Tell you what, I can fix this up for like " + green(bright(str(repair_price) + " bucks")) + ", and your engine will be runnin' just as good as mine. You game?\" ")
+        type.type("\"My god. This is just awful. Tell you what, I can fix this up for like " + green(bright(str(repair_price) + " bucks")) + ", and your engine will be runnin' just as good as mine. You game?\" ")
         while(True):
             yes_or_no = input("").lower()
             print()
             if(yes_or_no == "n") or (yes_or_no == "no"):
-                typer.type("\"What?! How could you not accept my service? I'm the cheapest damn autoshop worker on this here planet! But NOOOO, NOT FRANK! Never Frank. He Voted For Trump! Let's all ridicule frank for his political party. You god damn liberals.\" ")
-                typer.type("Frank spits in your face, and get back in his truck. ")
+                type.type("\"What?! How could you not accept my service? I'm the cheapest damn autoshop worker on this here planet! But NOOOO, NOT FRANK! Never Frank. He Voted For Trump! Let's all ridicule frank for his political party. You god damn liberals.\" ")
+                type.type("Frank spits in your face, and get back in his truck. ")
                 print("\n")
-                typer.type("You watch as he revs his engine, gets out of his truck, kicks his beater, gets back in, revs his engine, and speeds off into the horizon. ")
+                type.type("You watch as he revs his engine, gets out of his truck, kicks his beater, gets back in, revs his engine, and speeds off into the horizon. ")
                 print("\n")
                 return
             elif((yes_or_no == "y") or (yes_or_no == "yes")):
                 if self.__balance >= repair_price:
-                    typer.type("\"Darn tootin! Lemme just do my thing.\" ")
-                    typer.type("You watch in terror as Frank takes the hammer, and begins to beat the living daylight out of your wagon's engine. Each swing causes you to wince more and more. ")
+                    type.type("\"Darn tootin! Lemme just do my thing.\" ")
+                    type.type("You watch in terror as Frank takes the hammer, and begins to beat the living daylight out of your wagon's engine. Each swing causes you to wince more and more. ")
                     self.change_balance(-repair_price)
                     random_chance = random.randrange(5)
                     if random_chance < 2:
                         self.meet("Frank")
                         self.add_item("Car")
-                        typer.type(magenta(bright("Your car has been fixed! You can now drive around!")))
+                        type.type(magenta(bright("Your car has been fixed! You can now drive around!")))
                         print("\n")
-                        typer.type("\"Ah, I love fixin people's cars. You sure do drive a shitty vehicle, but I'm just glad I can help get you back up and going to your job every day. Gotta do something to help in this economy, you know?\" ")
+                        type.type("\"Ah, I love fixin people's cars. You sure do drive a shitty vehicle, but I'm just glad I can help get you back up and going to your job every day. Gotta do something to help in this economy, you know?\" ")
                         print("\n")
-                        typer.type("And with that, you watch as he revs his engine, gets out of his truck, kicks his beater, gets back in, revs his engine, and speeds off into the horizon.")
+                        type.type("And with that, you watch as he revs his engine, gets out of his truck, kicks his beater, gets back in, revs his engine, and speeds off into the horizon.")
                         print("\n")
                         return
                     else: 
-                        typer.type("You notice Frank beginning to sweat while trying to fix your car. Each swing of his hammer is getting louder and louder, and Frank is clearly beginning to panic. Frank turns towards you, with tears streaming down his face. Or maybe it's just sweat.")
+                        type.type("You notice Frank beginning to sweat while trying to fix your car. Each swing of his hammer is getting louder and louder, and Frank is clearly beginning to panic. Frank turns towards you, with tears streaming down his face. Or maybe it's just sweat.")
                         print("\n")
-                        typer.type("\"Oh man, listen, I'm so sorry about this, you know? I really thought if I just gave it the old hammer whirl that would do the trick. Hold on, maybe I have something in my truck. Stay right here!\"")
+                        type.type("\"Oh man, listen, I'm so sorry about this, you know? I really thought if I just gave it the old hammer whirl that would do the trick. Hold on, maybe I have something in my truck. Stay right here!\"")
                         print("\n")
-                        typer.type("You watch Frank runs over to his truck, kicks the side of it, gets in, revs his engine, and speeds off into the horizon. God Dammit.")
+                        type.type("You watch Frank runs over to his truck, kicks the side of it, gets in, revs his engine, and speeds off into the horizon. God Dammit.")
                         print("\n")
                         return
                 else:
                     self.add_danger("Frank")
-                    typer.type("\"Are you tryna rip me off? Clearly you don't have enough money to afford my services, which is honestly pathetic, since I have the cheapest services around! I don't get what it is with you young folk and not working, just staying home and smoking weed. It's miserable. You're miserable. Dontchu know I know people on the inside! I'll remember this one.\"")
+                    type.type("\"Are you tryna rip me off? Clearly you don't have enough money to afford my services, which is honestly pathetic, since I have the cheapest services around! I don't get what it is with you young folk and not working, just staying home and smoking weed. It's miserable. You're miserable. Dontchu know I know people on the inside! I'll remember this one.\"")
                     print("\n")
-                    typer.type("You watch as he revs his engine, gets out of his truck, kicks his beater, gets back in, revs his engine, and speeds off into the horizon.")
+                    type.type("You watch as he revs his engine, gets out of his truck, kicks his beater, gets back in, revs his engine, and speeds off into the horizon.")
                     print("\n")
                     return
             else:
-                typer.type("\"Speak up! You're mumbling. \" ")
+                type.type("\"Speak up! You're mumbling. \" ")
 
 
 
     def optimal_oswald(self):
         self.meet("Oswald Event")
-        typer.type("You wake up to the sight of a glossy black limousine, quietly approaching your wagon. ")
-        typer.type("As you sit up from your slumber, you read \'Oswald's Optimal Outoparts\' cursively engraved in gold letters on the side of the limo. ")
-        typer.type("Waving the vehicle down, the limo slows, then stops before you. The door opens vertically, and a large red carpet is rolled out onto the street. You watch in awe as a man, with a combover and a tuxedo, walks out before you. He coughs, then speaks.")
+        type.type("You wake up to the sight of a glossy black limousine, quietly approaching your wagon. ")
+        type.type("As you sit up from your slumber, you read \'Oswald's Optimal Outoparts\' cursively engraved in gold letters on the side of the limo. ")
+        type.type("Waving the vehicle down, the limo slows, then stops before you. The door opens vertically, and a large red carpet is rolled out onto the street. You watch in awe as a man, with a combover and a tuxedo, walks out before you. He coughs, then speaks.")
         print("\n")
-        typer.type("\"Why hello there! The name's Oswald, as you can see by my nametag. Do you like my bowtie? Well of course you do! It appears your limousine has broken down.\" ")
-        typer.type("Oswald pulls a gold whistle out of his pocket, and blows into it deeply. ")
-        typer.type("\"Oh Stuart!\" You watch as a bald man in a tailcoat suit, no taller than 4 feet, hobbles over to Oswald's side.")
+        type.type("\"Why hello there! The name's Oswald, as you can see by my nametag. Do you like my bowtie? Well of course you do! It appears your limousine has broken down.\" ")
+        type.type("Oswald pulls a gold whistle out of his pocket, and blows into it deeply. ")
+        type.type("\"Oh Stuart!\" You watch as a bald man in a tailcoat suit, no taller than 4 feet, hobbles over to Oswald's side.")
         print("\n")
-        typer.type("\"This is Stuart! He will fix your limousine up for a fair price. Let's say, I don't know, I suppose a fair price is " + green(bright("500,000 dollars")) + ". ")
+        type.type("\"This is Stuart! He will fix your limousine up for a fair price. Let's say, I don't know, I suppose a fair price is " + green(bright("500,000 dollars")) + ". ")
         repair_price = random.choice([800, 850, 900])
-        typer.type("Okay, the look on your face says that I'm making a big mistake. Let's try " + green(bright("$" + str(repair_price))) + ", and Stuart here will get you back on the road! Do you accept?\" ")
+        type.type("Okay, the look on your face says that I'm making a big mistake. Let's try " + green(bright("$" + str(repair_price))) + ", and Stuart here will get you back on the road! Do you accept?\" ")
         while(True):
             yes_or_no = input("").lower()
             print()
             if(yes_or_no == "n") or (yes_or_no == "no"):
-                typer.type("\"Really? You don't want my services? I'm so sorry Stuart, But it appears they don't want our services.\" ")
-                typer.type("Stuart begins to break down into tears, and he runs quickly back into the limo. ")
-                typer.type("\"Shame on you! Shame on you! I hope to never see the likes of you again.\"")
+                type.type("\"Really? You don't want my services? I'm so sorry Stuart, But it appears they don't want our services.\" ")
+                type.type("Stuart begins to break down into tears, and he runs quickly back into the limo. ")
+                type.type("\"Shame on you! Shame on you! I hope to never see the likes of you again.\"")
                 print("\n")
-                typer.type("You watch as Oswald rolls up the red carpet, gets back in the limo, and drives off into the distance.")
+                type.type("You watch as Oswald rolls up the red carpet, gets back in the limo, and drives off into the distance.")
                 print("\n")
                 return
             elif((yes_or_no == "y") or (yes_or_no == "yes")):
                 if self.__balance >= repair_price:
                     self.meet("Oswald")
-                    typer.type("\"Jolly good! Stuart!\" ")
-                    typer.type("You watch as the little man walks to the front of your wagon, opens the hood, and jumps in. You can't really see what's going on, but after a couple of minutes, Stuart jumps back out, covered in oil.")
+                    type.type("\"Jolly good! Stuart!\" ")
+                    type.type("You watch as the little man walks to the front of your wagon, opens the hood, and jumps in. You can't really see what's going on, but after a couple of minutes, Stuart jumps back out, covered in oil.")
                     self.change_balance(-repair_price)
                     self.add_item("Car")
-                    typer.type(magenta(bright("Your car has been fixed! You can now drive around!")))
+                    type.type(magenta(bright("Your car has been fixed! You can now drive around!")))
                     print("\n")
-                    typer.type("\"Oh my Stuart! Someone got a little too excited, didn't you? Yep, you're getting a bath as soon as we get back to the shop. Thanks again, stranger, it's been a pleasure doing business with you. I recall it's good custom to tip after events like this, yes? Here, take this.\" ")
+                    type.type("\"Oh my Stuart! Someone got a little too excited, didn't you? Yep, you're getting a bath as soon as we get back to the shop. Thanks again, stranger, it's been a pleasure doing business with you. I recall it's good custom to tip after events like this, yes? Here, take this.\" ")
                     tip = random.choice([50, 100])
-                    typer.type("Oswald hands you a bright green bill, worth " + green(bright("$" + str(tip))) + ".")
+                    type.type("Oswald hands you a bright green bill, worth " + green(bright("$" + str(tip))) + ".")
                     self.change_balance(tip)
-                    typer.type("And with that, you watch as Stuart rolls up the red carpet. Oswald and Stuart get back in the limo, and drive off into the distance.")
+                    type.type("And with that, you watch as Stuart rolls up the red carpet. Oswald and Stuart get back in the limo, and drive off into the distance.")
                     print("\n")
                     return
                 else:
-                    typer.type("\"Why, it appears you're far too poor to attain my services. I'm truly sorry about this. Tell you what, here's a little something to get you back on your feet.\" ")
+                    type.type("\"Why, it appears you're far too poor to attain my services. I'm truly sorry about this. Tell you what, here's a little something to get you back on your feet.\" ")
                     tip = random.choice([50, 100])
-                    typer.type("Oswald hands you a bright green bill, worth " + green(bright("$" + str(tip))) + ".")
+                    type.type("Oswald hands you a bright green bill, worth " + green(bright("$" + str(tip))) + ".")
                     self.change_balance(tip)
-                    typer.type("And with that, you watch as Stuart rolls up the red carpet. Oswald and Stuart get back in the limo, and drive off into the distance. ")
+                    type.type("And with that, you watch as Stuart rolls up the red carpet. Oswald and Stuart get back in the limo, and drive off into the distance. ")
                     if self.__balance > repair_price:
-                        typer.type("Looking down, you see that after Oswald's tip, you had enough money to pay for the repair service after all, but it was too late. Oh well.")
+                        type.type("Looking down, you see that after Oswald's tip, you had enough money to pay for the repair service after all, but it was too late. Oh well.")
                     print("\n")
                     return
             else:
-                typer.type("\"Come again?\" ")
+                type.type("\"Come again?\" ")
 
 
     def update_story_event_prereqs(self):
@@ -1489,7 +1489,7 @@ class Player:
             self.__prereqs_done[0] = True
 
     def start_day(self):
-        typer.typeover("Press a key to continue:", bright(yellow("~ ~ ~ Morning, Day " + str(self.__day) + " ~ ~ ~ ")), True)
+        type.typeover("Press a key to continue:", bright(yellow("~ ~ ~ Morning, Day " + str(self.__day) + " ~ ~ ~ ")), True)
 
         self.update_rank()
         self.update_story_event_prereqs()
@@ -1578,7 +1578,7 @@ class Player:
     def update_status(self):
         damage = 0
         if self.__clear_all_status == True:
-            typer.type("Whatever the Witch Doctor gave you yesterday, it worked wonders on you. You feel amazing, as though your body had been completely cleansed.")
+            type.type("Whatever the Witch Doctor gave you yesterday, it worked wonders on you. You feel amazing, as though your body had been completely cleansed.")
             print("\n")
             self.__status_effects = set()
             self.__injuries = set()
@@ -1592,24 +1592,24 @@ class Player:
             days_elapsed = self.get_days_elapsed("Spider Bite")
             if(self.__clear_status):
                 self.remove_status("Spider Bite")
-                typer.type("Your spider bite is starting to heal. ")
+                type.type("Your spider bite is starting to heal. ")
             elif days_elapsed == 0:
                 damage += random.choice([1, 2])
-                typer.type("The fangmarks of your spider bite are faint but visible. ")
+                type.type("The fangmarks of your spider bite are faint but visible. ")
             elif days_elapsed == 1:
                 damage += random.choice([3, 4, 5, 6])
-                typer.type("Your spider bite is sore and swolen. ")
+                type.type("Your spider bite is sore and swolen. ")
             elif days_elapsed == 2:
                 damage += random.choice([4, 5, 6, 7, 8, 9])
-                typer.type("Your spider bite is really painful. You don't feel good. ")
+                type.type("Your spider bite is really painful. You don't feel good. ")
             elif days_elapsed >= 3:
                 random_chance = random.randrange(4)
                 if (random_chance == 0):
                     self.remove_status("Spider Bite")
-                    typer.type("Your spider bite is starting to heal. ")
+                    type.type("Your spider bite is starting to heal. ")
                 else:
                     damage += random.choice([7, 9, 11, 13, 15])
-                    typer.type("Your spider bite is purple and pussing. A trip to the doctors might be a good idea. ")
+                    type.type("Your spider bite is purple and pussing. A trip to the doctors might be a good idea. ")
             print("\n")
 
             if damage >= self.__health:
@@ -1620,19 +1620,19 @@ class Player:
             days_elapsed = self.get_days_elapsed("Snake Bite")
             if(self.__clear_status):
                 self.remove_status("Snake Bite")
-                typer.type("Your snake bite is starting to heal. ")
+                type.type("Your snake bite is starting to heal. ")
             elif days_elapsed == 0:
                 damage += random.choice([2, 4])
-                typer.type("The fangmarks of your snake bite are faint but visible. There's some swelling. ")
+                type.type("The fangmarks of your snake bite are faint but visible. There's some swelling. ")
             elif days_elapsed == 1:
                 damage += random.choice([6, 8, 10, 12])
-                typer.type("Your snake bite is swolen, and very painful. ")
+                type.type("Your snake bite is swolen, and very painful. ")
             elif days_elapsed == 2:
                 damage += random.choice([8, 10, 12, 14, 16, 18])
-                typer.type("Your snake bite is really painful. You feel really nauseous. ")
+                type.type("Your snake bite is really painful. You feel really nauseous. ")
             elif days_elapsed >= 3:
                 damage += random.choice([7, 14, 18, 22, 26, 30])
-                typer.type("Your snake bite is turning black. A trip to the doctors is probably the right choice. ")
+                type.type("Your snake bite is turning black. A trip to the doctors is probably the right choice. ")
             print("\n")
 
             if damage >= self.__health:
@@ -1643,14 +1643,14 @@ class Player:
             days_elapsed = self.get_days_elapsed("Squirrel Bite")
             if(self.__clear_status):
                 self.remove_status("Squirrel Bite")
-                typer.type("Your squirrel bite is starting to heal. ")
+                type.type("Your squirrel bite is starting to heal. ")
             elif days_elapsed == 0:
-                typer.type("You look at the bite mark the squirrel left on your leg, but it's hard to tell if it's infected. A trip to the doctor's would solve all your worries.")
+                type.type("You look at the bite mark the squirrel left on your leg, but it's hard to tell if it's infected. A trip to the doctor's would solve all your worries.")
             elif ((days_elapsed >= 1) and self.has_status("Rabies")) or (days_elapsed < 5):
-                typer.type("Your squirrel bite looks the same as it did yesterday.")
+                type.type("Your squirrel bite looks the same as it did yesterday.")
             elif (days_elapsed == 5):
                 self.remove_status("Squirrel Bite")
-                typer.type("Your squirrel bite is starting to heal. ")
+                type.type("Your squirrel bite is starting to heal. ")
             print("\n")
 
         # Rat Bite
@@ -1658,14 +1658,14 @@ class Player:
             days_elapsed = self.get_days_elapsed("Rat Bite")
             if(self.__clear_status):
                 self.remove_status("Rat Bite")
-                typer.type("Your rat bite is starting to heal. ")
+                type.type("Your rat bite is starting to heal. ")
             elif days_elapsed == 0:
-                typer.type("You look at the bite mark the rat left on your ankle. It hurts like a motherfucker, but it's hard to tell if the bite infected. A trip to the doctor's is what a smart person would do.")
+                type.type("You look at the bite mark the rat left on your ankle. It hurts like a motherfucker, but it's hard to tell if the bite infected. A trip to the doctor's is what a smart person would do.")
             elif ((days_elapsed >= 1) and self.has_status("Rabies")) or (days_elapsed < 5):
-                typer.type("Your rat bite looks the same as it did yesterday. It might hurt worse, but it's hard to tell.")
+                type.type("Your rat bite looks the same as it did yesterday. It might hurt worse, but it's hard to tell.")
             elif (days_elapsed == 5):
                 self.remove_status("Rat Bite")
-                typer.type("Your rat bite is starting to heal. ")
+                type.type("Your rat bite is starting to heal. ")
             print("\n")
 
         # Rabies
@@ -1674,15 +1674,15 @@ class Player:
             if(self.__clear_status) and (days_elapsed<=3):
                 self.remove_status("Rabies")
             elif days_elapsed==3:
-                typer.type(red("Your mouth has begun to foam. It seems you've contracted rabies. Death is inevitable, and it's hurdling towards you."))
+                type.type(red("Your mouth has begun to foam. It seems you've contracted rabies. Death is inevitable, and it's hurdling towards you."))
                 damage += random.choice([10, 30, 50, 70])
                 print("\n")
             elif days_elapsed==4:
-                typer.type(red("The foaming has gotten worse, to the point where you begin to choke on it. You have a seizure in your car. Life is coming to an end."))
+                type.type(red("The foaming has gotten worse, to the point where you begin to choke on it. You have a seizure in your car. Life is coming to an end."))
                 damage += random.choice([50, 70, 90])
                 print("\n")
             elif days_elapsed==5:
-                typer.slow(red(bright("Your mind has gone completely insane. You start tearing at your face, ripping away chunks of skin. The foam in your mouth turns red, and you feel yourself begin to fade from existance. You pull your eyes from their sockets, and scream in agony, as you die a painful death.")))
+                type.slow(red(bright("Your mind has gone completely insane. You start tearing at your face, ripping away chunks of skin. The foam in your mouth turns red, and you feel yourself begin to fade from existance. You pull your eyes from their sockets, and scream in agony, as you die a painful death.")))
                 self.kill()
 
             if damage >= self.__health:
@@ -1714,7 +1714,7 @@ class Player:
             if(self.__clear_status):
                 self.remove_status("Sore Throat")
             elif self.has_item("Cough Drops"):
-                typer.type("With your " + bright(magenta("Cough Drops")) + " in hand, you begin to suck each drop, one by one, until the box is empty, and your throat feels nice and cool.")
+                type.type("With your " + bright(magenta("Cough Drops")) + " in hand, you begin to suck each drop, one by one, until the box is empty, and your throat feels nice and cool.")
             elif days_elapsed == 0:
                 damage += random.choice([1, 3, 5])
             elif days_elapsed == 1:
@@ -1753,22 +1753,22 @@ class Player:
         # Sets is_sick to False if you don't have any sicknesses, an prints a health update
         if (self.__is_sick) and not (self.has_status("Hepatitis") and not self.has_status("Sore Throat") or self.has_status("Cold")):
             if self.has_status("Rabies"):
-                typer.type("With rabies in your system, you're lucky to be alive.")
+                type.type("With rabies in your system, you're lucky to be alive.")
             elif self.has_status("Snake Bite") or self.has_status("Spider Bite"):
-                typer.type("You may not be 100%, but at least you don't feel under the weather anymore.")
+                type.type("You may not be 100%, but at least you don't feel under the weather anymore.")
             else:
-                typer.type("You feel much less sick than you did yesterday, which is always good.")
+                type.type("You feel much less sick than you did yesterday, which is always good.")
             self.__is_sick = False
             print("\n")
 
         # if player is sick, prints a sickness update
         if self.__is_sick:
-            typer.type(self.__lists.get_sickness_update())
+            type.type(self.__lists.get_sickness_update())
             print("\n")
 
         # If sickness kills the player, this does it.
         if damage >= self.__health:
-                typer.slow(bright(red(self.__lists.get_sickness_death())))
+                type.slow(bright(red(self.__lists.get_sickness_death())))
                 self.kill()
 
         # Sets is_injured to True if you have 1 or more injuries
@@ -1777,14 +1777,14 @@ class Player:
 
         # Sets is_injured to False if you have 0 injuries, and prints a healed update
         if (self.__is_injured) and len(self.__injuries)==0:
-            typer.type("The injuries on your body are doing much better.")
+            type.type("The injuries on your body are doing much better.")
             print("\n")
             self.__is_injured = False
         
         # If you're injured, prints an injury update, and adds damage
         if self.__is_injured:
             damage += len(self.__injuries)
-            typer.type(self.__lists.get_injury_update())
+            type.type(self.__lists.get_injury_update())
             print("\n")
 
         # If you took damage, this does it.
@@ -1795,41 +1795,41 @@ class Player:
 
         # Sprays your car with Pest Control if you have a pest
         if self.has_pests() and self.has_item("Pest Control") and (not self.has_travel_restriction("Rain")) and (not self.has_travel_restriction("Wind")):
-            typer.type("Believing that there may be an unwanted pest somewhere in your car, you spray your " + magenta(bright("Pest Control")) + " throughout the vehicle, hoping that it'll solve your pest issues. ")
+            type.type("Believing that there may be an unwanted pest somewhere in your car, you spray your " + magenta(bright("Pest Control")) + " throughout the vehicle, hoping that it'll solve your pest issues. ")
             self.kill_pests()
-            typer.type("After giving the wagon a minute to air out, you get back inside.")
+            type.type("After giving the wagon a minute to air out, you get back inside.")
             print("\n")
 
         # Feeds Squirrely if you have Acorns
         if self.has_item("Bag of Acorns") and self.has_item("Squirrely"):
-            typer.type("You give Squirrely your " + magenta(bright("Bag of Acorns")) + ", and he goes to town, munching down all of them. What a good squirrel.")
+            type.type("You give Squirrely your " + magenta(bright("Bag of Acorns")) + ", and he goes to town, munching down all of them. What a good squirrel.")
             print("\n")
 
         # Gives Squirrely Status Update
         if self.has_item("Squirrely"):
             days_elapsed = self.get_days_elapsed("Squirrely Fed")
             if self.has_travel_restriction("rain") or self.has_travel_restriction("Wind"):
-                typer.type(self.__lists.get_worried_squirrely_update())
+                type.type(self.__lists.get_worried_squirrely_update())
             if days_elapsed == 0:
-                typer.type("Squirrely is well-fed, and happy as can be.")
+                type.type("Squirrely is well-fed, and happy as can be.")
             elif days_elapsed <= 4:
-                typer.type(self.__lists.get_fed_squirrely_update())
+                type.type(self.__lists.get_fed_squirrely_update())
             elif days_elapsed < 6:
-                typer.type(self.__lists.get_hungry_squirrely_update())
+                type.type(self.__lists.get_hungry_squirrely_update())
             elif days_elapsed >= 6:
                 random_chance = random.randrange(5)
                 if random_chance == 0:
-                    typer.type("Looking around, you can't find Squirrely anywhere. No, seriously, you can't find him anywhere. Beginning to panic, you start to tear the car apart, hoping that you'll find him somewhere. You call out his name, 'Squirrely', 'Squirrely', but you get no response. Tears start falling from your eyes. Is this really it? Is this really goodbye? Poor Squrrely, all alone. You may never see your little Squirrely ever again.")
+                    type.type("Looking around, you can't find Squirrely anywhere. No, seriously, you can't find him anywhere. Beginning to panic, you start to tear the car apart, hoping that you'll find him somewhere. You call out his name, 'Squirrely', 'Squirrely', but you get no response. Tears start falling from your eyes. Is this really it? Is this really goodbye? Poor Squrrely, all alone. You may never see your little Squirrely ever again.")
                     self.use_item("Squirrely")
                     self.meet("Squirrely")
                 elif random_chance == 1:
-                    typer.type("Looking around, you can't find Squirrely anywhere. No, seriously, you can't find him anywhere. And that smell, it reeks! You begin to fear for the worst. Tearing the car apart, you find him, laying lifeless under the passenger seat. Poor Squirrely.")
+                    type.type("Looking around, you can't find Squirrely anywhere. No, seriously, you can't find him anywhere. And that smell, it reeks! You begin to fear for the worst. Tearing the car apart, you find him, laying lifeless under the passenger seat. Poor Squirrely.")
                     print("\n")
-                    typer.type("Using an old shirt, you pick Squirrely off the floor of the wagon. Carrying him into the woods, you set him down, and dig a hole. You place Squirrely inside, cover him up with dirt, and place a flower over the grave. Goodbye, Squirrely. I loved you.")
+                    type.type("Using an old shirt, you pick Squirrely off the floor of the wagon. Carrying him into the woods, you set him down, and dig a hole. You place Squirrely inside, cover him up with dirt, and place a flower over the grave. Goodbye, Squirrely. I loved you.")
                     self.use_item("Squirrely")
                     self.meet("Dead Squirrely")
                 else:
-                    typer.type(self.__lists.get_hungry_squirrely_update())
+                    type.type(self.__lists.get_hungry_squirrely_update())
             print("\n")
 
 
@@ -1842,60 +1842,60 @@ class Player:
         if self.has_travel_restriction("Wind"):
             random_chance = random.randrange(3)
             if random_chance == 0:
-                typer.type("You watch the wind pull twigs and branches from the trees all afternoon.")
+                type.type("You watch the wind pull twigs and branches from the trees all afternoon.")
             elif random_chance == 1:
-                typer.type("One branch falls, and lands on the hood of your wagon. Had it been any bigger, that could've been bad.")
+                type.type("One branch falls, and lands on the hood of your wagon. Had it been any bigger, that could've been bad.")
             elif random_chance == 2:
-                typer.type("You hear a loud crash in the distance. A tree must've fallen nearby.")
+                type.type("You hear a loud crash in the distance. A tree must've fallen nearby.")
             else:
-                typer.type("The wind pushes the light gray clouds across the sky, and you watch them all afternoon.")
+                type.type("The wind pushes the light gray clouds across the sky, and you watch them all afternoon.")
             
             print("\n")
             
-            typer.type("As the sun begins to fall, you collect your money, and leave the warmth of your wagon. You barrel out into the wind, trudging your way to the casino.")
+            type.type("As the sun begins to fall, you collect your money, and leave the warmth of your wagon. You barrel out into the wind, trudging your way to the casino.")
 
             print("\n")
             random_chance = random.randrange(3)
             if random_chance == 1:
-                typer.slow(red("It's a windy one today. Now, let us gamble."))
+                type.slow(red("It's a windy one today. Now, let us gamble."))
             elif random_chance == 2:
-                typer.slow(red("Suprised you made it here in one piece, given the weather. It's time to bet."))
+                type.slow(red("Suprised you made it here in one piece, given the weather. It's time to bet."))
             elif random_chance == 3:
-                typer.slow(red("It's nice to see you tonight. Shows commitment. You ready?"))
+                type.slow(red("It's nice to see you tonight. Shows commitment. You ready?"))
             else:
-                typer.slow(red("Wind didn't blow any of your money away, did it? Anyways, let's play."))
+                type.slow(red("Wind didn't blow any of your money away, did it? Anyways, let's play."))
             print("\n")
 
         # Rain Restriction (500,000-900,000)
         elif self.has_travel_restriction("Rain"):
-            typer.type("You watch, as the rain pours, and pours, and pours. By nightfall, the rain hasn't let up, and the flooding in the streets has only gotten worse. Unfortunately, you're gonna have to skip out on Blackjack for the night.")
+            type.type("You watch, as the rain pours, and pours, and pours. By nightfall, the rain hasn't let up, and the flooding in the streets has only gotten worse. Unfortunately, you're gonna have to skip out on Blackjack for the night.")
             print("\n")
-            typer.type("You get cozy in your car, and begin to doze off. That's all for " + bright(yellow("Day " + str(self.__day))) + ".")
+            type.type("You get cozy in your car, and begin to doze off. That's all for " + bright(yellow("Day " + str(self.__day))) + ".")
             print("\n")
-            typer.type("As you sleep, you dream and dream about the sand beneath your feet, the waterfall above you raining water down, splashing in the river, leading out to the ocean and the horizon before you. The sun looks so bright in the fading orange sky, and the hot sand began to cool below you. Before you get the chance to say goodbye, you wake up, having slept through all of " + bright(yellow("Day " + str(self.__day + 1))) + " and " + bright(yellow("Day " + str(self.__day + 2))) + "." )
+            type.type("As you sleep, you dream and dream about the sand beneath your feet, the waterfall above you raining water down, splashing in the river, leading out to the ocean and the horizon before you. The sun looks so bright in the fading orange sky, and the hot sand began to cool below you. Before you get the chance to say goodbye, you wake up, having slept through all of " + bright(yellow("Day " + str(self.__day + 1))) + " and " + bright(yellow("Day " + str(self.__day + 2))) + "." )
             random_chance = random.randrange(2)
             if random_chance == 0:
                 self.__day += 3
             else:
-                typer.type(" And even " + bright(yellow("Day " + str(self.__day + 3))))
+                type.type(" And even " + bright(yellow("Day " + str(self.__day + 3))))
                 self.__day += 4
             print("\n")
-            typer.type("As you awake on " + bright(yellow("Day " + str(self.__day))) + ", you notice the raindrops begin to slow down, clouds begin to clear, and a golden ray of sunshine fills your soaked wagon. Looking in the seat next to you, your pile of green bills brings a sparkle to your eyes. You hear the money call to you. It's time. Let's go win some hands.")
+            type.type("As you awake on " + bright(yellow("Day " + str(self.__day))) + ", you notice the raindrops begin to slow down, clouds begin to clear, and a golden ray of sunshine fills your soaked wagon. Looking in the seat next to you, your pile of green bills brings a sparkle to your eyes. You hear the money call to you. It's time. Let's go win some hands.")
 
             print("\n")
 
-            typer.type("As the sun begins to fall, you collect your money, and leave the safety of your wagon. You barrel out into the damp air, up the muddy dirt road, and into the casino.")
+            type.type("As the sun begins to fall, you collect your money, and leave the safety of your wagon. You barrel out into the damp air, up the muddy dirt road, and into the casino.")
 
             print("\n")
             random_chance = random.randrange(3)
             if random_chance == 1:
-                typer.slow(red("Wipe those shoes. It's difficult to wash these carpets."))
+                type.slow(red("Wipe those shoes. It's difficult to wash these carpets."))
             elif random_chance == 2:
-                typer.slow(red("Long time no see, yeah? Let's get back to it."))
+                type.slow(red("Long time no see, yeah? Let's get back to it."))
             elif random_chance == 3:
-                typer.slow(red("You broke the streak you had going. Wanna make up for it in bets?"))
+                type.slow(red("You broke the streak you had going. Wanna make up for it in bets?"))
             else:
-                typer.slow(red("Glad the rain didn't permanently wash you away. That would have been a shame."))
+                type.slow(red("Glad the rain didn't permanently wash you away. That would have been a shame."))
             print("\n")
 
         elif self.has_travel_restriction("Battery"):
@@ -1907,24 +1907,24 @@ class Player:
         elif self.has_item("Car"):
             choice = None
             shops = self.__lists.make_shop_list()
-            typer.type("Would you like to spend your day driving somewhere? ")
+            type.type("Would you like to spend your day driving somewhere? ")
             print()
             for i in range(len(shops)+1):
                 if(i<len(shops)):
-                    typer.type(str(i+1) + ". " + shops[i])
+                    type.type(str(i+1) + ". " + shops[i])
                     time.sleep(0.5)
                     print()
                 else:
-                    typer.type(str(i+1) + ". Stay Home")
+                    type.type(str(i+1) + ". Stay Home")
                     time.sleep(0.5)
                     print()
-            typer.type("Choose a number: ")
+            type.type("Choose a number: ")
             while True:
                 while choice is None:
                     try:
                         choice = int(input())
                     except ValueError:
-                        typer.type("Choose a number: ")
+                        type.type("Choose a number: ")
                 if(1<=choice<=len(shops)):
                     shop = shops[choice-1]
                     break
@@ -1933,9 +1933,9 @@ class Player:
                     break
                 else:
                     choice = None
-                    typer.type("That number's not a choice!")
+                    type.type("That number's not a choice!")
                     print()
-                    typer.type("Choose a number: ")
+                    type.type("Choose a number: ")
             print()
 
             if shop == "Doctor's Office": self.visit_doctor()
@@ -1952,60 +1952,60 @@ class Player:
 
     #Doctor's Office Interaction    
     def visit_doctor(self):
-        typer.type("You get in your car and drive to the Doctor's Office. ")
+        type.type("You get in your car and drive to the Doctor's Office. ")
         if not self.has_met("Doctor's Office"):
             self.meet("Doctor's Office")
-            typer.type("As you pull up closer to the bright blue building, you notice that the parking lot is concerningly empty. You park your wagon right up front next to the entrance, and step out towards the doors. ")
+            type.type("As you pull up closer to the bright blue building, you notice that the parking lot is concerningly empty. You park your wagon right up front next to the entrance, and step out towards the doors. ")
             print("\n")
-            typer.type("When you enter into the lobby, you're immediately hit with the strong smell of hand sanitizer in the air. The carpets are dull and brown, the light above you is flickering, and the walls are filled with posters telling you to 'Floss More Often!' and 'Wash Your Hands Before You Eat!' ")
-            typer.type("If you didn't know any better, you would have guessed you were on a movie set.")
+            type.type("When you enter into the lobby, you're immediately hit with the strong smell of hand sanitizer in the air. The carpets are dull and brown, the light above you is flickering, and the walls are filled with posters telling you to 'Floss More Often!' and 'Wash Your Hands Before You Eat!' ")
+            type.type("If you didn't know any better, you would have guessed you were on a movie set.")
             print("\n")
-            typer.type("Walking towards the front desk, you see a cheery old lady, who looks up from her computer to smile at you. Her gray hair covers her glasses, and her hand trembles as she hands you a pen and a clipboard with some paperwork. Of course it's paperwork.")
+            type.type("Walking towards the front desk, you see a cheery old lady, who looks up from her computer to smile at you. Her gray hair covers her glasses, and her hand trembles as she hands you a pen and a clipboard with some paperwork. Of course it's paperwork.")
             print("\n")
-            typer.type("After filling out your information, you walk back to the front desk, and hand the lady the clipboard. She smiles, and begins to speak to you.")
+            type.type("After filling out your information, you walk back to the front desk, and hand the lady the clipboard. She smiles, and begins to speak to you.")
         print("\n")
-        typer.type("I see you're here for a checkup. The Doctor will see you now.")
+        type.type("I see you're here for a checkup. The Doctor will see you now.")
         print("\n")
-        typer.type("Hey there champ! How are you? Doing all right? Let's check you out and make sure you're all up to snuff.")
+        type.type("Hey there champ! How are you? Doing all right? Let's check you out and make sure you're all up to snuff.")
         print()
         if (self.len_status() == 0) and (self.__health == 100):
-            typer.type("Why, you look just as healthy as the day I met you, fresh from your mother's womb! Let me just give you this lollipop and you'll be free to go.")
+            type.type("Why, you look just as healthy as the day I met you, fresh from your mother's womb! Let me just give you this lollipop and you'll be free to go.")
         elif (self.len_status() == 0):
-            typer.type("Why, you don't seem to really need my help. You appear a little worse for wear, but this medicine should do the trick.")
+            type.type("Why, you don't seem to really need my help. You appear a little worse for wear, but this medicine should do the trick.")
             print("\n")
         else:
             self.__clear_status = True
             if self.has_status("Spider Bite"):
-                typer.type("I see you have a nasty spider bite. That thing looks gross. Let me get that cleaned up for you.")
+                type.type("I see you have a nasty spider bite. That thing looks gross. Let me get that cleaned up for you.")
                 print()
             print()
-            typer.type("Well, that seems to be everything. You still appear a little worse for wear, but this medicine should do the trick.")
+            type.type("Well, that seems to be everything. You still appear a little worse for wear, but this medicine should do the trick.")
         print("\n")
         self.heal(100)
-        typer.type("You walk back to the front desk to checkout.")
+        type.type("You walk back to the front desk to checkout.")
         print("\n")
         cost = int((random.randint(65, 90)/100)*self.__balance)
-        typer.type("That will be " + bright(green("${:,}".format(cost))))
+        type.type("That will be " + bright(green("${:,}".format(cost))))
         if self.has_item("Faulty Insurance"):
             print("\n")
-            typer.type("You show off your " + bright(magenta("Faulty Insurance")) + " to the lady, and put a convincing smile on your face. ")
+            type.type("You show off your " + bright(magenta("Faulty Insurance")) + " to the lady, and put a convincing smile on your face. ")
             random_chance = random.randrange(10)
             if random_chance < 2:
                 self.add_danger("Doctor Ban")
                 print("\n")
                 self.use_item("Faulty Insurance")
-                typer.type("Is this supposed to fool me? A fake insurance card? That's it, I'm calling the cops!")
+                type.type("Is this supposed to fool me? A fake insurance card? That's it, I'm calling the cops!")
                 print("\n")
-                typer.type("Without hesitation, you turn, and run far, far away from the hospital, knowing that your face can't be seen there again.")
+                type.type("Without hesitation, you turn, and run far, far away from the hospital, knowing that your face can't be seen there again.")
                 print("\n")
                 self.start_night()
                 return
             else:
                 print("\n")
-                typer.type("I see, you have insurance. Well, that should give you quite the discount.")
+                type.type("I see, you have insurance. Well, that should give you quite the discount.")
                 print()
                 cost = int((random.randint(10, 35)/100)*self.__balance)
-                typer.type("That will be " + bright(green("${:,}".format(cost))))
+                type.type("That will be " + bright(green("${:,}".format(cost))))
                 self.change_balance(-cost)
                 self.update_faulty_insurance_durability()
                 self.start_night()
@@ -2019,22 +2019,22 @@ class Player:
     # Witch Doctor's shop and interactions
     def visit_witch_doctor(self):
         potions = self.__lists.make_witch_inventory()
-        typer.type("You get in your car and drive to the Witch Doctor's Tower. ")
+        type.type("You get in your car and drive to the Witch Doctor's Tower. ")
         print("\n")
-        typer.type("Muahahahahaha, hahahahahaha, HAHAHAHAHA!")
+        type.type("Muahahahahaha, hahahahahaha, HAHAHAHAHA!")
         print()
-        typer.type("Would you like me to HEAL you, HUMAN? ")
+        type.type("Would you like me to HEAL you, HUMAN? ")
         while(True):
             yes_or_no = input("").lower()
             print()
             if((yes_or_no == "y") or (yes_or_no == "yes")):
-                typer.type("Now THATS what I LIKE to hear!")
+                type.type("Now THATS what I LIKE to hear!")
                 print("\n")
-                typer.type("You watch as the Witch goes from shelf to shelf, grabbing frog legs and horse hairs and bee carcasses, throwing them all into the black boiling pot. It begins to glow green, and the Witch looks pleased. ")
+                type.type("You watch as the Witch goes from shelf to shelf, grabbing frog legs and horse hairs and bee carcasses, throwing them all into the black boiling pot. It begins to glow green, and the Witch looks pleased. ")
                 print("\n")
-                typer.type("HAHAHAHAHA! DRINK this, my DEAR!")
+                type.type("HAHAHAHAHA! DRINK this, my DEAR!")
                 print("\n")
-                typer.type("You drink the strange concoction, and it burns in your stomach. Hopefully, it makes you feel better.")
+                type.type("You drink the strange concoction, and it burns in your stomach. Hopefully, it makes you feel better.")
                 
                 print("\n")
 
@@ -2049,29 +2049,29 @@ class Player:
                     self.heal(100)
                 
                 cost = int((random.randint(5, 25)/100)*self.__balance)
-                typer.type("YOU owe ME some of your green BILLS! I THINK that " + bright(green("${:,}".format(cost))) + " would SUFFICE!")
+                type.type("YOU owe ME some of your green BILLS! I THINK that " + bright(green("${:,}".format(cost))) + " would SUFFICE!")
                 self.change_balance(-cost)
                 if len(potions)==0:
-                    typer.type("SORRY FOR YOU, but I'm simply out of FLASKS. No FLASKS means no POTIONS. Maybe try COMING BACK another DAY!")
+                    type.type("SORRY FOR YOU, but I'm simply out of FLASKS. No FLASKS means no POTIONS. Maybe try COMING BACK another DAY!")
                     print("\n")
                     self.start_night()
                     return
                 else:
-                    typer.type("NOW, while I have YOU here, care to PURCHASE any of my POWERFUL POTIONS?")
+                    type.type("NOW, while I have YOU here, care to PURCHASE any of my POWERFUL POTIONS?")
                 break
             elif((yes_or_no == "n") or (yes_or_no == "no")):
-                typer.type("HAHAH-oh what? You don't want MY help? That's QUITE UNFORTUNATE!")
+                type.type("HAHAH-oh what? You don't want MY help? That's QUITE UNFORTUNATE!")
                 print("\n")
                 if len(potions)==0:
-                    typer.type("SORRY FOR YOU, but I'm simply out of FLASKS. No FLASKS means no POTIONS. Maybe try COMING BACK another DAY!")
+                    type.type("SORRY FOR YOU, but I'm simply out of FLASKS. No FLASKS means no POTIONS. Maybe try COMING BACK another DAY!")
                     print("\n")
                     self.start_night()
                     return
                 else:
-                    typer.type("WELL, are YOU in the MOOD to spend some MONEY on my MAGIC POTIONS?")
+                    type.type("WELL, are YOU in the MOOD to spend some MONEY on my MAGIC POTIONS?")
                     break
             else:
-                typer.type("WHAT did you SAY? ")
+                type.type("WHAT did you SAY? ")
 
         print()
 
@@ -2086,31 +2086,31 @@ class Player:
         while(True):
             for i in range(len(potions)+1):
                 if(i<len(potions)):
-                    typer.type(str(i+1) + ". Flask of " + potions[i])
+                    type.type(str(i+1) + ". Flask of " + potions[i])
                     time.sleep(0.5)
                     print()
                 else:
-                    typer.type(str(i+1) + ". I'm not buying anything")
+                    type.type(str(i+1) + ". I'm not buying anything")
                     time.sleep(0.5)
                     print()
 
             if(self.len_flasks()==1):
-                typer.type("NOW, I'm not ONE to JUDGE, but MIXING potions can be RISKY BUSINESS. Don't BLAME ME if you feel SICK.")
+                type.type("NOW, I'm not ONE to JUDGE, but MIXING potions can be RISKY BUSINESS. Don't BLAME ME if you feel SICK.")
                 print()
             elif(self.len_flasks()==2):
-                typer.type("SO, you're TEETERING on DANGEROUS levels of potion in your BLOOD. Proceed with CAUTON.")
+                type.type("SO, you're TEETERING on DANGEROUS levels of potion in your BLOOD. Proceed with CAUTON.")
                 print()
             elif(self.len_flasks()>=3):
-                typer.type("ANY additional POTIONS in YOUR SYSTEM is ENTIRELY YOUR DECISION, and A BAD ONE AT THAT BUT I'M NOT YOU. Just please don't DIE on my CARPETS.")
+                type.type("ANY additional POTIONS in YOUR SYSTEM is ENTIRELY YOUR DECISION, and A BAD ONE AT THAT BUT I'M NOT YOU. Just please don't DIE on my CARPETS.")
                 print()
-            typer.type("CHOOSE a number: ")
+            type.type("CHOOSE a number: ")
             while True:
                 choice = None
                 while choice is None:
                     try:
                         choice = int(input())
                     except ValueError:
-                        typer.type("Choose A number: ")
+                        type.type("Choose A number: ")
                 if(1<=choice<=len(potions)):
                     potion = potions[choice-1]
                     break
@@ -2119,96 +2119,96 @@ class Player:
                     break
                 else:
                     choice = None
-                    typer.type("I DONT have that NUMBER!")
+                    type.type("I DONT have that NUMBER!")
                     print()
-                    typer.type("Choose a NUMBER: ")
+                    type.type("Choose a NUMBER: ")
 
             print()
 
             if potion == "No Bust":
-                typer.type("AHHH, so YOU WANT the Flask of No Bust?")
+                type.type("AHHH, so YOU WANT the Flask of No Bust?")
                 if no_bust_price == 0:
                     no_bust_price = random.choice([25000, 27000, 30000])
                 price = no_bust_price
             elif potion == "Imminent Blackjack":
-                typer.type("I SEE, so YOU WANT the Flask of Imminent Blackjack?")
+                type.type("I SEE, so YOU WANT the Flask of Imminent Blackjack?")
                 if imminent_blackjack_price == 0:
                     imminent_blackjack_price = random.choice([40000, 45000, 50000])
             elif potion == "Dealer's Whispers":
-                typer.type("HAHAHA, so YOU WANT the Flask of Dealer's Whispers?")
+                type.type("HAHAHA, so YOU WANT the Flask of Dealer's Whispers?")
                 if dealers_whispers_price == 0:
                     dealers_whispers_price = random.choice([23000, 27000, 32000])
                 price = dealers_whispers_price
             elif potion == "Bonus Fortune":
-                typer.type("OOOOOOOOHHH, so YOU WANT the Flask of Bonus Fortune?")
+                type.type("OOOOOOOOHHH, so YOU WANT the Flask of Bonus Fortune?")
                 if bonus_fortune_price == 0:
                     bonus_fortune_price = random.choice([35000, 42000, 45000])
                 price = bonus_fortune_price
             elif potion == "Anti-Venom":
-                typer.type("OF COURSEEEE, YOU WANT the Flask of Anti-Venom?")
+                type.type("OF COURSEEEE, YOU WANT the Flask of Anti-Venom?")
                 if antivenom_price == 0:
                     antivenom_price = random.choice([25000, 26000, 27000])
                 price = antivenom_price
             elif potion == "Anti-Virus":
-                typer.type("AH-HA, YOU WANT the Flask of Anti-Virus?")
+                type.type("AH-HA, YOU WANT the Flask of Anti-Virus?")
                 if antivirus_price == 0:
                     antivirus_price = random.choice([26000, 27000, 28000])
                 price = antivirus_price
             elif potion == "Fortunate Day":
-                typer.type("HEHEHAHAIHEHIA, so YOU WANT the Flask of Fortunate Day?")
+                type.type("HEHEHAHAIHEHIA, so YOU WANT the Flask of Fortunate Day?")
                 if fortunate_day_price == 0:
                     fortunate_day_price = random.choice([12000, 13000, 18000])
                 price = fortunate_day_price
             elif potion == "Fortunate Night":
-                typer.type("MUAHAHAHAHA, so YOU WANT the Flask of Fortunate Night?")
+                type.type("MUAHAHAHAHA, so YOU WANT the Flask of Fortunate Night?")
                 if fortunate_night_price == 0:
                     fortunate_night_price = random.choice([12000, 15000, 20000])
                 price = fortunate_night_price
             else: 
-                typer.type("Then OUR BUSINESS has been SETTLED. Be GONE. GOODBYE! COME AGAIN!")
+                type.type("Then OUR BUSINESS has been SETTLED. Be GONE. GOODBYE! COME AGAIN!")
                 print("\n")
                 self.start_night()
                 return
 
             print()
 
-            typer.type("I SUPPOSE I can PART WAYS with THIS for " + green(bright("${:,}".format(price))) + ". What do YOU think? ")
+            type.type("I SUPPOSE I can PART WAYS with THIS for " + green(bright("${:,}".format(price))) + ". What do YOU think? ")
             
             while True:
                 yes_or_no = input("").lower()
                 if ((yes_or_no == "y") or (yes_or_no == "yes")) and (self.__balance<price):
                     print()
-                    typer.type("YOUR WALLETS are far too SMALL for this TRANSACTION.")
+                    type.type("YOUR WALLETS are far too SMALL for this TRANSACTION.")
                     print("\n")
-                    typer.type("PERHAPS one of the OTHER potions?")
+                    type.type("PERHAPS one of the OTHER potions?")
                     break
                 elif (yes_or_no == "y") or (yes_or_no == "yes"):
                     print()
-                    typer.type("HAHAHAHAHAHAHAHAHA! YES! YES!")
+                    type.type("HAHAHAHAHAHAHAHAHA! YES! YES!")
                     self.change_balance(-price)
                     self.add_flask(potion)
                     potions.pop(choice-1)
-                    typer.type("You got the " + magenta(bright("Flask of " + potion)) + "!")
+                    type.type("You got the " + magenta(bright("Flask of " + potion)) + "!")
                     print()
-                    typer.type("Description: " + self.get_item_desc(potion))
+                    type.type("Description: " + self.get_item_desc(potion))
                     print("\n")
                     if(self.len_flasks()==1):
-                        typer.type("You chug the potion, and begin to feel warm inside.")
+                        type.type("You chug the potion, and begin to feel warm inside.")
                         print("\n")
                     elif(self.len_flasks()==2):
-                        typer.type("You chug the potion, and feel a bit dizzy. Maybe no more potions.")
+                        type.type("You chug the potion, and feel a bit dizzy. Maybe no more potions.")
                         print("\n")
                     elif(self.len_flasks()>=3):
-                        typer.type("You chug the potion, and feel really, really awful.")
+                        type.type("You chug the potion, and feel really, really awful.")
                         random_chance = random.randrange(2)
                         if random_chance == 0:
                             self.__flask_effects = set()
                             print("\n")
-                            typer.type("You stumble back and forth, on the verge of fainting. You puke all over the floor.")
+                            type.type("You stumble back and forth, on the verge of fainting. You puke all over the floor.")
                             print("\n")
-                            typer.type("NOOOO, NOT ON THE CARPETS! WHAT did I SAY! NO MORE. NO MORE. YOU are DONE for TODAY. OUT, NOW.")
+                            type.type("NOOOO, NOT ON THE CARPETS! WHAT did I SAY! NO MORE. NO MORE. YOU are DONE for TODAY. OUT, NOW.")
                             print("\n")
-                            typer.type("As you walk out, you feel your body begin to weaken. After all that, it seems the potions you had injested are now laying in a puddle on the floor of the Witch Doctor's tower. ")
+                            type.type("As you walk out, you feel your body begin to weaken. After all that, it seems the potions you had injested are now laying in a puddle on the floor of the Witch Doctor's tower. ")
                             print("\n")
                             self.start_night()
                             return
@@ -2216,130 +2216,130 @@ class Player:
                         damage = random.choice([10, 12, 15, 20, 30, 40])
                         if damage >= self.__health:
                             print("\n")
-                            typer.slow(red("Your vision starts turning red, then green, then purple. "))
-                            typer.slow(red("Panicking, you run around the room, desperate to find an antidote. "))
-                            typer.slow(red("You begin drinking potion, after potion, to no avail. "))
-                            typer.slow(red("You can hear the Witch cackling in the background of your ringing ears, and slowly, you fall to the ground. "))
-                            typer.slow(red("Your face rests on the soft carpet. It's so cozy. Too cosy. "))
-                            typer.slow(red("Is that God? Yes, I think I can hear him! God! God! "))
-                            typer.slow(red("My goodness, he's real! God begins to decend from the roof hundreds of feet above you, and as he slowly glides down the tower, "))
-                            typer.slow(red("you get a closer look at his figure. A golden ring surrounds his body, and his white cloak is long and elegant. "))
+                            type.slow(red("Your vision starts turning red, then green, then purple. "))
+                            type.slow(red("Panicking, you run around the room, desperate to find an antidote. "))
+                            type.slow(red("You begin drinking potion, after potion, to no avail. "))
+                            type.slow(red("You can hear the Witch cackling in the background of your ringing ears, and slowly, you fall to the ground. "))
+                            type.slow(red("Your face rests on the soft carpet. It's so cozy. Too cosy. "))
+                            type.slow(red("Is that God? Yes, I think I can hear him! God! God! "))
+                            type.slow(red("My goodness, he's real! God begins to decend from the roof hundreds of feet above you, and as he slowly glides down the tower, "))
+                            type.slow(red("you get a closer look at his figure. A golden ring surrounds his body, and his white cloak is long and elegant. "))
                             print("\n")
-                            typer.slow(red(bright("As God decends, he looks you in the eyes, and you watch his face melt in front of you, his skin dripping onto your skin. ")))
-                            typer.slow(red(bright("It burns, and all you can do is sit with the pain and agony as your body slowly shuts down.")))
+                            type.slow(red(bright("As God decends, he looks you in the eyes, and you watch his face melt in front of you, his skin dripping onto your skin. ")))
+                            type.slow(red(bright("It burns, and all you can do is sit with the pain and agony as your body slowly shuts down.")))
                             self.kill()
                         else:
                             print("\n")
                             self.hurt(damage)
 
                     if len(potions)==0:
-                        typer.type("YOU bought EVERYTHING! How EXCITING! I suppose we're DONE exchanging GOODS! GOODBYE NOW!")
+                        type.type("YOU bought EVERYTHING! How EXCITING! I suppose we're DONE exchanging GOODS! GOODBYE NOW!")
                         print("\n")
                         self.start_night()
                         return
                     else:
-                        typer.type("OOOOH YES! Capitalism is FUN! I WANT MORE! MORE!")
+                        type.type("OOOOH YES! Capitalism is FUN! I WANT MORE! MORE!")
                         print()
                     break
                 elif (yes_or_no == "n") or (yes_or_no == "no"):
                     print()
-                    typer.type("OK OK I see how IT IS! ")
+                    type.type("OK OK I see how IT IS! ")
                     print("\n")
-                    typer.type("PERHAPS a DIFFERENT potion?")
+                    type.type("PERHAPS a DIFFERENT potion?")
                     print()
                     break
                 else:
                     print()
-                    typer.type("GIVE me an ANSWER! ")
+                    type.type("GIVE me an ANSWER! ")
 
 
     # Tom's shop and interactions
     def tom_dialogue(self):
         if self.__mechanic_visits == 0:
-            typer.type("Heyo! That's it. Heyo.")
+            type.type("Heyo! That's it. Heyo.")
 
     def visit_tom(self):
         days_elapsed = self.get_days_elapsed("Mechanic")
         self.mark_day("Mechanic")
-        typer.type("You get in your car and drive to Tom's Trusty Trucks and Tires. ")
+        type.type("You get in your car and drive to Tom's Trusty Trucks and Tires. ")
         print("\n")
         self.tom_dialogue()
         print("\n")
         repairing_items_len = len(self.__repairing_inventory)
         if(repairing_items_len>0):
             if days_elapsed == 3:
-                typer.type("You've been gone a while. Honestly, I forgot about ya stuff. Just come back soon, and I'll get to it.")
+                type.type("You've been gone a while. Honestly, I forgot about ya stuff. Just come back soon, and I'll get to it.")
                 print("\n")
             else:
-                typer.type("You left me some items to fix up since I last saw you. Here's the rundown:")
+                type.type("You left me some items to fix up since I last saw you. Here's the rundown:")
                 print("\n")
                 repairing_items = self.__lists.make_repairing_items_list()
                 for item in repairing_items:
                     if item == "Delight Indicator":
                         random_chance = random.randrange(2)
                         if random_chance == 0:
-                            typer.type("I managed to get this Delight Indicator up and running for ya. Just took a few new wires.")
+                            type.type("I managed to get this Delight Indicator up and running for ya. Just took a few new wires.")
                             self.fix_item(item)
                             print("\n")
-                            typer.type("Your " + magenta(bright(item)) + " has been fixed!")
+                            type.type("Your " + magenta(bright(item)) + " has been fixed!")
                             print("\n")
                     elif item == "Health Indicator":
                         random_chance = random.randrange(2)
                         if random_chance == 0:
-                            typer.type("I somehow managed to get this Health Indicator workin'. Just took a few new screws.")
+                            type.type("I somehow managed to get this Health Indicator workin'. Just took a few new screws.")
                             self.fix_item(item)
                             print("\n")
-                            typer.type("Your " + magenta(bright(item)) + " has been fixed!")
+                            type.type("Your " + magenta(bright(item)) + " has been fixed!")
                             print("\n")
                     elif item == "Dirty Old Hat":
                         random_chance = random.randrange(2)
                         if random_chance == 0:
-                            typer.type("This Dirty Old Hat has never looked cleaner! If that's what you want, at least.")
+                            type.type("This Dirty Old Hat has never looked cleaner! If that's what you want, at least.")
                             self.fix_item(item)
                             print("\n")
-                            typer.type("Your " + magenta(bright(item)) + " has been fixed!")
+                            type.type("Your " + magenta(bright(item)) + " has been fixed!")
                             print("\n")
                     elif item == "Golden Watch":
                         random_chance = random.randrange(2)
                         if random_chance == 0:
-                            typer.type("I put new gears in your Golden Watch. Should tell the time now.")
+                            type.type("I put new gears in your Golden Watch. Should tell the time now.")
                             self.fix_item(item)
                             print("\n")
-                            typer.type("Your " + magenta(bright(item)) + " has been fixed!")
+                            type.type("Your " + magenta(bright(item)) + " has been fixed!")
                             print("\n")
                     elif item == "Faulty Insurance":
                         random_chance = random.randrange(2)
                         if random_chance == 0:
-                            typer.type("Against my better judgement, I touched up your Faulty Insurance card. If it'll work, well, my guess is as good as yours.")
+                            type.type("Against my better judgement, I touched up your Faulty Insurance card. If it'll work, well, my guess is as good as yours.")
                             self.fix_item(item)
                             print("\n")
-                            typer.type("Your " + magenta(bright(item)) + " has been fixed!")
+                            type.type("Your " + magenta(bright(item)) + " has been fixed!")
                             print("\n")
                     elif item == "Sneaky Peeky Shades":
                         random_chance = random.randrange(2)
                         if random_chance == 0:
-                            typer.type("I replaced the frame in your Sneaky Peeky Shades, so now you can see out of them.")
+                            type.type("I replaced the frame in your Sneaky Peeky Shades, so now you can see out of them.")
                             self.fix_item(item)
                             print("\n")
-                            typer.type("Your " + magenta(bright(item)) + " have been fixed!")
+                            type.type("Your " + magenta(bright(item)) + " have been fixed!")
                             print("\n")
                     elif item == "Quiet Sneakers":
                         random_chance = random.randrange(2)
                         if random_chance == 0:
-                            typer.type("I relaced these Quiet Sneakers, so you can run again.")
+                            type.type("I relaced these Quiet Sneakers, so you can run again.")
                             self.fix_item(item)
                             print("\n")
-                            typer.type("Your " + magenta(bright(item)) + " have been fixed!")
+                            type.type("Your " + magenta(bright(item)) + " have been fixed!")
                             print("\n")
 
                 if len(self.__repairing_inventory) == repairing_items_len:
-                    typer.type("Yesterday was a long one, and I retired to home early to see my wife and the girlies. Didn't get much progress on your things, but I assure you, they'll be fixed before you know it.")
+                    type.type("Yesterday was a long one, and I retired to home early to see my wife and the girlies. Didn't get much progress on your things, but I assure you, they'll be fixed before you know it.")
                 elif len(self.__repairing_inventory) > 1:
-                    typer.type("I've still got " + str(len(self.__repairing_inventory)) + " items of yours that I'm still looking at. Just swing by tomorrow, and hopefully I'll have them done.")
+                    type.type("I've still got " + str(len(self.__repairing_inventory)) + " items of yours that I'm still looking at. Just swing by tomorrow, and hopefully I'll have them done.")
                 elif len(self.__repairing_inventory) == 1:
-                    typer.type("I've still got " + str(len(self.__repairing_inventory)) + " item of yours that I'm still looking at. Just swing by tomorrow, and hopefully I'll have it done.")
+                    type.type("I've still got " + str(len(self.__repairing_inventory)) + " item of yours that I'm still looking at. Just swing by tomorrow, and hopefully I'll have it done.")
                 elif len(self.__repairing_inventory) == 0:
-                    typer.type("That should be everything you left with me. Hopefully everything's up to snuff and good as new, ya know!")
+                    type.type("That should be everything you left with me. Hopefully everything's up to snuff and good as new, ya know!")
                 print("\n")
 
         if(len(self.__broken_inventory)>0):
@@ -2351,26 +2351,26 @@ class Player:
             faulty_insurance_price = 0
             sneaky_peeky_glasses_price = 0
             quiet_sneakers_price = 0
-            typer.type("I see you came in here with some broken valuables. Mind if I take a look at em?")
+            type.type("I see you came in here with some broken valuables. Mind if I take a look at em?")
             print()
             while(True):
                 for i in range(len(broken_items)+1):
                     if(i<len(broken_items)):
-                        typer.type(str(i+1) + ". " + broken_items[i])
+                        type.type(str(i+1) + ". " + broken_items[i])
                         time.sleep(0.5)
                         print()
                     else:
-                        typer.type(str(i+1) + ". I'm all set")
+                        type.type(str(i+1) + ". I'm all set")
                         time.sleep(0.5)
                         print()
-                typer.type("Choose a number: ")
+                type.type("Choose a number: ")
                 while True:
                     choice = None
                     while choice is None:
                         try:
                             choice = int(input())
                         except ValueError:
-                            typer.type("Choose a number: ")
+                            type.type("Choose a number: ")
                     if(1<=choice<=len(broken_items)):
                         item = broken_items[choice-1]
                         break
@@ -2379,189 +2379,189 @@ class Player:
                         break
                     else:
                         choice = None
-                        typer.type("You don't have an item with that number!")
+                        type.type("You don't have an item with that number!")
                         print()
-                        typer.type("Choose a number: ")
+                        type.type("Choose a number: ")
 
                 print()
 
                 if item == "Delight Indicator":
-                    typer.type("You want me to fix that Delight Indicator of yours?")
+                    type.type("You want me to fix that Delight Indicator of yours?")
                     if delight_indicator_price == 0:
                         delight_indicator_price = random.choice([4500, 5500, 6000])
                     price = delight_indicator_price
                 elif item == "Health Indicator":
-                    typer.type("You want me to fix that Health Indicator for ya?")
+                    type.type("You want me to fix that Health Indicator for ya?")
                     if health_indicator_price == 0:
                         health_indicator_price = random.choice([4000, 4500, 5500])
                     price = health_indicator_price
                 elif item == "Dirty Old Hat":
-                    typer.type("You want me to fix that Dirty Old Hat you got there?")
+                    type.type("You want me to fix that Dirty Old Hat you got there?")
                     if dirty_old_hat_price == 0:
                         dirty_old_hat_price = random.choice([12500, 14000, 15000])
                     price = dirty_old_hat_price
                 elif item == "Golden Watch":
-                    typer.type("You want me to fix that Golden Watch you're wearin'?")
+                    type.type("You want me to fix that Golden Watch you're wearin'?")
                     if golden_watch_price == 0:
                         golden_watch_price = random.choice([15000, 16000, 17500])
                     price = golden_watch_price
                 elif item == "Faulty Insurance":
-                    typer.type("Uhm, you want me to fix your Faulty Insurance card?")
+                    type.type("Uhm, you want me to fix your Faulty Insurance card?")
                     if faulty_insurance_price == 0:
                         faulty_insurance_price = random.choice([5000, 5500, 6000])
                     price = faulty_insurance_price
                 elif item == "Sneaky Peeky Shades":
-                    typer.type("You want me to fix those Sneaky Peeky Shades on your head?")
+                    type.type("You want me to fix those Sneaky Peeky Shades on your head?")
                     if sneaky_peeky_glasses_price == 0:
                         sneaky_peeky_glasses_price = random.choice([17000, 18000, 20000])
                     price = sneaky_peeky_glasses_price
                 elif item == "Quiet Sneakers":
-                    typer.type("You want me to fix them there Quiet Sneakers you're rockin'?")
+                    type.type("You want me to fix them there Quiet Sneakers you're rockin'?")
                     if quiet_sneakers_price == 0:
                        quiet_sneakers_price = random.choice([7500, 9000, 10000])
                     price = quiet_sneakers_price
                 else: 
-                    typer.type("Well then, I hope you have a great rest of your night. Stay safe now.")
+                    type.type("Well then, I hope you have a great rest of your night. Stay safe now.")
                     print("\n")
                     self.start_night()
                     return
 
                 print()
 
-                typer.type("It'll take me a couple days, but I can do that for ya for " + green(bright("${:,}".format(price))) + ". Whaddya say? ")
+                type.type("It'll take me a couple days, but I can do that for ya for " + green(bright("${:,}".format(price))) + ". Whaddya say? ")
                 
                 while True:
                     yes_or_no = input("").lower()
                     if ((yes_or_no == "y") or (yes_or_no == "yes")) and (self.__balance<price):
                         print()
-                        typer.type("Aww man, sorry to tell you, but you just don't got enough funds for this, yunno?")
+                        type.type("Aww man, sorry to tell you, but you just don't got enough funds for this, yunno?")
                         print("\n")
                         random_chance = random.randrange(2)
                         if random_chance == 0:
-                            typer.type("Ugh, man, I just hate seein' people in need of help and not gettin' it, ya hear? ")
-                            typer.type("Tell ya what, limited time offer, I'm giving out a special discount, just for you. ")
+                            type.type("Ugh, man, I just hate seein' people in need of help and not gettin' it, ya hear? ")
+                            type.type("Tell ya what, limited time offer, I'm giving out a special discount, just for you. ")
                             discount = random.choice([20, 25, 30, 35])
                             price = int(price - (price*(discount/100)))
-                            typer.type("Say yes right now, and I'll take " + str(discount) + "%" + " off your order.")
+                            type.type("Say yes right now, and I'll take " + str(discount) + "%" + " off your order.")
                             print("\n")
-                            typer.type("That means you're only payin' " + green(bright("${:,}".format(price))) + ". Could ya do that? ")
+                            type.type("That means you're only payin' " + green(bright("${:,}".format(price))) + ". Could ya do that? ")
 
                             while True:
                                 yes_or_no_2 = input("").lower()
                                 if ((yes_or_no_2 == "y") or (yes_or_no_2 == "yes")) and (self.__balance<price):
                                     print()
-                                    typer.type("Still can't afford it? That's tough luck, man. I really wish there was more I could do, ya know?")
+                                    type.type("Still can't afford it? That's tough luck, man. I really wish there was more I could do, ya know?")
                                     print("\n")
-                                    typer.type("Maybe you can fix up something else.")
+                                    type.type("Maybe you can fix up something else.")
                                     print()
                                     break
                                 elif (yes_or_no == "y") or (yes_or_no == "yes"):
                                     print()
-                                    typer.type("Really? Awesome. Just leave this here with me, and let me wrench that baby back to life for ya.")
+                                    type.type("Really? Awesome. Just leave this here with me, and let me wrench that baby back to life for ya.")
                                     self.change_balance(-price)
                                     self.repair_item(item)
                                     broken_items.pop(choice-1)
-                                    typer.type("Your " + magenta(bright(item)) + " is safe with Tom. Come back later to see if it's fixed!")
+                                    type.type("Your " + magenta(bright(item)) + " is safe with Tom. Come back later to see if it's fixed!")
                                     print("\n")
                                     if len(broken_items)==0:
-                                        typer.type("Well, that appears to be everything, doesn't it? Thanks for letting me help ya out. Have a nice day, now.")
+                                        type.type("Well, that appears to be everything, doesn't it? Thanks for letting me help ya out. Have a nice day, now.")
                                         print("\n")
                                         self.start_night()
                                         return
                                     else:
-                                        typer.type("Got anything else for me?")
+                                        type.type("Got anything else for me?")
                                         print()
                                         break
                                 elif (yes_or_no_2 == "n") or (yes_or_no_2 == "no"):
-                                    typer.type("Really? Even with the discount? You do you, I suppose.")
+                                    type.type("Really? Even with the discount? You do you, I suppose.")
                                     print("\n")
-                                    typer.type("Is there anything else I can fix for ya?")
+                                    type.type("Is there anything else I can fix for ya?")
                                     print()
                                     break
                                 else:
                                     print()
-                                    typer.type("Couldn't hear ya. Whaddya say? ")
+                                    type.type("Couldn't hear ya. Whaddya say? ")
                             break
                         else:
                             broken_items.pop(choice-1)
-                            typer.type("Maybe you can afford to fix up somethin' else?")
+                            type.type("Maybe you can afford to fix up somethin' else?")
                             print()
                         break
                     elif (yes_or_no == "y") or (yes_or_no == "yes"):
                         print()
-                        typer.type("Really? Awesome. Just leave this here with me, and let me wrench that baby back to life for ya.")
+                        type.type("Really? Awesome. Just leave this here with me, and let me wrench that baby back to life for ya.")
                         self.change_balance(-price)
                         self.repair_item(item)
                         broken_items.pop(choice-1)
-                        typer.type("Your " + magenta(bright(item)) + " is safe with Tom. Come back later to see if it's fixed!")
+                        type.type("Your " + magenta(bright(item)) + " is safe with Tom. Come back later to see if it's fixed!")
                         print("\n")
                         if len(broken_items)==0:
-                            typer.type("Well, that appears to be everything, doesn't it? Thanks for letting me help ya out. Have a nice day, now.")
+                            type.type("Well, that appears to be everything, doesn't it? Thanks for letting me help ya out. Have a nice day, now.")
                             print("\n")
                             self.start_night()
                             return
                         else:
-                            typer.type("Got anything else for me?")
+                            type.type("Got anything else for me?")
                             print()
                         break
                     elif (yes_or_no == "n") or (yes_or_no == "no"):
                         print()
-                        typer.type("No dice? ")
+                        type.type("No dice? ")
                         random_chance = random.randrange(10)
                         if random_chance == 0:
-                            typer.type("You don't say. I mean, my prices are unbeatable. You know what, I'll prove it!")
+                            type.type("You don't say. I mean, my prices are unbeatable. You know what, I'll prove it!")
                             print("\n")
-                            typer.type("Tell ya what, limited time offer, I'm giving out a special discount, just for you. ")
+                            type.type("Tell ya what, limited time offer, I'm giving out a special discount, just for you. ")
                             discount = random.choice([15, 20, 25])
                             price = int(price - (price*(discount/100)))
-                            typer.type("Say yes right now, and I'll take " + str(discount) + "%" + " off your order.")
+                            type.type("Say yes right now, and I'll take " + str(discount) + "%" + " off your order.")
                             print("\n")
-                            typer.type("That means you're only payin' " + green(bright("${:,}".format(price))) + ". You interested? ")
+                            type.type("That means you're only payin' " + green(bright("${:,}".format(price))) + ". You interested? ")
                             while True:
                                 yes_or_no_2 = input("").lower()
                                 if ((yes_or_no_2 == "y") or (yes_or_no_2 == "yes")) and (self.__balance<price):
                                     print()
-                                    typer.type("You can't afford it? Really? That's tough luck, man. I really wish there was more I could do, ya know?")
+                                    type.type("You can't afford it? Really? That's tough luck, man. I really wish there was more I could do, ya know?")
                                     print("\n")
-                                    typer.type("Maybe you can fix up something else.")
+                                    type.type("Maybe you can fix up something else.")
                                     print()
                                     break
                                 elif (yes_or_no_2 == "y") or (yes_or_no_2 == "yes"):
                                     print()
-                                    typer.type("Really? Awesome. Just leave this here with me, and let me wrench that baby back to life for ya.")
+                                    type.type("Really? Awesome. Just leave this here with me, and let me wrench that baby back to life for ya.")
                                     self.change_balance(-price)
                                     self.repair_item(item)
                                     broken_items.pop(choice-1)
-                                    typer.type("Your " + magenta(bright(item)) + " is safe with Tom. Come back later to see if it's fixed!")
+                                    type.type("Your " + magenta(bright(item)) + " is safe with Tom. Come back later to see if it's fixed!")
                                     print("\n")
                                     if len(broken_items)==0:
-                                        typer.type("Well, that appears to be everything, doesn't it? Thanks for letting me help ya out. Have a nice day, now.")
+                                        type.type("Well, that appears to be everything, doesn't it? Thanks for letting me help ya out. Have a nice day, now.")
                                         print("\n")
                                         self.start_night()
                                         return
                                     else:
-                                        typer.type("Got anything else for me?")
+                                        type.type("Got anything else for me?")
                                         print()
                                         break
                                 elif (yes_or_no_2 == "n") or (yes_or_no_2 == "no"):
-                                    typer.type("Really? No interest, whatsoever? Even with the discount? You do you, I suppose.")
+                                    type.type("Really? No interest, whatsoever? Even with the discount? You do you, I suppose.")
                                     print("\n")
-                                    typer.type("Want me to fix anything else?")
+                                    type.type("Want me to fix anything else?")
                                     print()
                                     break
                                 else:
                                     print()
-                                    typer.type("Couldn't hear ya. Whaddya say? ")
+                                    type.type("Couldn't hear ya. Whaddya say? ")
                             break
                         else:
-                            typer.type("That's alright, now.")
+                            type.type("That's alright, now.")
                             print("\n")
-                            typer.type("What about your other wares?")
+                            type.type("What about your other wares?")
                             print()
                             break
                     else:
                         print()
-                        typer.type("Couldn't hear ya. Whaddya say? ")
+                        type.type("Couldn't hear ya. Whaddya say? ")
 
         self.start_night()
         return
@@ -2571,132 +2571,132 @@ class Player:
     # Frank's shop and interactions
     def frank_dialogue(self):
         if self.__mechanic_visits == 0:
-            typer.type("Franko! That's it. Franko. Because I'm Frank.")
+            type.type("Franko! That's it. Franko. Because I'm Frank.")
 
     def visit_frank(self):
         days_elapsed = self.get_days_elapsed("Mechanic")
         self.mark_day("Mechanic")
-        typer.type("You get in your car and drive to Filthy Frank's Flawless Fixtures. ")
+        type.type("You get in your car and drive to Filthy Frank's Flawless Fixtures. ")
         print("\n")
         self.frank_dialogue()
         print("\n")
         repairing_items_len = len(self.__repairing_inventory)
         if(repairing_items_len>0):
             if days_elapsed == 2:
-                typer.type("You didn't show up yesterday. That means I haven't looked at your stuff. Come back soon, and maybe I will have made some progress, yeah?")
+                type.type("You didn't show up yesterday. That means I haven't looked at your stuff. Come back soon, and maybe I will have made some progress, yeah?")
                 print("\n")
             else:
-                typer.type("You left me some of your trinkets. This is what I've got for you:")
+                type.type("You left me some of your trinkets. This is what I've got for you:")
                 print("\n")
                 repairing_items = self.__lists.make_repairing_items_list()
                 for item in repairing_items:
                     if item == "Delight Indicator":
                         random_chance = random.randrange(5)
                         if random_chance < 3:
-                            typer.type("With a couple new wires I got your Delight Indicator working.")
+                            type.type("With a couple new wires I got your Delight Indicator working.")
                             self.fix_item(item)
                             print("\n")
-                            typer.type("Your " + magenta(bright(item)) + " has been fixed!")
+                            type.type("Your " + magenta(bright(item)) + " has been fixed!")
                             print("\n")
                         elif random_chance == 3:
-                            typer.type("Honestly, after one look at this Delight Indicator thingy, I gave up entirely. Take it back. No refunds.")
+                            type.type("Honestly, after one look at this Delight Indicator thingy, I gave up entirely. Take it back. No refunds.")
                             self.return_item(item)
                             print("\n")
-                            typer.type(red("Your broken " + (item) + " has been returned."))
+                            type.type(red("Your broken " + (item) + " has been returned."))
                             print("\n")
                     elif item == "Health Indicator":
                         random_chance = random.randrange(5)
                         if random_chance < 3:
-                            typer.type("Tighted some screws and the Health Indicator started up again. Seems good? Just take it.")
+                            type.type("Tighted some screws and the Health Indicator started up again. Seems good? Just take it.")
                             self.fix_item(item)
                             print("\n")
-                            typer.type("Your " + magenta(bright(item)) + " has been fixed!")
+                            type.type("Your " + magenta(bright(item)) + " has been fixed!")
                             print("\n")
                         elif random_chance == 3:
-                            typer.type("Get that the fuck out my face with that fancy wizard crap. This Health Indicator thing is too complicated. No refunds.")
+                            type.type("Get that the fuck out my face with that fancy wizard crap. This Health Indicator thing is too complicated. No refunds.")
                             self.return_item(item)
                             print("\n")
-                            typer.type(red("Your broken " + (item) + " has been returned."))
+                            type.type(red("Your broken " + (item) + " has been returned."))
                             print("\n")
                     elif item == "Dirty Old Hat":
                         random_chance = random.randrange(5)
                         if random_chance < 3:
-                            typer.type("I gave this Dirty Old Hat to my wife, and after enough convincing, she sewed it back up.")
+                            type.type("I gave this Dirty Old Hat to my wife, and after enough convincing, she sewed it back up.")
                             self.fix_item(item)
                             print("\n")
-                            typer.type("Your " + magenta(bright(item)) + " has been fixed!")
+                            type.type("Your " + magenta(bright(item)) + " has been fixed!")
                             print("\n")
                         elif random_chance == 3:
-                            typer.type("You gave me a Dirty Old Hat and asked me to fix it. What did you expect? No refunds.")
+                            type.type("You gave me a Dirty Old Hat and asked me to fix it. What did you expect? No refunds.")
                             self.return_item(item)
                             print("\n")
-                            typer.type(red("Your broken " + (item) + " has been returned."))
+                            type.type(red("Your broken " + (item) + " has been returned."))
                             print("\n")
                     elif item == "Golden Watch":
                         random_chance = random.randrange(5)
                         if random_chance < 3:
-                            typer.type("All I had to do was tap the watch face with my finger and it started ticking again, so I'd say that's a job well done.")
+                            type.type("All I had to do was tap the watch face with my finger and it started ticking again, so I'd say that's a job well done.")
                             self.fix_item(item)
                             print("\n")
-                            typer.type("Your " + magenta(bright(item)) + " has been fixed!")
+                            type.type("Your " + magenta(bright(item)) + " has been fixed!")
                             print("\n")
                         elif random_chance == 3:
-                            typer.type("I looked at the watch, spun all the gears and clicked all the buttons, but nothing worked. Sorry dude. No refunds.")
+                            type.type("I looked at the watch, spun all the gears and clicked all the buttons, but nothing worked. Sorry dude. No refunds.")
                             self.return_item(item)
                             print("\n")
-                            typer.type(red("Your broken " + (item) + " has been returned."))
+                            type.type(red("Your broken " + (item) + " has been returned."))
                             print("\n")
                     elif item == "Faulty Insurance":
                         random_chance = random.randrange(5)
                         if random_chance < 3:
-                            typer.type("My guy was around last night, and he looked at your Faulty Insurance card. Should work again.")
+                            type.type("My guy was around last night, and he looked at your Faulty Insurance card. Should work again.")
                             self.fix_item(item)
                             print("\n")
-                            typer.type("Your " + magenta(bright(item)) + " has been fixed!")
+                            type.type("Your " + magenta(bright(item)) + " has been fixed!")
                             print("\n")
                         elif random_chance == 3:
-                            typer.type("I've been calling my guy, but he won't answer. I can't fix your Faulty Insurance card. Take it back. No refunds.")
+                            type.type("I've been calling my guy, but he won't answer. I can't fix your Faulty Insurance card. Take it back. No refunds.")
                             self.return_item(item)
                             print("\n")
-                            typer.type(red("Your broken " + (item) + " has been returned."))
+                            type.type(red("Your broken " + (item) + " has been returned."))
                             print("\n")
                     elif item == "Sneaky Peeky Shades":
                         random_chance = random.randrange(5)
                         if random_chance < 3:
-                            typer.type("A little mouth water vapor and my shirt was more than enough to polish up the Sneaky Peeky Shades you gave me.")
+                            type.type("A little mouth water vapor and my shirt was more than enough to polish up the Sneaky Peeky Shades you gave me.")
                             self.fix_item(item)
                             print("\n")
-                            typer.type("Your " + magenta(bright(item)) + " have been fixed!")
+                            type.type("Your " + magenta(bright(item)) + " have been fixed!")
                             print("\n")
                         elif random_chance == 3:
-                            typer.type("I ain't no opotometigist. These Sneaky Peeky Shades, well, they are glasses. I fix cars. No refunds.")
+                            type.type("I ain't no opotometigist. These Sneaky Peeky Shades, well, they are glasses. I fix cars. No refunds.")
                             self.return_item(item)
                             print("\n")
-                            typer.type(("Your broken " + red(bright(item)) + " have been returned."))
+                            type.type(("Your broken " + red(bright(item)) + " have been returned."))
                             print("\n")
                     elif item == "Quiet Sneakers":
                         random_chance = random.randrange(5)
                         if random_chance < 3:
-                            typer.type("I gave your Quiet Sneakers to my son Kyle, and ran around the yard all day yesterday. Should've broken them in for ya.")
+                            type.type("I gave your Quiet Sneakers to my son Kyle, and ran around the yard all day yesterday. Should've broken them in for ya.")
                             self.fix_item(item)
                             print("\n")
-                            typer.type("Your " + magenta(bright(item)) + " have been fixed!")
+                            type.type("Your " + magenta(bright(item)) + " have been fixed!")
                             print("\n")
                         elif random_chance == 3:
-                            typer.type("These Quiet Sneakers reek like hell. Please take them. No refunds.")
+                            type.type("These Quiet Sneakers reek like hell. Please take them. No refunds.")
                             self.return_item(item)
                             print("\n")
-                            typer.type(red("Your broken " + (item) + " have been returned."))
+                            type.type(red("Your broken " + (item) + " have been returned."))
                             print("\n")
 
                 if len(self.__repairing_inventory) == repairing_items_len:
-                    typer.type("I didn't fix a damn thing of yours, and I ain't afraid to show it. Look at this box. It has all the stuff you gave me. It hasn't moved since you gave me it. Now scram, hard work takes time.")
+                    type.type("I didn't fix a damn thing of yours, and I ain't afraid to show it. Look at this box. It has all the stuff you gave me. It hasn't moved since you gave me it. Now scram, hard work takes time.")
                 elif len(self.__repairing_inventory) > 1:
-                    typer.type("That leaves " + str(len(self.__repairing_inventory)) + " items of yours still in my posession. Just swing by tomorrow, and I'll do my best to finish them up.")
+                    type.type("That leaves " + str(len(self.__repairing_inventory)) + " items of yours still in my posession. Just swing by tomorrow, and I'll do my best to finish them up.")
                 elif len(self.__repairing_inventory) == 1:
-                    typer.type("That leaves " + str(len(self.__repairing_inventory)) + " item of yours still in my posession. Just swing by tomorrow, and I'll do my best to finish it up.")
+                    type.type("That leaves " + str(len(self.__repairing_inventory)) + " item of yours still in my posession. Just swing by tomorrow, and I'll do my best to finish it up.")
                 elif len(self.__repairing_inventory) == 0:
-                    typer.type("That's all your junk, fixed better than the best. Enjoy it while it lasts.")
+                    type.type("That's all your junk, fixed better than the best. Enjoy it while it lasts.")
                 print("\n")
 
         if(len(self.__broken_inventory)>0):
@@ -2708,26 +2708,26 @@ class Player:
             faulty_insurance_price = 0
             sneaky_peeky_glasses_price = 0
             quiet_sneakers_price = 0
-            typer.type("You have some broken things for me. Come on, don't be shy. Let me take a whack at them.")
+            type.type("You have some broken things for me. Come on, don't be shy. Let me take a whack at them.")
             print()
             while(True):
                 for i in range(len(broken_items)+1):
                     if(i<len(broken_items)):
-                        typer.type(str(i+1) + ". " + broken_items[i])
+                        type.type(str(i+1) + ". " + broken_items[i])
                         time.sleep(0.5)
                         print()
                     else:
-                        typer.type(str(i+1) + ". I'm all set")
+                        type.type(str(i+1) + ". I'm all set")
                         time.sleep(0.5)
                         print()
-                typer.type("Choose a number: ")
+                type.type("Choose a number: ")
                 while True:
                     choice = None
                     while choice is None:
                         try:
                             choice = int(input())
                         except ValueError:
-                            typer.type("Choose a number: ")
+                            type.type("Choose a number: ")
                     if(1<=choice<=len(broken_items)):
                         item = broken_items[choice-1]
                         break
@@ -2736,93 +2736,93 @@ class Player:
                         break
                     else:
                         choice = None
-                        typer.type("Did I stutter?")
+                        type.type("Did I stutter?")
                         print()
-                        typer.type("Choose a number: ")
+                        type.type("Choose a number: ")
 
                 print()
 
                 if item == "Delight Indicator":
-                    typer.type("You need me to repair your Delight Indicator?")
+                    type.type("You need me to repair your Delight Indicator?")
                     if delight_indicator_price == 0:
                         delight_indicator_price = random.choice([4000, 4250, 4500, 5500, 6000, 9000])
                     price = delight_indicator_price
                 elif item == "Health Indicator":
-                    typer.type("You need me to repair that Health Indicator?")
+                    type.type("You need me to repair that Health Indicator?")
                     if health_indicator_price == 0:
                         health_indicator_price = random.choice([3000, 3200, 4000, 4500, 5500, 7000])
                     price = health_indicator_price
                 elif item == "Dirty Old Hat":
-                    typer.type("You need me to repair the Dirty Old Hat you have?")
+                    type.type("You need me to repair the Dirty Old Hat you have?")
                     if dirty_old_hat_price == 0:
                         dirty_old_hat_price = random.choice([10000, 10500, 12500, 14000, 15000, 17000])
                     price = dirty_old_hat_price
                 elif item == "Golden Watch":
-                    typer.type("You need me to repair that Golden Watch on your wrist?")
+                    type.type("You need me to repair that Golden Watch on your wrist?")
                     if golden_watch_price == 0:
                         golden_watch_price = random.choice([13000, 14000, 15000, 16000, 17500, 19500])
                     price = golden_watch_price
                 elif item == "Faulty Insurance":
-                    typer.type("You need me to touch up your Faulty Insurance card?")
+                    type.type("You need me to touch up your Faulty Insurance card?")
                     if faulty_insurance_price == 0:
                         faulty_insurance_price = random.choice([3500, 4000, 5000, 5500, 6000, 7000])
                     price = faulty_insurance_price
                 elif item == "Sneaky Peeky Shades":
-                    typer.type("You need me to repair those Sneaky Peeky Shades over your eyes?")
+                    type.type("You need me to repair those Sneaky Peeky Shades over your eyes?")
                     if sneaky_peeky_glasses_price == 0:
                         sneaky_peeky_glasses_price = random.choice([15500, 16500, 17000, 18000, 20000, 25000])
                     price = sneaky_peeky_glasses_price
                 elif item == "Quiet Sneakers":
-                    typer.type("You need me to repair those Quiet Sneakers you're wearing?")
+                    type.type("You need me to repair those Quiet Sneakers you're wearing?")
                     if quiet_sneakers_price == 0:
                        quiet_sneakers_price = random.choice([6000, 6500, 7500, 9000, 10000, 12000])
                     price = quiet_sneakers_price
                 else: 
-                    typer.type("Well then I've done all I can do. Stay out of trouble, now.")
+                    type.type("Well then I've done all I can do. Stay out of trouble, now.")
                     print("\n")
                     self.start_night()
                     return
                 
                 print()
 
-                typer.type("I can fix this up for like " + green(bright("${:,}".format(price))) + ". You game? ")
+                type.type("I can fix this up for like " + green(bright("${:,}".format(price))) + ". You game? ")
                 
                 while True:
                     yes_or_no = input("").lower()
                     if ((yes_or_no == "y") or (yes_or_no == "yes")) and (self.__balance<price):
                         print()
-                        typer.type("Are you tryna rip me off? Nah man, I'm just kidding. But seriously, don't mess with me like that.")
+                        type.type("Are you tryna rip me off? Nah man, I'm just kidding. But seriously, don't mess with me like that.")
                         print("\n")
                         broken_items.pop(choice-1)
-                        typer.type("Am I repairing something for you or what?")
+                        type.type("Am I repairing something for you or what?")
                         break
                     elif (yes_or_no == "y") or (yes_or_no == "yes"):
                         print()
-                        typer.type("Darn tootin! Lemme just take this from you, and sooner or later I'll wield my hammer and do my thing.")
+                        type.type("Darn tootin! Lemme just take this from you, and sooner or later I'll wield my hammer and do my thing.")
                         self.change_balance(-price)
                         self.repair_item(item)
                         broken_items.pop(choice-1)
-                        typer.type("Your " + magenta(bright(item)) + " is in Frank's possession. Come back tomorrow to see if it's fixed!")
+                        type.type("Your " + magenta(bright(item)) + " is in Frank's possession. Come back tomorrow to see if it's fixed!")
                         print("\n")
                         if len(broken_items)==0:
-                            typer.type("Well I'd say that's all you've got that I could fix. Just check in tomorrow and hopefully it'll be to your liking.")
+                            type.type("Well I'd say that's all you've got that I could fix. Just check in tomorrow and hopefully it'll be to your liking.")
                             print("\n")
                             self.start_night()
                             return
                         else:
-                            typer.type("Got anything else I can repair?")
+                            type.type("Got anything else I can repair?")
                             print()
                         break
                     elif (yes_or_no == "n") or (yes_or_no == "no"):
                         print()
-                        typer.type("What?! Why'd you ask, then. God, that's just annoying. You bug me sometimes, man.")
+                        type.type("What?! Why'd you ask, then. God, that's just annoying. You bug me sometimes, man.")
                         print("\n")
-                        typer.type("Anything you actually want me to repair?")
+                        type.type("Anything you actually want me to repair?")
                         print()
                         break
                     else:
                         print()
-                        typer.type("Speak up! You're mumbling. ")
+                        type.type("Speak up! You're mumbling. ")
         self.start_night()
         return
 
@@ -2831,10 +2831,10 @@ class Player:
     # Oswald's shop and interactions NOT IMPLEMENTED
     def oswald_dialogue(self):
         if self.__mechanic_visits == 0:
-            typer.type("Heyoswald! That's it. Heyoswald.")
+            type.type("Heyoswald! That's it. Heyoswald.")
 
     def visit_oswald(self):
-        typer.type("You get in your car and drive to Oswald's Optimal Outoparts. ")
+        type.type("You get in your car and drive to Oswald's Optimal Outoparts. ")
         print("\n")
         self.oswald_dialogue()
         print("\n")
@@ -2850,28 +2850,28 @@ class Player:
             faulty_insurance_price = 0
             sneaky_peeky_glasses_price = 0
             quiet_sneakers_price = 0
-            typer.type("It appears that you possess some valuables in need of attention. Oh Stuart!")
+            type.type("It appears that you possess some valuables in need of attention. Oh Stuart!")
             print("\n")
-            typer.type("Is there anything you would like Stuart to fix?")
+            type.type("Is there anything you would like Stuart to fix?")
             print()
             while(True):
                 for i in range(len(broken_items)+1):
                     if(i<len(broken_items)):
-                        typer.type(str(i+1) + ". " + broken_items[i])
+                        type.type(str(i+1) + ". " + broken_items[i])
                         time.sleep(0.5)
                         print()
                     else:
-                        typer.type(str(i+1) + ". I'm all set")
+                        type.type(str(i+1) + ". I'm all set")
                         time.sleep(0.5)
                         print()
-                typer.type("Choose a number: ")
+                type.type("Choose a number: ")
                 while True:
                     choice = None
                     while choice is None:
                         try:
                             choice = int(input())
                         except ValueError:
-                            typer.type("Choose a number: ")
+                            type.type("Choose a number: ")
                     if(1<=choice<=len(broken_items)):
                         item = broken_items[choice-1]
                         break
@@ -2880,130 +2880,130 @@ class Player:
                         break
                     else:
                         choice = None
-                        typer.type("Did you comprehend that?")
+                        type.type("Did you comprehend that?")
                         print()
-                        typer.type("Choose a number: ")
+                        type.type("Choose a number: ")
 
                 print()
 
                 if item == "Delight Indicator":
-                    typer.type("You'd like Stuart to repair your Delight Indicator?")
+                    type.type("You'd like Stuart to repair your Delight Indicator?")
                     if delight_indicator_price == 0:
                         delight_indicator_price = random.choice([5500, 6000, 9000, 10000])
                     price = delight_indicator_price
                 elif item == "Health Indicator":
-                    typer.type("You'd like Stuart to repair your Health Indicator?")
+                    type.type("You'd like Stuart to repair your Health Indicator?")
                     if health_indicator_price == 0:
                         health_indicator_price = random.choice([4500, 5500, 7000, 9000, 11000])
                     price = health_indicator_price
                 elif item == "Dirty Old Hat":
-                    typer.type("You'd like Stuart to repair the cloth on your Dirty Old Hat?")
+                    type.type("You'd like Stuart to repair the cloth on your Dirty Old Hat?")
                     if dirty_old_hat_price == 0:
                         dirty_old_hat_price = random.choice([14000, 15000, 17000, 20000])
                     price = dirty_old_hat_price
                 elif item == "Golden Watch":
-                    typer.type("You'd like Stuart to repair that Golden Watch you possess?")
+                    type.type("You'd like Stuart to repair that Golden Watch you possess?")
                     if golden_watch_price == 0:
                         golden_watch_price = random.choice([16000, 17500, 18000, 20000, 30000])
                     price = golden_watch_price
                 elif item == "Faulty Insurance":
-                    typer.type("You'd like Stuart to restore your Faulty Insurance card?")
+                    type.type("You'd like Stuart to restore your Faulty Insurance card?")
                     if faulty_insurance_price == 0:
                         faulty_insurance_price = random.choice([5500, 6000, 7000, 9000, 10000])
                     price = faulty_insurance_price
                 elif item == "Sneaky Peeky Shades":
-                    typer.type("You'd like Stuart to fix up those Sneaky Peeky Shades on top of your eyelids?")
+                    type.type("You'd like Stuart to fix up those Sneaky Peeky Shades on top of your eyelids?")
                     if sneaky_peeky_glasses_price == 0:
                         sneaky_peeky_glasses_price = random.choice([18000, 20000, 25000, 30000])
                     price = sneaky_peeky_glasses_price
                 elif item == "Quiet Sneakers":
-                    typer.type("You'd like Stuart to sew up those Quiet Sneakers on your feet?")
+                    type.type("You'd like Stuart to sew up those Quiet Sneakers on your feet?")
                     if quiet_sneakers_price == 0:
                        quiet_sneakers_price = random.choice([9000, 10000, 12000])
                     price = quiet_sneakers_price
                 else: 
-                    typer.type("Welp, then I've done all I can possibly do. Good day, my friend.")
+                    type.type("Welp, then I've done all I can possibly do. Good day, my friend.")
                     print("\n")
                     self.start_night()
                     return
                 
                 print()
 
-                typer.type("Stuart will be able to fix this, for say, " + green(bright("${:,}".format(price))) + ". Do you accept? ")
+                type.type("Stuart will be able to fix this, for say, " + green(bright("${:,}".format(price))) + ". Do you accept? ")
                 
                 while True:
                     yes_or_no = input("").lower()
                     if ((yes_or_no == "y") or (yes_or_no == "yes")) and (self.__balance<price):
                         print()
-                        typer.type("Oh dear! I'm afraid you can't afford this purchase.")
+                        type.type("Oh dear! I'm afraid you can't afford this purchase.")
                         if tips <= 2:
                             random_chance = random.randrange(2)
                             print("\n")
                             if random_chance <= 1:
-                                typer.type("Here, take this as a pick me up, hopefully it helps. Try again?")
+                                type.type("Here, take this as a pick me up, hopefully it helps. Try again?")
                                 self.change_balance(random.choice([50, 100, 200, 300, 400, 500]))
                                 tips += 1
                             else:
                                 broken_items.pop(choice-1)
-                                typer.type("Maybe give me something else to fix.")
+                                type.type("Maybe give me something else to fix.")
                         else:
                             broken_items.pop(choice-1)  
                             print("\n")
-                            typer.type("Shall Stuart repair something else?")
+                            type.type("Shall Stuart repair something else?")
                         break
                     elif (yes_or_no == "y") or (yes_or_no == "yes"):
                         print()
-                        typer.type("Jolly good! Stuart!")
+                        type.type("Jolly good! Stuart!")
                         random_chance = random.randrange(2)
                         if random_chance == 0:
                             print("\n")
-                            typer.type("Yes! Yes! Work your magic, you little man.")
+                            type.type("Yes! Yes! Work your magic, you little man.")
                             self.change_balance(-price)
                             self.fix_item(item)
                             broken_items.pop(choice-1)
                             if item=="Sneaky Peeky Shades" or item=="Quiet Sneakers":
-                                typer.type("Your " + magenta(bright(item)) + " have been fixed!")
+                                type.type("Your " + magenta(bright(item)) + " have been fixed!")
                             else:
-                                typer.type("Your " + magenta(bright(item)) + " has been fixed!")
+                                type.type("Your " + magenta(bright(item)) + " has been fixed!")
                             print("\n")
                         else:
                             print("\n")
-                            typer.type("Okay, Stuart. What are you doing? It appears that Stuart has gotten stuck whilst trying to fix your thingy. No matter! Stuart, will you please stop? Here, friend, I am giving you your item back. I won't even charge you.")
+                            type.type("Okay, Stuart. What are you doing? It appears that Stuart has gotten stuck whilst trying to fix your thingy. No matter! Stuart, will you please stop? Here, friend, I am giving you your item back. I won't even charge you.")
                             print("\n")
                             broken_items.pop(choice-1)
                             if free_money < 2:
                                 random_chance = random.randrange(2)
                                 if random_chance == 0:
-                                    typer.type("In fact, here, just take it, this is yours now.")
+                                    type.type("In fact, here, just take it, this is yours now.")
                                     self.change_balance(random.choice([50, 100, 200, 500, 1000]))
                                     free_money += 1
                                 else:
-                                    typer.type("I'm so sorry that Stuart was unable to help. My deepest condolences.")
+                                    type.type("I'm so sorry that Stuart was unable to help. My deepest condolences.")
                                     print("\n")
                             else:
-                                typer.type("Honestly, Stuart is trying his best, and you shouldn't get mad at him.")
+                                type.type("Honestly, Stuart is trying his best, and you shouldn't get mad at him.")
                                 print("\n")
 
                             
                         if len(broken_items)==0:
-                            typer.type("My my, that's everything! Please come again soon, and we can continue performing business!")
+                            type.type("My my, that's everything! Please come again soon, and we can continue performing business!")
                             print("\n")
                             self.start_night()
                             return
                         else:
-                            typer.type("Is there anything else Stuart can help you with?")
+                            type.type("Is there anything else Stuart can help you with?")
                             print()
                         break
                     elif (yes_or_no == "n") or (yes_or_no == "no"):
                         print()
-                        typer.type("Really? Nevermind Stuart, you aren't going to fix this. I apologise, but they simply don't want you to. Blame them.")
+                        type.type("Really? Nevermind Stuart, you aren't going to fix this. I apologise, but they simply don't want you to. Blame them.")
                         print("\n")
-                        typer.type("Are you done teasing Stuart? Have anything else for him?")
+                        type.type("Are you done teasing Stuart? Have anything else for him?")
                         print()
                         break
                     else:
                         print()
-                        typer.type("Come again? ")
+                        type.type("Come again? ")
         self.start_night()
         return
 
@@ -3014,96 +3014,96 @@ class Player:
             self.__convenience_store_inventory = self.__lists.make_convenience_store_inventory()
 
     def visit_convenience_store(self):
-        typer.type("You get in your car and drive to the Convenience Store. ")
+        type.type("You get in your car and drive to the Convenience Store. ")
         if not self.has_met("Convenience Store"):
             self.meet("Convenience Store")
-            typer.type("When pulling into the parking lot, you have to grip the wheel tightly to keep control of the wagon, as the concrete beneath you is littered with potholes. As you drive closer to bright red brick building, you begin to read the sign 'Convenience Store' written in bold. ")
-            typer.type("Really? This place really called 'Convenience Store'? They couldn't have come up with anything more creative? You park nearby, and get out, being sure not to trip on the loose chunks of road. ")
+            type.type("When pulling into the parking lot, you have to grip the wheel tightly to keep control of the wagon, as the concrete beneath you is littered with potholes. As you drive closer to bright red brick building, you begin to read the sign 'Convenience Store' written in bold. ")
+            type.type("Really? This place really called 'Convenience Store'? They couldn't have come up with anything more creative? You park nearby, and get out, being sure not to trip on the loose chunks of road. ")
             print("\n")
-            typer.type("Walking closer to the store, you notice there's a poster with a smiling dude on it, holding his thumbs up, with the caption 'We Love our Customers! That's why we're limiting each customer to one item per visit. That means there's more for everyone! Sharing is caring!' ")
-            typer.type("Looking through the window, the store is barren, with only a few items on the shelf. If not for someone standing at the register, you would have thought the place to be abandoned.")
+            type.type("Walking closer to the store, you notice there's a poster with a smiling dude on it, holding his thumbs up, with the caption 'We Love our Customers! That's why we're limiting each customer to one item per visit. That means there's more for everyone! Sharing is caring!' ")
+            type.type("Looking through the window, the store is barren, with only a few items on the shelf. If not for someone standing at the register, you would have thought the place to be abandoned.")
             print("\n")
-            typer.type("When you open the glass door, you notice a bell above you ring. There's a teenager on his phone, sitting with his feet up on the counter. His face is covered with pimples, and he's in the middle of blowing a bubble with the gum in his mouth.")
+            type.type("When you open the glass door, you notice a bell above you ring. There's a teenager on his phone, sitting with his feet up on the counter. His face is covered with pimples, and he's in the middle of blowing a bubble with the gum in his mouth.")
             print("\n")
-            typer.type("You get closer to the boy, and he finally notices you, and puts his phone down.")
+            type.type("You get closer to the boy, and he finally notices you, and puts his phone down.")
         print("\n")
         if(len(self.__convenience_store_inventory)==0):
-            typer.type("As you walk up to the store, you see a white sign hanging on the front door. They're closed. Bummer.")
+            type.type("As you walk up to the store, you see a white sign hanging on the front door. They're closed. Bummer.")
             print("\n")
             self.start_night()
             return
-        typer.type("Sup. Name's Kyle. Got a one-item limit. Managers orders. I don't make the rules. ")
+        type.type("Sup. Name's Kyle. Got a one-item limit. Managers orders. I don't make the rules. ")
         print("\n")
         items_bought = 0
         while True:
             choice = None
             items = self.__convenience_store_inventory
             if items_bought == 0:
-                typer.type("What do you want?")
+                type.type("What do you want?")
             else:
-                typer.type("What else you want?")
+                type.type("What else you want?")
             print()
             for i in range(len(items)+1):
                 if(i<len(items)):
-                    typer.type(str(i+1) + ". " + items[i][0] + " - " + green(bright("${:,}".format(items[i][1]))))
+                    type.type(str(i+1) + ". " + items[i][0] + " - " + green(bright("${:,}".format(items[i][1]))))
                     print()
                 else:
-                    typer.type(str(i+1) + ". I'm not buying anything")
+                    type.type(str(i+1) + ". I'm not buying anything")
                     time.sleep(0.5)
                     print()
-            typer.type("Choose a number: ")
+            type.type("Choose a number: ")
             while True:
                 while choice is None:
                     try:
                         choice = int(input())
                     except ValueError:
-                        typer.type("C'mon I don't have all day just pick something: ")
+                        type.type("C'mon I don't have all day just pick something: ")
                 if(1<=choice<=len(items)):
                     item = items[choice-1][0]
                     price = items[choice-1][1]
                     if(price<=self.__balance):
                         break
                     else:
-                        typer.type("Dude, you obviously can't afford that. Try again, buddy: ")
+                        type.type("Dude, you obviously can't afford that. Try again, buddy: ")
                 elif choice==len(items)+1:
                     item = "Home"
                     break
                 else:
                     choice = None
-                    typer.type("We clearly don't have that in right now.")
+                    type.type("We clearly don't have that in right now.")
                     print()
-                    typer.type("It's not hard, just choose a number: ")
+                    type.type("It's not hard, just choose a number: ")
             print()
 
             if choice!=len(items)+1:
                 items.pop(choice-1)
 
             if item == "Candy Bar":
-                typer.type("You got a " + bright(magenta("Candy Bar!")))
+                type.type("You got a " + bright(magenta("Candy Bar!")))
                 print()
-                typer.type("You chomp down the candy bar. It's sweet chocolate and caramel fill your stomach, and you feel a little better.")
+                type.type("You chomp down the candy bar. It's sweet chocolate and caramel fill your stomach, and you feel a little better.")
             elif item == "Bag of Chips":
-                typer.type("You got a " + bright(magenta("Bag of Chips!")))
+                type.type("You got a " + bright(magenta("Bag of Chips!")))
                 print()
-                typer.type("You chomp down the bag of chips. It's salty potato goodness fill your stomach, and you feel better.")
+                type.type("You chomp down the bag of chips. It's salty potato goodness fill your stomach, and you feel better.")
             elif item == "Turkey Sandwich":
-                typer.type("You got a " + bright(magenta("Turkey Sandwich!")))
+                type.type("You got a " + bright(magenta("Turkey Sandwich!")))
                 print()
-                typer.type("You chomp down the turkey sandwich. It's savory turkey and provolone fill your stomach, and you feel much better.")
+                type.type("You chomp down the turkey sandwich. It's savory turkey and provolone fill your stomach, and you feel much better.")
             elif item == "Deck of Cards":
-                typer.type(bright(magenta("Deck of Cards!")))
+                type.type(bright(magenta("Deck of Cards!")))
                 self.add_item("Deck of Cards")
             elif item == "Pest Control":
-                typer.type("You got " + bright(magenta("Pest Control!")))
+                type.type("You got " + bright(magenta("Pest Control!")))
                 self.add_item("Pest Control")
             elif item == "LifeAlert":
-                typer.type(bright(magenta("You got LifeAlert!")))
+                type.type(bright(magenta("You got LifeAlert!")))
             elif item == "Necronomicon":
-                typer.type(bright(magenta("You got a ") + red("Necronomicon!")))
+                type.type(bright(magenta("You got a ") + red("Necronomicon!")))
             elif item == "Bag of Acorns":
-                typer.type(bright(magenta("You got a Bag of Acorns!")))
+                type.type(bright(magenta("You got a Bag of Acorns!")))
             elif item == "Home":
-                typer.type("Suit yourself.")
+                type.type("Suit yourself.")
                 print("\n")
                 self.start_night()
                 return
@@ -3114,16 +3114,16 @@ class Player:
             if items_bought == 1:
                 random_chance = random.randrange(5)
                 if random_chance < 2:
-                    typer.type("You know what? Rules are made to be broken. I mean, screw em! I hate my manager anyways. ")
-                    typer.type("You can have one more item, just don't tell anyone I let you do this.")
+                    type.type("You know what? Rules are made to be broken. I mean, screw em! I hate my manager anyways. ")
+                    type.type("You can have one more item, just don't tell anyone I let you do this.")
                     print("\n")
                 else:
-                    typer.type("Welp. There you go. That's your item. Weird thing to buy, if you ask me. Now get lost, I'm going on break.")
+                    type.type("Welp. There you go. That's your item. Weird thing to buy, if you ask me. Now get lost, I'm going on break.")
                     print("\n")
                     self.start_night()
                     return
             else:
-                typer.type("Welp. There you go. Two whole items. Wow. Now get lost. I've got a girl to text. She's super hot.")
+                type.type("Welp. There you go. Two whole items. Wow. Now get lost. I've got a girl to text. She's super hot.")
                 print("\n")
                 self.start_night()
                 return
@@ -3131,85 +3131,85 @@ class Player:
 
     # Marvin's Shop and interactions
     def visit_marvin(self):
-        typer.type("You get in your car and drive to Marvin's Mystical Merchandise. ")
+        type.type("You get in your car and drive to Marvin's Mystical Merchandise. ")
         print("\n")
         inventory = self.__lists.make_marvin_inventory()
         if len(inventory) == 0:
-            typer.type("Sorry man, I've got no product for you tonight. Maybe try coming back another day. ")
+            type.type("Sorry man, I've got no product for you tonight. Maybe try coming back another day. ")
             return
         else:
-            typer.type("Welcome, welcome. I've got some very valuable stuff in stock, just for a fine gambler like you.")
+            type.type("Welcome, welcome. I've got some very valuable stuff in stock, just for a fine gambler like you.")
             print("\n")
-            typer.type("While I won't get bogged down in the details of how I got my hands on it, I think you'll wanna check these out:")
+            type.type("While I won't get bogged down in the details of how I got my hands on it, I think you'll wanna check these out:")
             print("\n")
 
         for item_number in range(len(inventory)):
             item = inventory[item_number]
             if (item_number==0) and (len(inventory)==1):
-                typer.type("The only item I've got right now is the " + self.__lists.get_marvin_adjective() + " " + magenta(bright(item)))
+                type.type("The only item I've got right now is the " + self.__lists.get_marvin_adjective() + " " + magenta(bright(item)))
             elif (item_number==0):
-                typer.type("The first item I've got is the " + self.__lists.get_marvin_adjective() + " " + magenta(bright(item)))
+                type.type("The first item I've got is the " + self.__lists.get_marvin_adjective() + " " + magenta(bright(item)))
             elif item_number==len(inventory)-1:
-                typer.type("The last item I've got is the " + self.__lists.get_marvin_adjective() + " " + magenta(bright(item)))
+                type.type("The last item I've got is the " + self.__lists.get_marvin_adjective() + " " + magenta(bright(item)))
             else:
-                typer.type("The next item I've got is the " + self.__lists.get_marvin_adjective() + " " + magenta(bright(item)))
+                type.type("The next item I've got is the " + self.__lists.get_marvin_adjective() + " " + magenta(bright(item)))
 
             print()
 
             if item == "Delight Indicator":
-                typer.type("With this little device, you can read how happy anyone is, just by pointing it at them! Could get you out of a lot of trouble.")
+                type.type("With this little device, you can read how happy anyone is, just by pointing it at them! Could get you out of a lot of trouble.")
                 price = random.choice([8500, 9500, 10000])
             elif item == "Health Indicator":
-                typer.type("This gadget lets you see how healthy you are at any given moment. It's great for knowing how imminent a trip to the ER is.")
+                type.type("This gadget lets you see how healthy you are at any given moment. It's great for knowing how imminent a trip to the ER is.")
                 price = random.choice([8000, 8500, 9500])
             elif item == "Dirty Old Hat":
-                typer.type("By wearing this, you're telling the whole world \"I'm poor and I'm not afraid to show it!\" It's a foolproof way for people to take pity on you.")
+                type.type("By wearing this, you're telling the whole world \"I'm poor and I'm not afraid to show it!\" It's a foolproof way for people to take pity on you.")
                 price = random.choice([25000, 28000, 30000])
             elif item == "Golden Watch":
-                typer.type("This watch was my grandfathers at one point. It's a beauty. If you're a gambling man, anyone in their right mind would wanna see you betting on their table.")
+                type.type("This watch was my grandfathers at one point. It's a beauty. If you're a gambling man, anyone in their right mind would wanna see you betting on their table.")
                 price = random.choice([29000, 32000, 35000])
             elif item == "Faulty Insurance":
-                typer.type("I got this thing forged by a buddy of mine. It's a fake insurance card. I've used it to get out of so many hospital bills, and you could too!")
+                type.type("I got this thing forged by a buddy of mine. It's a fake insurance card. I've used it to get out of so many hospital bills, and you could too!")
                 price = random.choice([10000, 11000, 12000])
             elif item == "Enchanting Silver Bar":
-                typer.type("Listen, I know this silver bar looks a bit useless, but I swear, it's awesome. Look at the stock market, this thing is only gonna get more and more expensive. And if I sell it to you, you can sell it off later and make some money.")
+                type.type("Listen, I know this silver bar looks a bit useless, but I swear, it's awesome. Look at the stock market, this thing is only gonna get more and more expensive. And if I sell it to you, you can sell it off later and make some money.")
                 price = 10000
             elif item == "Sneaky Peeky Shades":
-                typer.type("These aren't your ordinary pair of glasses. Put them on, and you'll catch glimpses that others can't see. But use them wisely; you only get one peek per night.")
+                type.type("These aren't your ordinary pair of glasses. Put them on, and you'll catch glimpses that others can't see. But use them wisely; you only get one peek per night.")
                 price = random.choice([35000, 38000, 40000])
             elif item == "Quiet Sneakers":
-                typer.type("Sometimes, the best move is to walk away. Use this when you feel trouble brewing, and avoid the day's misfortunes.")
+                type.type("Sometimes, the best move is to walk away. Use this when you feel trouble brewing, and avoid the day's misfortunes.")
                 price = random.choice([15000, 18000, 20000])
 
             print()
 
-            typer.type("For " + green(bright("${:,}".format(price))) + ", it can be all yours. You buying? ")
+            type.type("For " + green(bright("${:,}".format(price))) + ", it can be all yours. You buying? ")
             while True:
                 yes_or_no = input("").lower()
                 if ((yes_or_no == "y") or (yes_or_no == "yes")) and (self.__balance<price):
                     print()
-                    typer.type("Cmon man, you can't afford this.")
+                    type.type("Cmon man, you can't afford this.")
                     print("\n")
                     break
                 if (yes_or_no == "y") or (yes_or_no == "yes"):
                     print()
-                    typer.type("Great! It's all yours.")
+                    type.type("Great! It's all yours.")
                     self.change_balance(-price)
                     self.add_item(item)
-                    typer.type("You got the " + magenta(bright(item)) + "!")
+                    type.type("You got the " + magenta(bright(item)) + "!")
                     print()
-                    typer.type("Description: " + self.get_item_desc(item))
+                    type.type("Description: " + self.get_item_desc(item))
                     print("\n")
                     break
                 elif (yes_or_no == "n") or (yes_or_no == "no"):
                     print()
-                    typer.type("Not your thing, huh? Well that's ok. ")
+                    type.type("Not your thing, huh? Well that's ok. ")
                     break
                 else:
                     print()
-                    typer.type("What was that? ")
+                    type.type("What was that? ")
 
-        typer.type("That's all I've got to sell you tonight. Maybe try coming back another day. ")
+        type.type("That's all I've got to sell you tonight. Maybe try coming back another day. ")
         self.start_night()
 
     def update_no_bust_durability(self, invincible=False):
@@ -3223,7 +3223,7 @@ class Player:
                     self.__flask_durability[0] = 0
                     self.remove_flask_effect("No Bust")
                     print("\n")
-                    typer.slow(red(bright("Your Flask of No Bust effect ran out!")))
+                    type.slow(red(bright("Your Flask of No Bust effect ran out!")))
 
             # Sets durability when you get the item, or if the item is fixed
             if (self.__flask_durability[0] == 0):
@@ -3240,7 +3240,7 @@ class Player:
                     self.__item_durability[0] = 0
                     self.break_item("Delight Indicator")
                     print("\n")
-                    typer.slow(red(bright("Your Delight Indicator broke!")))
+                    type.slow(red(bright("Your Delight Indicator broke!")))
 
             # Sets durability when you get the item, or if the item is fixed
             if (self.__item_durability[0] == 0):
@@ -3257,7 +3257,7 @@ class Player:
                 if self.__item_durability[1] <= 0:
                     self.__item_durability[1] = 0
                     self.break_item("Health Indicator")
-                    typer.slow(red(bright("Your Health Indicator broke!")))
+                    type.slow(red(bright("Your Health Indicator broke!")))
                     print("\n")
 
             # Sets durability when you get the item, or if the item is fixed
@@ -3275,7 +3275,7 @@ class Player:
                 if self.__item_durability[2] <= 0:
                     self.__item_durability[2] = 0
                     self.break_item("Dirty Old Hat")
-                    typer.slow(red(bright("Your Dirty Old Hat broke!")))
+                    type.slow(red(bright("Your Dirty Old Hat broke!")))
                     print("\n")
 
             # Sets durability when you get the item, or if the item is fixed
@@ -3293,7 +3293,7 @@ class Player:
                 if self.__item_durability[3] <= 0:
                     self.__item_durability[3] = 0
                     self.break_item("Golden Watch")
-                    typer.slow(red(bright("Your Golden Watch broke!")))
+                    type.slow(red(bright("Your Golden Watch broke!")))
                     print("\n")
 
             # Sets durability when you get the item, or if the item is fixed
@@ -3311,7 +3311,7 @@ class Player:
                 if self.__item_durability[5] <= 0:
                     self.__item_durability[5] = 0
                     self.break_item("Sneaky Peeky Shades")
-                    typer.slow(red(bright("Your Sneaky Peeky Shades broke!")))
+                    type.slow(red(bright("Your Sneaky Peeky Shades broke!")))
                     print("\n")
 
             # Sets durability when you get the item, or if the item is fixed
@@ -3329,7 +3329,7 @@ class Player:
                 if self.__item_durability[6] <= 0:
                     self.__item_durability[6] = 0
                     self.break_item("Quiet Sneakers")
-                    typer.slow(red(bright("Your Quiet Sneakers broke!")))
+                    type.slow(red(bright("Your Quiet Sneakers broke!")))
                     print("\n")
 
             # Sets durability when you get the item, or if the item is fixed
@@ -3347,7 +3347,7 @@ class Player:
                 if self.__item_durability[7] <= 0:
                     self.__item_durability[7] = 0
                     self.break_item("Faulty Insurance")
-                    typer.slow(red(bright("Your Faulty Insurance broke!")))
+                    type.slow(red(bright("Your Faulty Insurance broke!")))
                     print("\n")
 
             # Sets durability when you get the item, or if the item is fixed

@@ -5,6 +5,7 @@ import time
 import random
 import sys
 import msvcrt
+import typer
 
 PAUSE = .25
 
@@ -12,55 +13,8 @@ PAUSE = .25
 Below are all of the typing/color functions, used
 for terminal outputs and making my text pretty
 """
-class Typing:
-    def __init__(self):
-        self.__enter = False
 
-    def holding_enter(self):
-        return self.__enter
-
-    def fast(self, *words):
-        str = ''
-        for item in words:
-            str = str + item
-        # str += "\n"
-        for char in str:
-            time.sleep(random.choice([
-            0.03, 0.05, 0.04, 0.02,
-            0.05, 0.03, 0.02, 0.05, 0.04, 0.01
-            ]))
-            sys.stdout.write(char)
-            sys.stdout.flush()
-            if (char == ".") or (char == "!") or (char == ":"):
-                time.sleep(0.5)
-            if char == ",":
-                time.sleep(0.4)
-            self.cleanup()
-
-    def slow(self, *words):
-        str = ''
-        for item in words:
-            str = str + item
-        # str += "\n"
-            for char in str:
-                time.sleep(random.choice([
-                0.06, 0.05, 0.03, 0.03,
-                0.05, 0.03, 0.04, 0.05, 0.06, 0.04
-                ]))
-                sys.stdout.write(char)
-                sys.stdout.flush()
-                if ((char == ".") or (char == "!") or (char == ":") or (char == ";") or (char == "?")):
-                    time.sleep(0.7)
-                if (char == ","):
-                    time.sleep(0.4)
-                self.cleanup()
-
-    def cleanup(self):
-        while msvcrt.kbhit():
-            byte = msvcrt.getch()
-
-
-type = Typing()
+type = typer.Type()
 
 # all the pretty colors
 def red(text):
@@ -563,6 +517,11 @@ class Blackjack:
                     type.fast(red(bright("You had " + green("${:,}".format(self.__balance)) + red(" and lost your free bet of ") + green("${:,}".format(self.__bet)))))
                     print("\n")
                     type.fast(red(bright("Your balance is still " + green("${:,}".format(self.__balance)))))
+                elif self.__balance - self.__bet == 0:
+                    type.fast(red(bright("You had " + green("${:,}".format(self.__balance)) + red(" and lost your bet of ") + green("${:,}".format(self.__bet)))))
+                    print("\n")
+                    type.fast(red(bright("Your new balance is " + "${:,}".format(self.__balance) + " - ${:,}".format(self.__bet) + " = ${:,}".format(self.__balance-self.__bet))))
+                    self.__balance -= self.__bet
                 else:
                     type.fast(red(bright("You had " + green("${:,}".format(self.__balance)) + red(" and lost your bet of ") + green("${:,}".format(self.__bet)))))
                     print("\n")
@@ -580,6 +539,11 @@ class Blackjack:
                     type.fast(red(bright("You had " + green("${:,}".format(self.__balance)) + red(" and lost your free bet of ") + green("${:,}".format(self.__bet)))))
                     print("\n")
                     type.fast(red(bright("Your balance is still " + green("${:,}".format(self.__balance)))))
+                elif self.__balance - self.__bet == 0:
+                    type.fast(red(bright("You had " + green("${:,}".format(self.__balance)) + red(" and lost your bet of ") + green("${:,}".format(self.__bet)))))
+                    print("\n")
+                    type.fast(red(bright("Your new balance is " + "${:,}".format(self.__balance) + " - ${:,}".format(self.__bet) + " = ${:,}".format(self.__balance-self.__bet))))
+                    self.__balance -= self.__bet
                 else:
                     type.fast(red(bright("You had " + green("${:,}".format(self.__balance)) + red(" and lost your bet of ") + green("${:,}".format(self.__bet)))))
                     print("\n")
@@ -598,6 +562,11 @@ class Blackjack:
                     type.fast(red(bright("You had " + green("${:,}".format(self.__balance)) + red(" and lost your free bet of ") + green("${:,}".format(self.__bet)))))
                     print("\n")
                     type.fast(red(bright("Your balance is still " + green("${:,}".format(self.__balance)))))
+                elif self.__balance - self.__bet == 0:
+                    type.fast(red(bright("You had " + green("${:,}".format(self.__balance)) + red(" and lost your bet of ") + green("${:,}".format(self.__bet)))))
+                    print("\n")
+                    type.fast(red(bright("Your new balance is " + "${:,}".format(self.__balance) + " - ${:,}".format(self.__bet) + " = ${:,}".format(self.__balance-self.__bet))))
+                    self.__balance -= self.__bet
                 else:
                     type.fast(red(bright("You had " + green("${:,}".format(self.__balance)) + red(" and lost your bet of ") + green("${:,}".format(self.__bet)))))
                     print("\n")
