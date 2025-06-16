@@ -1199,7 +1199,7 @@ class Player:
                 type.type("You rummage through the pockets, trying to find anything worthwhile. ")
                 random_chance = random.randrange(4)
                 if random_chance == 0:
-                    self.add_status("Hepatitus")
+                    self.add_status("Hepatitis")
                     type.type("As you do so, you notice the body begin to move. It looks up at you, screams, then coughs blood all over you. You freak out, before running back down the path the way you came.")
                     print("\n")
                     type.type("You make it back to your car, and find some old clothes to wipe the blood off your face. Great, just great. You already start to feel under the weather.")
