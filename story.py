@@ -1029,7 +1029,7 @@ class Player:
                         type.type("He smiles, and puts the gun down. He laughs, and walks away, leaving you quite poor, but still alive.")
                         print("\n")
                         return
-                    if percentage == 8:
+                    if percentage in (8, 18):
                         type.type(quote("Okay, now it's about an " + red(bright(str(percentage) + "%")) + " chance that I blow your brains out. Want that even lower?") + " ")
                     else: type.type(quote("Okay, now it's about a " + red(bright(str(percentage) + "%")) + " chance that I blow your brains out. Want that even lower?") + " ")
             elif answer == "no":
