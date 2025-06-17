@@ -82,7 +82,7 @@ class Player:
         self.__convenience_store_inventory = []
         self.__lists = lists.Lists(self)
 
-    def kill(self):
+    def kill(self, cause_of_death=None):
         self.__alive = False
         self.status()
 
@@ -128,7 +128,7 @@ class Player:
         print("\n")
         self.update_health_indicator_durability()
 
-    def status(self):
+    def status(self, cause_of_death=None):
         if not self.__alive:
             print("\n")
             type.slow("You have died!")
@@ -376,7 +376,7 @@ class Player:
         print("\n")
         self.heal(random.choice([1, 3, 5]))
 
-        type.press_continue("Press a key to continue: ")
+        ask.press_continue("Press a key to continue: ")
 
 
     # Opening
@@ -627,6 +627,7 @@ class Player:
         type.type(quote("See, with this carrot in your possession, you're ready for anytime a cowboy strolls on down this road. Just give their steed a carrot, and they'll be very grateful."))
         print("\n")
         type.type("And with that, Jameson reins his horse high into the air, gives you a yee-haw, then dashes off down the road.")
+        print("\n")
 
     def whats_my_name(self):
         if not self.__name == None:
@@ -944,6 +945,7 @@ class Player:
         self.change_balance(-losses)
 
     # One-Time
+
             
     # One-Time Conditional
     def starving_cow(self):
@@ -996,6 +998,52 @@ class Player:
     # Conditional
             
     # One-Time
+    def likely_death(self):
+        if self.has_met("Gunman"):
+            self.day_event()
+            return
+        
+        self.meet("Gunman")
+        type.type("You wake up to the sound of a gunshot. You sit up, and look around, confused. As you look out your windshield, you see a figure, in a black trench coat. He walks to the front window, and beckons for you to roll it down. As you crank the window lower, he peers his head inside. You can smell the food between his teeth, and the alcohol on his breath. He has a gun in his hand, and he points it at you.")
+        print("\n")
+        percentage = 80
+        type.type(quote("I'd say there's about an " + red(bright("80%")) + " chance that I blow your brains out. Right now. Wanna change that?") + " ")
+        while True:
+            answer = ask.yes_or_no("You gonna answer me? ")
+            if answer == "yes":
+                type.type("You nod your head, knowing exactly what he wants. As your hand shakes, you reach into your pocket. How much money do you give him? ")
+                value = ask.give_cash(self.get_balance(), "How much money do you give him? ")
+                if value == 0:
+                    type.type("You tell him that you don't have any money left. A dissapointed look crosses his face.")
+                    print("\n")
+                    answer = "no"
+                elif value == self.get_balance():
+                    type.type("You hand him all of your money. He laughs, and pushes the gun against your forehead. " + quote("Night night, kiddo."))
+                    type.slow(red(bright("The gunman pulls the trigger, and you hear a click, followed by a loud ringing in your ears, and a warm liquid dripping down your face. You reach up, and feel a hole in your skull, blood pouring out of it. You try to scream, but you can't. You can't even breathe. You fall to the ground, and everything goes black.")))
+                    self.kill("Gunshot to the Head")
+                else:
+                    type.type("You hand him " + green(bright("${:,}".format(value))) + ".")
+                    percentage -= int((value / self.get_balance()) * 100)
+                    self.change_balance(-value)
+                    if percentage <= 0:
+                        type.type("He smiles, and puts the gun down. He laughs, and walks away, leaving you quite poor, but still alive.")
+                        print("\n")
+                        return
+                    if percentage == 8:
+                        type.type(quote("Okay, now it's about an " + red(bright(str(percentage) + "%")) + " chance that I blow your brains out. Want that even lower?") + " ")
+                    else: type.type(quote("Okay, now it's about a " + red(bright(str(percentage) + "%")) + " chance that I blow your brains out. Want that even lower?") + " ")
+            elif answer == "no":
+                type.type(quote("Okay, welp, guess we're gonna go gambling!") + " He laughs, and pushes the gun against your forehead. You can feel the cold metal against your skin, sweat dripping off the barrel, and into your eyes. You close them. Breathing in, slowly breathing out, you prepare for the worst. Not that you've ever been scared to face the odds.")
+
+                print("\n")
+                if random.randrange(100) > percentage:
+                    type.slow(red(bright("The gunman pulls the trigger, and you hear a click.")))
+                    type.type(" You open your eyes, and see that the gun is empty. He laughs, and puts the gun down. He walks away. Somehow, you're still alive. What a nightmare")
+                    print("\n")
+                    return
+                else:
+                    type.slow(red(bright("The gunman pulls the trigger, and you hear a click, followed by a loud ringing in your ears, and a warm liquid dripping down your face. You reach up, and feel a hole in your skull, blood pouring out of it. You try to scream, but you can't. You can't even breathe. You fall to the ground, and everything goes black.")))
+                    self.kill("Gunshot to the Head")
             
     # One-Time Conditional
     def even_further_interrogation(self):
@@ -3091,10 +3139,10 @@ class Player:
                 print()
                 type.type("You chomp down the turkey sandwich. It's savory turkey and provolone fill your stomach, and you feel much better.")
             elif item == "Deck of Cards":
-                type.type(bright(magenta("Deck of Cards!")))
+                type.type(bright(magenta("You got a Deck of Cards!")))
                 self.add_item("Deck of Cards")
             elif item == "Pest Control":
-                type.type("You got " + bright(magenta("Pest Control!")))
+                type.type(bright(magenta("You got Pest Control!")))
                 self.add_item("Pest Control")
             elif item == "LifeAlert":
                 type.type(bright(magenta("You got LifeAlert!")))

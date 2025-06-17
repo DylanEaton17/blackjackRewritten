@@ -9,52 +9,52 @@
 					"label": "End Day"
 				},
 				{
-					"line": 676,
+					"line": 677,
 					"column": 0,
 					"label": "Cheap Days"
 				},
 				{
-					"line": 767,
+					"line": 768,
 					"column": 0,
 					"label": "Modest Days"
 				},
 				{
-					"line": 867,
+					"line": 868,
 					"column": 0,
 					"label": "Rich Days"
 				},
 				{
-					"line": 972,
+					"line": 974,
 					"column": 0,
 					"label": "Doughman Days"
 				},
 				{
-					"line": 1015,
+					"line": 1063,
 					"column": 0,
 					"label": "Nearly Days"
 				},
 				{
-					"line": 1133,
+					"line": 1181,
 					"column": 0,
 					"label": "Poor Nights"
 				},
 				{
-					"line": 1215,
+					"line": 1263,
 					"column": 0,
 					"label": "Cheap Nights"
 				},
 				{
-					"line": 1263,
+					"line": 1311,
 					"column": 0,
 					"label": "Modest Nights"
 				},
 				{
-					"line": 1564,
+					"line": 1612,
 					"column": 0,
 					"label": "Update Status"
 				},
 				{
-					"line": 1822,
+					"line": 1870,
 					"column": 22,
 					"label": "Afternoon"
 				}

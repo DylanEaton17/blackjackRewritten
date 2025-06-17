@@ -128,6 +128,8 @@ class Lists:
         a_list = []
         # Everytime
         a_list.append("thunderstorm")
+        # One-Time Events
+        a_list.append("likely_death")
         # One-Time Conditional
         a_list.append("even_further_interrogation")
         random.shuffle(a_list)

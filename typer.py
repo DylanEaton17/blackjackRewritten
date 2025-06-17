@@ -278,8 +278,27 @@ class Ask:
             else:
                 type.type(reiterate) # type: ignore
 
+    def give_cash(self, total, reiterate="How much? "):
+        while True:
+            try:
+                value = int(input(""))
+                if value < 0:
+                    type.type("You can't give that!")
+                    print("\n")
+                    type.type(reiterate)
+                elif value > total:
+                    type.type("You don't have that much cash!")
+                    print("\n")
+                    type.type(reiterate)
+                else:
+                    print("")
+                    return value
+            except ValueError:
+                print("")
+                type.type(reiterate)
+
     def press_continue(self, message="Press any key to continue: "):
-        self.type(message)
+        type.type(message)
         is_pressed = False
         while not is_pressed:
             is_pressed = self.continue_cleanup()
