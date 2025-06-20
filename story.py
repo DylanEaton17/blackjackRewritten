@@ -2876,7 +2876,7 @@ class Player:
 
 
 
-    # Oswald's shop and interactions NOT IMPLEMENTED
+    # Oswald's shop and interactions
     def oswald_dialogue(self):
         if self.__mechanic_visits == 0:
             type.type("Heyoswald! That's it. Heyoswald.")
