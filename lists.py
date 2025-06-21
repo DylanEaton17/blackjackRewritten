@@ -80,6 +80,8 @@ class Lists:
     def make_cheap_night_events_list(self):
         a_list = []
         a_list.append("woodlands_river")
+        a_list.append("woodlands_field")
+        a_list.append("swamp_stroll")
         random.shuffle(a_list)
         return a_list
     
@@ -98,7 +100,9 @@ class Lists:
     
     def make_modest_night_events_list(self):
         a_list = []
-        a_list.append("empty_event")
+        a_list.append("swamp_wade")
+        a_list.append("swamp_swim")
+        a_list.append("beach_stroll")
         random.shuffle(a_list)
         return a_list
     
@@ -118,7 +122,9 @@ class Lists:
     
     def make_rich_night_events_list(self):
         a_list = []
-        a_list.append("empty_event")
+        a_list.append("beach_swim")
+        a_list.append("beach_dive")
+        a_list.append("city_streets")
         random.shuffle(a_list)
         return a_list
 
@@ -137,7 +143,8 @@ class Lists:
     
     def make_doughman_night_events_list(self):
         a_list = []
-        a_list.append("empty_event")
+        a_list.append("city_stroll")
+        a_list.append("city_park")
         random.shuffle(a_list)
         return a_list
 
@@ -152,7 +159,11 @@ class Lists:
     
     def make_nearly_night_events_list(self):
         a_list = []
-        a_list.append("empty_event")
+        a_list.append("woodlands_adventure")
+        a_list.append("swamp_adventure")
+        a_list.append("beach_adventure")
+        a_list.append("underwater_adventure")
+        a_list.append("city_adventure")
         random.shuffle(a_list)
         return a_list
     
