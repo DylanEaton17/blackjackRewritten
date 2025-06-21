@@ -1321,14 +1321,756 @@ class Player:
             type.type("You keep walking, and keep walking, and keep walking, and eventually, the woods clear up, and you're back on the main road. You follow it back to your car, wondering if there was anything else to see. Well, at least you're home, safe and sound.")
             print("\n")
             return
+
+    def woodlands_field(self):
+        self.meet("Woodlands Field Event")
+        type.type("You step into a vast, golden field at dusk. The wild grass is waist-high, swaying in the wind, and the sky is painted with streaks of orange and violet. The air is thick with the scent of earth and distant rain. You feel both exposed and alive, as if the world is holding its breath.")
+        print("\n")
+        event = random.choice(["fox", "duffle", "campsite", "none"])
+        if event == "fox":
+            type.type("A sudden rustle in the grass makes you freeze. A sleek, red fox emerges, its eyes glinting with mischief. It circles you, then snatches a shiny object from your bag and bolts into the tall grass.")
+            print("\n")
+            if random.random() < 0.5:
+                type.type("You give chase, heart pounding, the grass slapping your legs. The fox leads you on a wild run, then vanishes. In its place, you find a hollow with your item—and a stash of old, silver coins, half-buried in the dirt.")
+                self.change_balance(random.randint(200, 600))
+                type.type("You recover your item and pocket the coins, feeling the thrill of the hunt.")
+            else:
+                type.type("You lose sight of the fox. Whatever it took is gone, and you’re left with only the sound of your own breath and the wind. The field feels emptier now.")
+        elif event == "duffle":
+            type.type("Your foot strikes something hard. You kneel and uncover a battered duffle bag, caked in mud. The zipper is stuck, but with effort, you force it open.")
+            outcome = random.choice(["cash", "note", "trap"])
+            if outcome == "cash":
+                type.type("Inside, you find bundles of cash, waterlogged but real. You count quickly, nerves tingling, and pocket your find before anyone can see.")
+                self.change_balance(random.randint(500, 1500))
+            elif outcome == "note":
+                type.type("Inside, you find a single, bloodstained note: 'The roots run deep where the sun never shines. Trust no one.' You shiver and pocket the note, feeling watched.")
+                self.add_item("Cryptic Note")
+            else:
+                type.type("As you dig deeper, a swarm of angry hornets bursts from the bag! You sprint away, stung and cursing, your skin burning.")
+                self.hurt(random.randint(10, 25))
+        elif event == "campsite":
+            type.type("You stumble upon an abandoned campsite: a collapsed tent, a cold firepit, and scattered belongings. The silence is heavy, broken only by the distant call of an owl.")
+            search = ask.yes_or_no("Do you search the campsite?")
+            if search == "yes":
+                find = random.choice(["supplies", "trap", "nothing"])
+                if find == "supplies":
+                    type.type("You find a canteen of fresh water, a sturdy walking stick, and a faded photograph of a family. You feel a pang of loneliness, but also a strange comfort.")
+                    self.heal(random.randint(10, 20))
+                    self.add_item("Walking Stick")
+                elif find == "trap":
+                    type.type("As you rummage, a tripwire snaps and a loud bang echoes through the field. Birds scatter, and you drop to the ground, heart racing. You escape unharmed, but your nerves are shot.")
+                else:
+                    type.type("You find nothing but ashes and memories. The field seems to swallow the past whole.")
+            else:
+                type.type("You move on, leaving the campsite undisturbed. Some ghosts are better left alone.")
+        else:
+            type.type("You lie down in the grass, letting the world spin above you. The stars begin to appear, one by one, and for a moment, you feel infinite—and utterly alone.")
+        print("\n")
+
+    def swamp_stroll(self):
+        self.meet("Swamp Stroll Event")
+        type.type("You pick your way along a narrow, winding path through the swamp. The air is thick with mist and the croak of unseen frogs. Every step is a gamble—roots twist underfoot, and the water hides secrets.")
+        print("\n")
+        event = random.choice(["snake", "frog", "witch", "none"])
+        if event == "snake":
+            type.type("A sudden hiss makes you freeze. A massive snake, thick as your arm, slithers across your path, its eyes fixed on you. Do you try to catch it or back away?")
+            choice = ask.yes_or_no("Do you try to catch the snake?")
+            if choice == "yes":
+                if random.random() < 0.4:
+                    type.type("You lunge and grab the snake behind the head. It writhes, but you hold firm. Eventually, it calms, and you harvest its skin—a valuable prize.")
+                    self.add_item("Rare Snakeskin")
+                else:
+                    type.type("The snake strikes, sinking its fangs into your arm. You stagger back, dizzy, as venom burns through your veins.")
+                    self.hurt(random.randint(15, 30))
+                    self.add_status("Poisoned")
+            else:
+                type.type("You back away, heart pounding, and let the snake disappear into the shadows. Sometimes, caution is the better part of valor.")
+        elif event == "frog":
+            type.type("A luminous green frog sits on a log, watching you with ancient, golden eyes. It croaks, and you feel compelled to listen.")
+            riddle = random.choice([True, False])
+            if riddle:
+                type.type("The frog speaks: 'Answer my riddle and I shall grant you a boon. Fail, and you shall be cursed.' (What has roots as nobody sees, is taller than trees, up, up it goes, and yet never grows?)")
+                answer = input("Your answer: ").strip().lower()
+                if "mountain" in answer:
+                    type.type("The frog nods. 'Wisdom is yours.' You feel luckier, as if the swamp itself is on your side.")
+                    self.add_status("Lucky")
+                else:
+                    type.type("The frog croaks sadly. 'Foolish.' The air grows colder, and you feel a shadow settle over you.")
+                    self.add_status("Cursed")
+            else:
+                type.type("The frog leaps into your hand, leaving behind a shimmering scale. You pocket it, feeling a strange, electric energy course through you.")
+                self.add_item("Frog Scale")
+        elif event == "witch":
+            type.type("A hunched figure emerges from the mist—the swamp witch. Her eyes gleam as she offers you a bubbling vial. 'Drink, and see your fate,' she whispers.")
+            choice = ask.yes_or_no("Drink the witch's potion?")
+            if choice == "yes":
+                effect = random.choice(["heal", "curse", "vision"])
+                if effect == "heal":
+                    type.type("Warmth floods your body. Old wounds knit closed, and you feel stronger than ever.")
+                    self.heal(random.randint(20, 40))
+                elif effect == "curse":
+                    type.type("Your vision blurs. You stumble, feeling weak and lost. The witch cackles as you stagger away.")
+                    self.hurt(random.randint(10, 25))
+                    self.add_status("Cursed")
+                else:
+                    type.type("You see visions of hidden paths, buried treasures, and dangers yet to come. You gain a cryptic clue for your journey.")
+                    self.add_item("Witch's Prophecy")
+            else:
+                type.type("The witch shrugs and disappears into the fog, leaving you with a sense of missed opportunity.")
+        else:
+            type.type("The swamp is eerily quiet. You make it through, but the silence lingers, heavy as a curse.")
+        print("\n")
    
     # Modest Nights (10,000 - 100,000)
+    # Everytime
+    def swamp_wade(self):
+        self.meet("Swamp Wade Event")
+        type.type("You wade waist-deep through the swamp, the water cold and thick with silt. Every step is a struggle, and unseen things brush against your legs. The air is heavy with the scent of decay and blooming lilies.")
+        print("\n")
+        event = random.choice(["leech", "nectar", "witch", "none"])
+        if event == "leech":
+            type.type("You feel a dozen sharp stings—leeches! You thrash and claw at your skin, but they cling tight, draining your strength.")
+            self.hurt(random.randint(10, 25))
+            type.type("You stagger out of the water, pale and shivering, vowing never to return.")
+        elif event == "nectar":
+            type.type("Your hand brushes against a jar tangled in roots. Inside is a glowing nectar, pulsing with golden light. Do you drink it?")
+            choice = ask.yes_or_no("Drink the healing nectar?")
+            if choice == "yes":
+                type.type("Sweetness fills your mouth. You feel your wounds close and your spirit soar. For a moment, you are invincible.")
+                self.heal(random.randint(20, 40))
+                self.add_status("Invincible")
+            else:
+                type.type("You pocket the jar for later. Who knows when it might save your life?")
+                self.add_item("Healing Nectar Jar")
+        elif event == "witch":
+            type.type("The swamp witch appears, gliding over the water on a raft of bones. She offers to read your fortune for a price. Her eyes are bottomless pits.")
+            choice = ask.yes_or_no("Let the witch read your fortune?")
+            if choice == "yes":
+                fate = random.choice(["good", "bad", "cryptic"])
+                if fate == "good":
+                    type.type("She smiles, revealing sharp teeth. 'Fortune favors you.' You feel luckier, as if the world has tilted in your favor.")
+                    self.add_status("Lucky")
+                elif fate == "bad":
+                    type.type("She frowns. 'Beware the next crossing.' You feel a chill in your bones, and the world seems darker.")
+                    self.add_status("Unlucky")
+                else:
+                    type.type("She whispers a riddle you can't quite remember. It haunts your dreams, surfacing at odd moments.")
+                    self.add_item("Cryptic Riddle")
+            else:
+                type.type("The witch vanishes, leaving only ripples in the water and a sense of foreboding.")
+        else:
+            type.type("You make it through, muddy but unharmed. The swamp seems to sigh as you leave.")
+        print("\n")
+
+    def swamp_swim(self):
+        self.meet("Swamp Swim Event")
+        type.type("You dive into the deeper waters of the swamp, the surface closing above you. The world is muffled, green, and full of secrets. Every movement stirs up clouds of silt, and the water is alive with unseen creatures.")
+        print("\n")
+        event = random.choice(["alligator", "treasure", "witch", "none"])
+        if event == "alligator":
+            type.type("A pair of eyes breaks the surface—an alligator! It surges toward you, jaws wide. You thrash and kick, desperate to escape.")
+            if random.random() < 0.4:
+                type.type("You manage to scramble to safety, heart pounding, lungs burning. You vow never to swim here again.")
+            else:
+                type.type("The alligator snaps at you, its teeth grazing your leg. You escape, but not unscathed. Blood clouds the water behind you.")
+                self.hurt(random.randint(20, 40))
+        elif event == "treasure":
+            type.type("Your hand brushes something cold and metallic—a sunken chest, half-buried in the muck. Do you try to open it?")
+            choice = ask.yes_or_no("Open the sunken chest?")
+            if choice == "yes":
+                loot = random.choice(["coins", "artifact", "trap"])
+                if loot == "coins":
+                    type.type("Inside, you find a trove of old coins and jewelry. You're richer, but you wonder who lost it—and why.")
+                    self.change_balance(random.randint(800, 2000))
+                elif loot == "artifact":
+                    type.type("You find a strange artifact, humming with energy. As you touch it, visions flash before your eyes—of the swamp, of danger, of destiny.")
+                    self.add_item("Swamp Artifact")
+                else:
+                    type.type("A cloud of noxious gas bursts out! You cough and swim away, your head spinning, your body weak.")
+                    self.hurt(random.randint(10, 25))
+            else:
+                type.type("You leave the chest undisturbed, wary of curses and the weight of history.")
+        elif event == "witch":
+            type.type("The witch floats by on a log, humming a haunting tune. She offers you a charm woven from reeds and bone. 'For protection,' she says, 'or perhaps for something else.'")
+            choice = ask.yes_or_no("Buy the witch's charm?")
+            if choice == "yes":
+                charm = random.choice(["protection", "misfortune"])
+                if charm == "protection":
+                    type.type("She ties the charm around your wrist. 'No harm shall come to you—tonight.' You feel a strange warmth, as if the swamp itself is watching over you.")
+                    self.add_status("Protected")
+                else:
+                    type.type("She grins wickedly. 'Luck is a fickle thing.' You feel a cold shiver run down your spine.")
+                    self.add_status("Cursed")
+            else:
+                type.type("The witch shrugs and disappears into the mist, her laughter echoing across the water.")
+        else:
+            type.type("You swim back, heart pounding, but nothing happens. The swamp keeps its secrets—for now.")
+        print("\n")
+
+    def beach_stroll(self):
+        self.meet("Beach Stroll Event")
+        type.type("You walk the moonlit shoreline, the sand cool beneath your feet and the waves whispering secrets. The night is alive with possibility, and every step feels like a story waiting to happen.")
+        print("\n")
+        event = random.choice(["sandman", "shells", "bonfire", "none"])
+        if event == "sandman":
+            type.type("A tall, robed figure—the Sandman—appears, his eyes twinkling. 'Help me collect shells for my collection,' he asks, his voice like the tide. Do you help?")
+            choice = ask.yes_or_no("Help the Sandman collect shells?")
+            if choice == "yes":
+                if random.random() < 0.7:
+                    type.type("You gather a handful of beautiful shells. The Sandman thanks you, pressing a Dream Token into your palm. That night, your sleep is deep and full of strange, hopeful dreams.")
+                    self.add_item("Dream Token")
+                    self.add_status("Inspired")
+                else:
+                    type.type("You search for shells but find only broken bits. The Sandman shrugs, fading into the mist. You feel a pang of disappointment.")
+            else:
+                type.type("You decline, and the Sandman’s smile fades. He vanishes, leaving only footprints in the sand and a chill in the air.")
+        elif event == "shells":
+            type.type("You find a rare, perfect shell, its spiral gleaming in the moonlight. As you pick it up, a wave of calm and clarity washes over you.")
+            self.add_item("Rare Shell")
+            self.add_status("Calm")
+        elif event == "bonfire":
+            type.type("A group of strangers invites you to join their bonfire. They share stories, laughter, and roasted marshmallows. Do you join them?")
+            choice = ask.yes_or_no("Join the bonfire?")
+            if choice == "yes":
+                if random.random() < 0.5:
+                    type.type("You make new friends and leave with a full belly and a lighter heart. The world feels a little less lonely.")
+                    self.heal(random.randint(10, 20))
+                    self.add_status("Happy")
+                else:
+                    type.type("You eat too many marshmallows and wake up with a stomachache, but the memories are sweet.")
+                    self.hurt(random.randint(3, 8))
+            else:
+                type.type("You watch the fire from a distance, the warmth and laughter just out of reach.")
+        else:
+            type.type("You walk for a while, lost in thought, the ocean breeze clearing your mind. The night is gentle, and you feel at peace.")
+        print("\n")
         
     # Rich Nights (100,000 - 500,000)
+    def beach_swim(self):
+        self.meet("Beach Swim Event")
+        type.type("You slip into the moonlit surf, the water cool and alive around you. The ocean’s pulse is steady, ancient, and you feel both small and infinite as you float beyond the breakers.")
+        print("\n")
+        event = random.choice(["jellyfish", "relaxation", "undertow"])
+        if event == "jellyfish":
+            type.type("A sudden, electric sting wraps around your leg—a jellyfish! The pain is sharp and immediate. Do you try to tough it out or rush back to shore?")
+            choice = ask.yes_or_no("Tough it out?")
+            if choice == "yes":
+                if random.random() < 0.5:
+                    type.type("You grit your teeth and float, letting the pain ebb with the tide. Eventually, the sting fades, and you feel stronger for having endured it.")
+                    self.add_status("Resilient")
+                else:
+                    type.type("The pain intensifies, your vision blurs, and you barely make it back to shore, shivering and weak.")
+                    self.hurt(random.randint(15, 30))
+            else:
+                type.type("You thrash for shore, each stroke agony. You collapse on the sand, breathless, but alive.")
+                self.hurt(random.randint(8, 18))
+        elif event == "relaxation":
+            type.type("You float on your back, the stars spinning above you. The water cradles you, washing away your worries. For a moment, you are at peace, and the world feels kind.")
+            self.heal(random.randint(15, 30))
+            self.add_status("Relaxed")
+        else:  # undertow
+            type.type("A sudden current tugs at your legs—the undertow! You struggle, panic rising. Do you fight the current or let it carry you?")
+            choice = ask.yes_or_no("Fight the current?")
+            if choice == "yes":
+                if random.random() < 0.5:
+                    type.type("You swim parallel to the shore, remembering old advice. The current releases you, and you stagger back to the beach, exhausted but safe.")
+                    self.hurt(random.randint(5, 10))
+                else:
+                    type.type("You fight, but the current is too strong. You’re swept far down the beach, losing time and energy.")
+                    self.hurt(random.randint(15, 25))
+            else:
+                type.type("You let the current carry you, trusting the ocean. Eventually, it spits you out far from where you started, but you’re unharmed—and oddly exhilarated.")
+                self.add_status("Oceanwise")
+        print("\n")
+
+
+    def beach_dive(self):
+        self.meet("Beach Dive Event")
+        type.type("You wade into the surf and dive beneath the waves, the world above replaced by a blue, sun-dappled silence. The ocean floor is a shifting landscape of sand, shells, and secrets.")
+        print("\n")
+        event = random.choice(["pearl", "treasure", "shark"])
+        if event == "pearl":
+            type.type("You spot a glimmer in the sand and dig with your hands. Your fingers close around a perfect, iridescent pearl, larger than any you've seen before.")
+            self.add_item("Giant Pearl")
+            type.type("You surface, gasping, the pearl clutched in your hand. You feel luckier, as if the ocean itself has blessed you.")
+            self.add_status("Lucky")
+        elif event == "treasure":
+            type.type("You find the rotting remains of a wooden chest, half-buried in the sand. Do you try to open it?")
+            choice = ask.yes_or_no("Open the sunken chest?")
+            if choice == "yes":
+                loot = random.choice(["coins", "artifact", "trap"])
+                if loot == "coins":
+                    type.type("Inside, you find gold coins and jeweled trinkets, their colors dulled by the sea. You stuff your pockets and swim for the surface.")
+                    self.change_balance(random.randint(1000, 3000))
+                elif loot == "artifact":
+                    type.type("You find a strange, barnacle-encrusted artifact. As you touch it, you feel a surge of energy—and a whisper in your mind.")
+                    self.add_item("Ocean Relic")
+                else:
+                    type.type("A cloud of stinging jellyfish bursts from the chest! You thrash and swim away, your skin burning.")
+                    self.hurt(random.randint(15, 30))
+            else:
+                type.type("You leave the chest alone, wary of curses and the weight of the deep.")
+        else:  # shark
+            type.type("A shadow glides overhead—a massive shark, circling. You freeze, heart pounding, as it draws closer.")
+            if random.random() < 0.5:
+                type.type("You remain still, barely breathing, and the shark loses interest, vanishing into the blue.")
+            else:
+                type.type("The shark lunges! You kick and punch, barely escaping with your life, blood swirling in the water.")
+                self.hurt(random.randint(20, 40))
+        print("\n")
+
+    def city_streets(self):
+        self.meet("City Streets Event")
+        type.type("You wander the city’s labyrinth of neon and shadow, where every alley whispers a different story. The air is thick with exhaust, music, and the promise of trouble. Tonight, the city feels alive—and hungry.")
+        print("\n")
+        event = random.choice(["drug_dealer", "stray_cat", "rent_bike", "none"])
+        if event == "drug_dealer":
+            type.type("A gaunt figure in a hoodie steps from a flickering doorway, eyes darting. 'Looking for a little edge?' he asks, holding out a small bag. The city seems to hold its breath. Do you accept?")
+            choice = ask.yes_or_no("Take the drug dealer's offer?")
+            if choice == "yes":
+                outcome = random.choice(["buff", "bad_trip", "police"])
+                if outcome == "buff":
+                    type.type("You slip the contents under your tongue. The world sharpens—colors brighter, sounds clearer. For a while, you feel invincible, your luck uncanny.")
+                    self.add_status("Energized")
+                elif outcome == "bad_trip":
+                    type.type("Your heart races, the world tilts, and you stagger into the street. You lose track of time—and some money. When you come to, your pockets are lighter and your head aches.")
+                    self.hurt(random.randint(15, 30))
+                    self.change_balance(-random.randint(200, 800))
+                else:
+                    type.type("Suddenly, blue lights flash. 'Police! Hands up!' You drop the bag and run, barely escaping. You lose some money in the chaos.")
+                    self.change_balance(-random.randint(100, 400))
+            else:
+                type.type("You shake your head and move on, the dealer’s gaze burning into your back. The city feels colder.")
+        elif event == "stray_cat":
+            type.type("A scruffy, one-eyed cat weaves between your legs, meowing with a raspy voice. Its fur is matted, but its gaze is sharp. Do you kneel to pet it?")
+            choice = ask.yes_or_no("Pet the stray cat?")
+            if choice == "yes":
+                fate = random.choice(["lucky", "scratch", "ally"])
+                if fate == "lucky":
+                    type.type("The cat purrs, rubbing its head against your hand. It leaves a whisker in your palm. You feel luckier, as if the city itself is watching over you.")
+                    self.add_status("Lucky")
+                elif fate == "scratch":
+                    type.type("The cat hisses and claws your hand before darting away. You wince, blood trickling from the scratch.")
+                    self.hurt(random.randint(3, 10))
+                else:
+                    type.type("The cat follows you for blocks, scaring off a would-be pickpocket. You gain a furry companion for the night.")
+                    self.add_item("Stray Cat")
+            else:
+                type.type("You ignore the cat, but its eyes follow you, unblinking, as you disappear into the city’s maze.")
+        elif event == "rent_bike":
+            type.type("You spot a row of battered rental bikes. The city’s traffic is a snarl, but on two wheels, you could fly. Do you rent a bike and ride?")
+            choice = ask.yes_or_no("Rent a bike?")
+            if choice == "yes":
+                outcome = random.choice(["fast", "crash", "theft"])
+                if outcome == "fast":
+                    type.type("You weave through traffic, the wind in your hair, dodging taxis and street vendors. You arrive at your next destination exhilarated and ahead of schedule.")
+                    self.add_status("Refreshed")
+                elif outcome == "crash":
+                    type.type("A pothole sends you flying. You limp away, bruised and battered, your wallet lighter from the repair fee.")
+                    self.hurt(random.randint(8, 18))
+                    self.change_balance(-random.randint(50, 200))
+                else:
+                    type.type("You stop for a snack, and when you return, the bike is gone—stolen. You pay a hefty fine to the rental company.")
+                    self.change_balance(-random.randint(200, 600))
+            else:
+                type.type("You decide to walk, letting the city’s rhythm set your pace. Sometimes, slow is safe.")
+        else:
+            type.type("Tonight, the city is just a city. You wander, lost in thought, as the world spins on around you. But you can’t shake the feeling that you’re being watched.")
+        print("\n")
         
     # Doughman Nights (500,000 - 900,000)
+    def city_stroll(self):
+        self.meet("City Stroll Event")
+        type.type("You wander the city streets at dusk, neon lights flickering and the air thick with possibility. Every corner holds a new story, and tonight, the city feels alive with danger and opportunity.")
+        print("\n")
+        event = random.choice(["bank_robbery", "dog_walker", "mugging"])
+        if event == "bank_robbery":
+            type.type("You hear sirens and shouting—a bank robbery in progress! Do you try to help, run, or sneak closer for a better look?")
+            action = input("Help, run, or sneak? ").strip().lower()
+            if action == "help":
+                if random.random() < 0.4:
+                    type.type("You tackle a fleeing robber, earning the gratitude of the police—and a cash reward.")
+                    self.change_balance(random.randint(500, 2000))
+                else:
+                    type.type("You get caught in the crossfire and take a hit. The robbers escape, and you're left bleeding on the sidewalk.")
+                    self.hurt(random.randint(15, 30))
+            elif action == "sneak":
+                if random.random() < 0.5:
+                    type.type("You slip into the chaos and snatch a dropped bag of cash before anyone notices.")
+                    self.change_balance(random.randint(300, 1000))
+                else:
+                    type.type("A cop mistakes you for an accomplice. You're detained and lose some money in fines.")
+                    self.change_balance(-random.randint(100, 500))
+            else:
+                type.type("You run for safety, heart pounding, and escape unharmed.")
+        elif event == "dog_walker":
+            type.type("A cheerful dog walker lets you pet a parade of happy pups. Their joy is infectious, and you feel your worries melt away.")
+            self.heal(random.randint(5, 15))
+            self.add_status("Happy")
+        else:  # mugging
+            type.type("A shadowy figure steps from an alley, demanding your wallet. Do you fight, flee, or comply?")
+            action = input("Fight, flee, or comply? ").strip().lower()
+            if action == "fight":
+                if random.random() < 0.5:
+                    type.type("You fight back and scare off the mugger, keeping your money—and your pride.")
+                else:
+                    type.type("The mugger overpowers you, taking your cash and leaving you bruised.")
+                    self.change_balance(-random.randint(200, 800))
+                    self.hurt(random.randint(10, 20))
+            elif action == "flee":
+                if random.random() < 0.5:
+                    type.type("You sprint away, dodging through traffic and escaping unharmed.")
+                else:
+                    type.type("You trip and fall, losing some money and dignity.")
+                    self.change_balance(-random.randint(50, 200))
+            else:
+                type.type("You hand over your wallet. The mugger vanishes, and you count your losses.")
+                self.change_balance(-random.randint(100, 500))
+        print("\n")
         
+
+
     # Nearly There Nights (900,000+)
+    def woodlands_adventure(self):
+        self.meet("Woodlands Adventure Event")
+        type.type("The ancient forest looms around you, shadows deepening as the sun sets. Tonight, the woods are alive with secrets and danger.")
+        print("\n")
+        event = random.choice([
+            "hunting_competition", "gigantic_bear", "fountain_of_youth", "casual_day"
+        ])
+        if event == "hunting_competition":
+            type.type("You stumble into a clearing where hunters gather for a midnight competition. Do you join, watch, or sneak away?")
+            action = input("Join, watch, or sneak? ").strip().lower()
+            if action == "join":
+                if random.random() < 0.4:
+                    type.type("You outwit the others and claim the prize: a legendary bow and a pouch of gold.")
+                    self.add_item("Legendary Bow")
+                    self.change_balance(random.randint(3000, 10000))
+                else:
+                    type.type("You lose, but gain respect—and a few bruises.")
+                    self.hurt(random.randint(10, 20))
+            elif action == "watch":
+                type.type("You watch the contest, learning new tricks. You feel more skilled.")
+                self.add_status("Skilled")
+            else:
+                type.type("You slip away, avoiding any trouble.")
+        elif event == "gigantic_bear":
+            type.type("A gigantic bear lumbers into your path, its eyes reflecting the moonlight. Do you fight, flee, or try to befriend it?")
+            action = input("Fight, flee, or befriend? ").strip().lower()
+            if action == "fight":
+                if random.random() < 0.2:
+                    type.type("You defeat the bear in a legendary struggle, earning its respect and a rare trophy.")
+                    self.add_item("Bear Claw Trophy")
+                else:
+                    type.type("The bear mauls you before wandering off. You barely survive.")
+                    self.hurt(random.randint(40, 80))
+            elif action == "befriend":
+                if random.random() < 0.3:
+                    type.type("Amazingly, the bear accepts your offering and becomes your companion for the night.")
+                    self.add_item("Bear Companion")
+                else:
+                    type.type("The bear is not impressed. You escape, but not without a scratch.")
+                    self.hurt(random.randint(10, 30))
+            else:
+                type.type("You run for your life, heart pounding, and escape into the darkness.")
+        elif event == "fountain_of_youth":
+            type.type("You find a hidden spring, its waters glowing with an unearthly light. Do you drink?")
+            choice = ask.yes_or_no("Drink from the Fountain of Youth?")
+            if choice == "yes":
+                type.type("You feel years melt away. Your wounds heal, and your mind sharpens. But you sense a price will be paid.")
+                self.heal(100)
+                self.add_status("Youthful")
+            else:
+                type.type("You leave the spring untouched, wary of ancient magic.")
+        else:
+            type.type("Tonight, the woods are calm. You rest beneath the stars, but the silence is never complete.")
+        print("\n")
+
+
+
+    def swamp_adventure(self):
+        self.meet("Swamp Adventure Event")
+        type.type("The swamp is alive with strange lights and distant croaks. Tonight, the air is thick with magic and menace. Every step could lead to fortune—or disaster.")
+        print("\n")
+        event = random.choice([
+            "tortoise_racing", "ogre", "fairy_bottle", "disgusting_mermaid", "casual_day"
+        ])
+        if event == "tortoise_racing":
+            type.type("You stumble upon a crowd of swamp folk cheering for a tortoise race. Do you bet, race your own tortoise, or just watch?")
+            action = input("Bet, race, or watch? ").strip().lower()
+            if action == "bet":
+                if random.random() < 0.5:
+                    type.type("Your tortoise wins! The crowd cheers and you collect a hefty purse.")
+                    self.change_balance(random.randint(3000, 9000))
+                else:
+                    type.type("Your tortoise comes in last. The crowd laughs and you lose your bet.")
+                    self.change_balance(-random.randint(1000, 4000))
+            elif action == "race":
+                if random.random() < 0.3:
+                    type.type("Against all odds, your tortoise surges ahead and wins! You are the hero of the swamp tonight.")
+                    self.change_balance(random.randint(5000, 12000))
+                    self.add_item("Champion's Ribbon")
+                else:
+                    type.type("Your tortoise gets distracted by a patch of moss. You lose, but the experience is unforgettable.")
+            else:
+                type.type("You watch the race, learning the ways of the swamp folk. You feel a little wiser.")
+                self.add_status("Swampwise")
+        elif event == "ogre":
+            type.type("A massive ogre blocks your path, its breath foul and its club even fouler. Do you fight, bribe, or try to sneak past?")
+            action = input("Fight, bribe, or sneak? ").strip().lower()
+            if action == "fight":
+                if random.random() < 0.2:
+                    type.type("You defeat the ogre in a legendary battle, claiming its hoard of treasure.")
+                    self.change_balance(random.randint(8000, 20000))
+                    self.add_item("Ogre's Club")
+                else:
+                    type.type("The ogre smashes you aside. You barely escape with your life and your pride in tatters.")
+                    self.hurt(random.randint(40, 80))
+            elif action == "bribe":
+                if random.random() < 0.5:
+                    type.type("The ogre grunts, pockets your bribe, and lets you pass. You lose some money, but keep your bones intact.")
+                    self.change_balance(-random.randint(2000, 6000))
+                else:
+                    type.type("The ogre takes your bribe and tries to eat you anyway! You escape, but not without injury.")
+                    self.hurt(random.randint(20, 40))
+            else:
+                if random.random() < 0.4:
+                    type.type("You slip past the ogre while it's distracted by a flock of swamp birds. Success!")
+                else:
+                    type.type("You step on a twig. The ogre roars and chases you for miles. You escape, but you're exhausted.")
+                    self.hurt(random.randint(10, 30))
+        elif event == "fairy_bottle":
+            type.type("You find a tiny fairy trapped in a glass bottle, her wings fluttering desperately. Do you free her or keep her for yourself?")
+            choice = ask.yes_or_no("Free the fairy?")
+            if choice == "yes":
+                type.type("The fairy thanks you with a sprinkle of magic dust. You feel lighter, luckier, and blessed by the swamp.")
+                self.add_status("Fairy Blessed")
+            else:
+                type.type("You keep the fairy, feeling a surge of power—but also a creeping sense of guilt. The bottle glows faintly in your pack.")
+                self.add_item("Fairy in a Bottle")
+        elif event == "disgusting_mermaid":
+            type.type("A mermaid, more scales than skin, slithers onto the bank. She offers you a deal: a kiss for a wish. Do you accept?")
+            choice = ask.yes_or_no("Accept the mermaid's deal?")
+            if choice == "yes":
+                if random.random() < 0.5:
+                    type.type("Her kiss is cold and slimy, but you feel a wish granted deep in your bones. Something good will happen soon.")
+                    self.add_status("Wished")
+                else:
+                    type.type("You feel sick to your stomach. The mermaid laughs and disappears, leaving you cursed.")
+                    self.add_status("Cursed")
+            else:
+                type.type("You refuse. The mermaid shrugs and slides back into the muck, singing a haunting tune.")
+        else:
+            type.type("Tonight, the swamp is quiet. You rest beneath the moss-draped trees, but the dreams that come are strange and wild.")
+        print("\n")
+
+
+
+    def beach_adventure(self):
+        self.meet("Beach Adventure Event")
+        type.type("The moon hangs low over the endless sand. The beach is alive with laughter, music, and the crash of waves. Tonight, anything could happen.")
+        print("\n")
+        event = random.choice([
+            "volleyball_tournament", "bonfire_ritual", "message_in_bottle", "casual_day"
+        ])
+        if event == "volleyball_tournament":
+            type.type("A crowd gathers for a midnight volleyball tournament. Do you join, bet on a team, or just watch?")
+            action = input("Join, bet, or watch? ").strip().lower()
+            if action == "join":
+                if random.random() < 0.3:
+                    type.type("You play the game of your life, spiking the winning point as the crowd erupts. You win a trophy and a cash prize.")
+                    self.add_item("Volleyball Trophy")
+                    self.change_balance(random.randint(4000, 12000))
+                else:
+                    type.type("You trip in the sand and lose, but the crowd cheers your effort. You gain a new friend.")
+                    self.add_item("Beach Friend")
+            elif action == "bet":
+                if random.random() < 0.5:
+                    type.type("Your team wins! You collect your winnings and celebrate with the victors.")
+                    self.change_balance(random.randint(2000, 8000))
+                else:
+                    type.type("Your team loses. You hand over your cash and slink away.")
+                    self.change_balance(-random.randint(1000, 4000))
+            else:
+                type.type("You watch the game, soaking in the energy of the night. You feel inspired.")
+                self.add_status("Inspired")
+        elif event == "bonfire_ritual":
+            type.type("A circle of strangers invites you to a bonfire ritual. They chant and dance, tossing strange herbs into the flames. Do you join the ritual?")
+            choice = ask.yes_or_no("Join the bonfire ritual?")
+            if choice == "yes":
+                if random.random() < 0.5:
+                    type.type("You feel a surge of energy and clarity. The world seems brighter, your mind sharper.")
+                    self.add_status("Enlightened")
+                else:
+                    type.type("You inhale too much smoke and pass out. You wake up with a headache and missing some cash.")
+                    self.hurt(random.randint(10, 20))
+                    self.change_balance(-random.randint(500, 2000))
+            else:
+                type.type("You watch from a distance, the firelight flickering in your eyes. The night feels full of secrets.")
+        elif event == "message_in_bottle":
+            type.type("You find a bottle washed up on the shore, a message inside. Do you open it?")
+            choice = ask.yes_or_no("Open the message in a bottle?")
+            if choice == "yes":
+                if random.random() < 0.5:
+                    type.type("The message is a treasure map! You follow it and find a hidden stash of gold buried in the dunes.")
+                    self.change_balance(random.randint(3000, 9000))
+                else:
+                    type.type("The message is a warning: 'Beware the tides.' You feel uneasy, but nothing happens—yet.")
+                    self.add_status("Uneasy")
+            else:
+                type.type("You toss the bottle back into the sea, letting fate decide its next owner.")
+        else:
+            type.type("Tonight, the beach is peaceful. You watch the stars and listen to the waves, feeling at peace with the world.")
+        print("\n")
+
+    def underwater_adventure(self):
+        self.meet("Underwater Adventure Event")
+        type.type("You don your gear and slip beneath the waves, the world above replaced by a realm of silence and shadow. The ocean is vast, mysterious, and full of ancient secrets.")
+        print("\n")
+        event = random.choice([
+            "hunting_competition", "sunken_shipwreck", "giant_octopus"
+        ])
+        if event == "hunting_competition":
+            type.type("You join a group of deep-sea hunters in a competition for the biggest catch. Do you compete, bet, or just watch?")
+            action = input("Compete, bet, or watch? ").strip().lower()
+            if action == "compete":
+                if random.random() < 0.3:
+                    type.type("You spear a massive fish, winning the contest and a chest of gold coins.")
+                    self.change_balance(random.randint(6000, 18000))
+                    self.add_item("Champion's Spear")
+                else:
+                    type.type("You miss your shot and are nearly caught by a predator. You escape, but shaken.")
+                    self.hurt(random.randint(10, 30))
+            elif action == "bet":
+                if random.random() < 0.5:
+                    type.type("Your chosen hunter wins! You collect your winnings and celebrate with the crew.")
+                    self.change_balance(random.randint(3000, 9000))
+                else:
+                    type.type("Your bet is lost to the depths. The sea takes its due.")
+                    self.change_balance(-random.randint(1000, 4000))
+            else:
+                type.type("You watch the contest, learning the ways of the deep. You feel more attuned to the ocean.")
+                self.add_status("Oceanwise")
+        elif event == "sunken_shipwreck":
+            type.type("You discover the remains of a sunken ship, its timbers rotting and its cargo scattered. Do you explore the wreck?")
+            choice = ask.yes_or_no("Explore the shipwreck?")
+            if choice == "yes":
+                if random.random() < 0.5:
+                    type.type("You find a chest of jewels and ancient coins. You surface, richer than before.")
+                    self.change_balance(random.randint(8000, 20000))
+                else:
+                    type.type("You get trapped in the wreck, running low on air. You barely escape, gasping and weak.")
+                    self.hurt(random.randint(20, 40))
+            else:
+                type.type("You leave the wreck undisturbed, respecting the dead.")
+        else:  # giant_octopus
+            type.type("A giant octopus emerges from the shadows, its tentacles reaching for you. Do you fight, flee, or try to communicate?")
+            action = input("Fight, flee, or communicate? ").strip().lower()
+            if action == "fight":
+                if random.random() < 0.2:
+                    type.type("You battle the beast and emerge victorious, claiming a rare pearl from its lair.")
+                    self.add_item("Giant Pearl")
+                else:
+                    type.type("The octopus wraps you in its arms, squeezing the breath from your lungs. You escape, but not without injury.")
+                    self.hurt(random.randint(30, 60))
+            elif action == "communicate":
+                if random.random() < 0.3:
+                    type.type("Amazingly, the octopus seems to understand. It gifts you a strange, glowing stone before vanishing.")
+                    self.add_item("Octopus Stone")
+                else:
+                    type.type("The octopus is not interested in conversation. You escape, but shaken.")
+            else:
+                type.type("You swim away as fast as you can, heart pounding, vowing never to return.")
+        print("\n")
+
+    def city_adventure(self):
+        self.meet("City Adventure Event")
+        type.type("Tonight, the city pulses with energy. The stakes are higher, the risks greater, and every choice could change your fate.")
+        print("\n")
+        event = random.choice([
+            "cop_shootout", "hobo_gift", "treasury_robbery", "free_ice_cream",
+            "fighting_ring", "intense_mugging", "casual_day"
+        ])
+        if event == "cop_shootout":
+            type.type("Gunfire erupts nearby—a cop shootout! You duck for cover as bullets fly. Do you stay hidden or try to escape?")
+            action = input("Hide or escape? ").strip().lower()
+            if action == "escape":
+                if random.random() < 0.5:
+                    type.type("You dash through the chaos, miraculously unharmed. In the confusion, you find a dropped police badge.")
+                    self.add_item("Police Badge")
+                else:
+                    type.type("A stray bullet grazes you. You escape, but not without injury.")
+                    self.hurt(random.randint(20, 40))
+            else:
+                type.type("You stay hidden until the shooting stops. When you emerge, the street is eerily quiet.")
+        elif event == "hobo_gift":
+            type.type("Hobo Joe finds you and presses a mysterious, wrapped package into your hands. 'For luck,' he says, then disappears.")
+            self.add_item("Joe's Gift")
+            type.type("You wonder what's inside—and if you should open it.")
+        elif event == "treasury_robbery":
+            type.type("You witness a daring robbery at the city treasury. Do you join in, report it, or watch from the shadows?")
+            action = input("Join, report, or watch? ").strip().lower()
+            if action == "join":
+                if random.random() < 0.3:
+                    type.type("You help crack the vault and escape with a fortune. But now you're wanted by the law.")
+                    self.change_balance(random.randint(5000, 20000))
+                    self.add_status("Wanted")
+                else:
+                    type.type("The heist goes wrong. You're caught and lose a huge sum in legal fees.")
+                    self.change_balance(-random.randint(2000, 8000))
+            elif action == "report":
+                type.type("You tip off the police and receive a hefty reward for your civic duty.")
+                self.change_balance(random.randint(2000, 6000))
+            else:
+                type.type("You watch as the robbers vanish into the night. The city feels more dangerous than ever.")
+        elif event == "free_ice_cream":
+            type.type("A food truck is giving away free ice cream. You indulge, feeling a rare moment of pure joy.")
+            self.heal(random.randint(10, 30))
+            self.add_status("Happy")
+        elif event == "fighting_ring":
+            type.type("You stumble upon an underground fighting ring. Do you bet, fight, or walk away?")
+            action = input("Bet, fight, or walk? ").strip().lower()
+            if action == "bet":
+                if random.random() < 0.5:
+                    type.type("Your fighter wins! You collect a fat stack of cash.")
+                    self.change_balance(random.randint(2000, 8000))
+                else:
+                    type.type("Your fighter loses. You lose your bet and your pride.")
+                    self.change_balance(-random.randint(1000, 4000))
+            elif action == "fight":
+                if random.random() < 0.3:
+                    type.type("You win the fight, battered but triumphant. The crowd roars as you collect your winnings.")
+                    self.change_balance(random.randint(5000, 15000))
+                    self.hurt(random.randint(10, 30))
+                else:
+                    type.type("You lose the fight, waking up hours later with empty pockets and a splitting headache.")
+                    self.change_balance(-random.randint(2000, 6000))
+                    self.hurt(random.randint(20, 40))
+            else:
+                type.type("You walk away, the sounds of violence echoing behind you.")
+        elif event == "intense_mugging":
+            type.type("A gang corners you in an alley, demanding everything you have. Do you fight, negotiate, or surrender?")
+            action = input("Fight, negotiate, or surrender? ").strip().lower()
+            if action == "fight":
+                if random.random() < 0.2:
+                    type.type("Against all odds, you fight them off and escape with your fortune intact.")
+                else:
+                    type.type("They overpower you, taking nearly everything. You barely escape with your life.")
+                    self.change_balance(-random.randint(5000, 20000))
+                    self.hurt(random.randint(30, 50))
+            elif action == "negotiate":
+                if random.random() < 0.5:
+                    type.type("You talk your way out, losing only a small sum.")
+                    self.change_balance(-random.randint(1000, 3000))
+                else:
+                    type.type("Negotiation fails. They take even more than they would have.")
+                    self.change_balance(-random.randint(3000, 8000))
+            else:
+                type.type("You surrender. They take a huge sum, but leave you unharmed.")
+                self.change_balance(-random.randint(4000, 12000))
+        else:
+            type.type("Tonight, nothing happens. The city is quiet, but you can't shake the feeling that something is coming.")
+        print("\n")
 
     def empty_event(self):
         type.type("This day's events are empty. Therefore, this played. Thank you.")
@@ -2879,7 +3621,7 @@ class Player:
     # Oswald's shop and interactions
     def oswald_dialogue(self):
         if self.__mechanic_visits == 0:
-            type.type("Heyoswald! That's it. Heyoswald.")
+            type.type("Why, you made it! ")
 
     def visit_oswald(self):
         type.type("You get in your car and drive to Oswald's Optimal Outoparts. ")
