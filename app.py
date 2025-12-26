@@ -19,6 +19,17 @@ class WebBlackjack:
         self.message = ""
         self.dealer_second_card_hidden = True
         self.set_min_bet(self.balance)
+        # Statistics tracking
+        self.stats = {
+            "hands_played": 0,
+            "hands_won": 0,
+            "hands_lost": 0,
+            "hands_tied": 0,
+            "blackjacks": 0,
+            "busts": 0,
+            "highest_balance": 50,
+            "total_wagered": 0
+        }
         
     def new_game(self):
         """Start a new game with fresh balance"""
@@ -31,6 +42,17 @@ class WebBlackjack:
         self.message = "Welcome! Place your bet to start."
         self.dealer_second_card_hidden = True
         self.set_min_bet(self.balance)
+        # Reset statistics
+        self.stats = {
+            "hands_played": 0,
+            "hands_won": 0,
+            "hands_lost": 0,
+            "hands_tied": 0,
+            "blackjacks": 0,
+            "busts": 0,
+            "highest_balance": 50,
+            "total_wagered": 0
+        }
         
     def set_min_bet(self, balance):
         """Calculate minimum bet based on balance (10% rounded down, min $1)"""
@@ -46,6 +68,7 @@ class WebBlackjack:
             return False, f"You don't have that much money. Balance: ${self.balance}"
         else:
             self.bet = bet_amount
+            self.stats["total_wagered"] += bet_amount
             self.game_phase = "dealing"
             return True, f"Bet placed: ${bet_amount}"
     
@@ -125,9 +148,53 @@ class WebBlackjack:
         else:
             return self.end_round("Dealer Wins")
     
+    def get_dealer_message(self, outcome):
+        """Get a random dealer message based on outcome"""
+        win_messages = [
+            "Nice hand! You got me this time.",
+            "Well played. Enjoy your winnings.",
+            "Lucky draw! Don't get too comfortable.",
+            "Impressive. The cards were in your favor.",
+            "You win this round. Congratulations."
+        ]
+        
+        lose_messages = [
+            "Better luck next time!",
+            "The house always wins... eventually.",
+            "Tough break. Want to try again?",
+            "Not your lucky day, friend.",
+            "Maybe next round will be better."
+        ]
+        
+        tie_messages = [
+            "A push. Nobody wins, nobody loses.",
+            "Same value. It's a standoff.",
+            "Looks like we're even this time.",
+            "A tie. Your bet stays with you.",
+            "Well, that was anticlimactic."
+        ]
+        
+        blackjack_messages = [
+            "BLACKJACK! What a hand!",
+            "Twenty-one! Nicely done!",
+            "Blackjack! The perfect hand.",
+            "Natural 21! You're on fire!",
+            "Blackjack! That's what I'm talking about!"
+        ]
+        
+        if "Player Blackjack" in outcome:
+            return random.choice(blackjack_messages)
+        elif outcome in ["Player Wins", "Dealer Bust"]:
+            return random.choice(win_messages)
+        elif outcome in ["Dealer Wins", "Dealer Blackjack", "Player Bust"]:
+            return random.choice(lose_messages)
+        else:
+            return random.choice(tie_messages)
+    
     def end_round(self, outcome):
         """End the round and calculate winnings"""
         self.game_phase = "game_over"
+        self.stats["hands_played"] += 1
         
         messages = {
             "Player Blackjack": "Blackjack! You win!",
@@ -141,27 +208,40 @@ class WebBlackjack:
         }
         
         old_balance = self.balance
+        dealer_msg = self.get_dealer_message(outcome)
         
         if outcome in ["Player Blackjack"]:
             # Blackjack pays 3:1 (bet + 2x bet)
             winnings = self.bet * 2
             self.balance += winnings
             self.message = f"{messages[outcome]} You won ${winnings}!"
+            self.stats["hands_won"] += 1
+            self.stats["blackjacks"] += 1
         elif outcome in ["Player Wins", "Dealer Bust"]:
             # Regular win pays 2:1 (bet + 1x bet)
             winnings = self.bet
             self.balance += winnings
             self.message = f"{messages[outcome]} You won ${winnings}!"
+            self.stats["hands_won"] += 1
         elif outcome in ["Dealer Blackjack", "Dealer Wins", "Player Bust"]:
             self.balance -= self.bet
             self.message = f"{messages[outcome]} You lost ${self.bet}."
+            self.stats["hands_lost"] += 1
+            if "Player Bust" in outcome:
+                self.stats["busts"] += 1
         else:  # Tie
             self.message = f"{messages[outcome]} Your bet is returned."
+            self.stats["hands_tied"] += 1
+        
+        # Track highest balance
+        if self.balance > self.stats["highest_balance"]:
+            self.stats["highest_balance"] = self.balance
         
         return {
             "status": "game_over",
             "outcome": outcome,
             "message": self.message,
+            "dealer_message": dealer_msg,
             "old_balance": old_balance,
             "new_balance": self.balance
         }
@@ -176,6 +256,7 @@ class WebBlackjack:
             "message": self.message,
             "player_hand": self.player_hand.to_dict(),
             "dealer_hand": self.dealer_hand.to_dict(hide_second=self.dealer_second_card_hidden),
+            "stats": self.stats
         }
     
     def reset_for_new_round(self):

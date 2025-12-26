@@ -9,6 +9,7 @@ const dealerCardsEl = document.getElementById('dealer-cards');
 const playerCardsEl = document.getElementById('player-cards');
 const dealerValueEl = document.getElementById('dealer-value');
 const playerValueEl = document.getElementById('player-value');
+const dealerMessageEl = document.getElementById('dealer-message');
 
 const bettingSection = document.getElementById('betting-section');
 const actionButtons = document.getElementById('action-buttons');
@@ -21,6 +22,10 @@ const hitBtn = document.getElementById('hit-btn');
 const standBtn = document.getElementById('stand-btn');
 const newRoundBtn = document.getElementById('new-round-btn');
 const newGameBtn = document.getElementById('new-game-btn');
+
+// Stats elements
+const statsToggle = document.getElementById('stats-toggle');
+const statsContent = document.getElementById('stats-content');
 
 // Suit symbols
 const suitSymbols = {
@@ -40,6 +45,31 @@ document.addEventListener('DOMContentLoaded', () => {
     standBtn.addEventListener('click', handleStand);
     newRoundBtn.addEventListener('click', handleNewRound);
     newGameBtn.addEventListener('click', handleNewGame);
+    
+    // Stats toggle
+    statsToggle.addEventListener('click', () => {
+        if (statsContent.style.display === 'none') {
+            statsContent.style.display = 'block';
+            statsToggle.textContent = '📊 Stats ▼';
+        } else {
+            statsContent.style.display = 'none';
+            statsToggle.textContent = '📊 Stats';
+        }
+    });
+    
+    // Quick bet buttons
+    document.querySelectorAll('.btn-chip').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const amount = btn.dataset.amount;
+            if (amount === 'min') {
+                betAmountInput.value = currentState ? currentState.min_bet : 1;
+            } else if (amount === 'max') {
+                betAmountInput.value = currentState ? currentState.balance : 50;
+            } else {
+                betAmountInput.value = amount;
+            }
+        });
+    });
 });
 
 // Load current game state
@@ -177,6 +207,10 @@ async function handleNewRound() {
         const state = await response.json();
         updateUI(state);
         showMessage('Place your bet for the next round.', '');
+        // Clear dealer message
+        if (dealerMessageEl) {
+            dealerMessageEl.textContent = '';
+        }
     } catch (error) {
         console.error('Error starting new round:', error);
         showMessage('Error starting new round.', 'lose');
@@ -187,6 +221,17 @@ async function handleNewRound() {
 function handleGameOver(result) {
     const outcome = result.outcome;
     const message = result.message;
+    const dealerMessage = result.dealer_message;
+    
+    // Show dealer message
+    if (dealerMessage && dealerMessageEl) {
+        dealerMessageEl.textContent = dealerMessage;
+        dealerMessageEl.style.opacity = '0';
+        setTimeout(() => {
+            dealerMessageEl.style.transition = 'opacity 0.5s';
+            dealerMessageEl.style.opacity = '1';
+        }, 500);
+    }
     
     // Determine message type based on outcome
     const winOutcomes = ['Player Blackjack', 'Player Wins', 'Dealer Bust'];
@@ -204,6 +249,24 @@ function handleGameOver(result) {
     }
 }
 
+// Update Statistics Display
+function updateStats(stats) {
+    if (!stats) return;
+    
+    document.getElementById('stat-hands-played').textContent = stats.hands_played;
+    document.getElementById('stat-wins').textContent = stats.hands_won;
+    document.getElementById('stat-losses').textContent = stats.hands_lost;
+    document.getElementById('stat-ties').textContent = stats.hands_tied;
+    document.getElementById('stat-blackjacks').textContent = stats.blackjacks;
+    document.getElementById('stat-highest').textContent = `$${stats.highest_balance}`;
+    
+    // Calculate win rate
+    const winRate = stats.hands_played > 0 
+        ? Math.round((stats.hands_won / stats.hands_played) * 100) 
+        : 0;
+    document.getElementById('stat-win-rate').textContent = `${winRate}%`;
+}
+
 // Update UI with game state
 function updateUI(state) {
     currentState = state;
@@ -213,6 +276,11 @@ function updateUI(state) {
     currentBetEl.textContent = `$${state.bet}`;
     minBetInfo.textContent = `Min: $${state.min_bet}`;
     betAmountInput.min = state.min_bet;
+    
+    // Update statistics
+    if (state.stats) {
+        updateStats(state.stats);
+    }
     
     // Update hands
     displayHand(dealerCardsEl, state.dealer_hand);

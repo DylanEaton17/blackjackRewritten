@@ -359,6 +359,115 @@ h2 {
     }
 }
 
+/* Statistics Panel */
+.stats-panel {
+    margin-bottom: 20px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    border: 2px solid #d4af37;
+    overflow: hidden;
+}
+
+.stats-toggle {
+    padding: 12px 20px;
+    background: rgba(212, 175, 55, 0.3);
+    color: #d4af37;
+    font-weight: bold;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.3s;
+    text-align: center;
+    font-size: 1.1em;
+}
+
+.stats-toggle:hover {
+    background: rgba(212, 175, 55, 0.4);
+}
+
+.stats-content {
+    padding: 15px 20px;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.stat-row:last-child {
+    border-bottom: none;
+}
+
+.stat-label {
+    color: #f0e68c;
+    font-weight: bold;
+}
+
+.stat-value {
+    color: #fff;
+    font-weight: bold;
+}
+
+.stat-win {
+    color: #90ee90;
+}
+
+.stat-lose {
+    color: #ff6b6b;
+}
+
+.stat-blackjack {
+    color: #ffd700;
+}
+
+.stat-best {
+    color: #d4af37;
+}
+
+/* Dealer Message */
+.dealer-message {
+    font-size: 1em;
+    color: #add8e6;
+    margin-bottom: 10px;
+    font-style: italic;
+    min-height: 1.5em;
+}
+
+/* Quick Bet Buttons */
+.quick-bet-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.btn-chip {
+    padding: 10px 16px;
+    font-size: 0.95em;
+    background: linear-gradient(135deg, #8b0000 0%, #dc143c 100%);
+    border: 3px solid #d4af37;
+    border-radius: 50%;
+    min-width: 60px;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.btn-chip:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+}
+
+.btn-chip:active {
+    transform: translateY(-1px) scale(1.02);
+}
+
 @media (max-width: 480px) {
     .cards-container {
         gap: 5px;
@@ -380,5 +489,12 @@ h2 {
 
     .card-center {
         font-size: 1.2em;
+    }
+
+    .btn-chip {
+        min-width: 50px;
+        min-height: 50px;
+        font-size: 0.85em;
+        padding: 8px 12px;
     }
 }
