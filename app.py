@@ -230,9 +230,20 @@ class Hand:
             if hide_second and i == 1:
                 cards_list.append({"name": "Hidden", "suit": "Hidden", "value": 0, "hidden": True})
             else:
+                card_str = str(card)
+                # Safely parse card string (format: "Name of Suit")
+                if " of " in card_str:
+                    parts = card_str.split(" of ", 1)
+                    name = parts[0]
+                    suit = parts[1]
+                else:
+                    # Fallback if format is unexpected
+                    name = "Unknown"
+                    suit = "Unknown"
+                
                 cards_list.append({
-                    "name": str(card).split(" of ")[0],
-                    "suit": str(card).split(" of ")[1],
+                    "name": name,
+                    "suit": suit,
                     "value": card.value(),
                     "hidden": False
                 })
@@ -280,7 +291,11 @@ def place_bet():
     """Place a bet"""
     game = get_game()
     data = request.get_json()
-    bet_amount = int(data.get('amount', 0))
+    
+    try:
+        bet_amount = int(data.get('amount', 0))
+    except (ValueError, TypeError):
+        return jsonify({"success": False, "message": "Invalid bet amount", "state": game.get_state()})
     
     success, message = game.place_bet(bet_amount)
     
@@ -330,4 +345,7 @@ def new_round():
 
 
 if __name__ == '__main__':
+    # Development server - DO NOT use in production
+    # For production, use a WSGI server like gunicorn:
+    # gunicorn -w 4 -b 0.0.0.0:5000 app:app
     app.run(debug=True, host='0.0.0.0', port=5000)

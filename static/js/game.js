@@ -46,6 +46,9 @@ document.addEventListener('DOMContentLoaded', () => {
 async function loadGameState() {
     try {
         const response = await fetch('/api/state');
+        if (!response.ok) {
+            throw new Error('Failed to load game state');
+        }
         const state = await response.json();
         updateUI(state);
     } catch (error) {
@@ -58,6 +61,9 @@ async function loadGameState() {
 async function handleNewGame() {
     try {
         const response = await fetch('/api/new-game', { method: 'POST' });
+        if (!response.ok) {
+            throw new Error('Failed to start new game');
+        }
         const state = await response.json();
         updateUI(state);
         showMessage('New game started! Place your bet.', '');
@@ -69,7 +75,7 @@ async function handleNewGame() {
 
 // Handle Deal (Place Bet & Deal Cards)
 async function handleDeal() {
-    const betAmount = parseInt(betAmountInput.value);
+    const betAmount = parseInt(betAmountInput.value, 10);
     
     if (!betAmount || betAmount < 1) {
         showMessage('Please enter a valid bet amount.', 'lose');
@@ -83,6 +89,11 @@ async function handleDeal() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ amount: betAmount })
         });
+        
+        if (!betResponse.ok) {
+            throw new Error('Failed to place bet');
+        }
+        
         const betResult = await betResponse.json();
         
         if (!betResult.success) {
@@ -93,6 +104,11 @@ async function handleDeal() {
         
         // Deal cards
         const dealResponse = await fetch('/api/deal', { method: 'POST' });
+        
+        if (!dealResponse.ok) {
+            throw new Error('Failed to deal cards');
+        }
+        
         const dealResult = await dealResponse.json();
         
         updateUI(dealResult.state);
@@ -114,6 +130,9 @@ async function handleDeal() {
 async function handleHit() {
     try {
         const response = await fetch('/api/hit', { method: 'POST' });
+        if (!response.ok) {
+            throw new Error('Failed to hit');
+        }
         const result = await response.json();
         
         updateUI(result.state);
@@ -134,6 +153,9 @@ async function handleHit() {
 async function handleStand() {
     try {
         const response = await fetch('/api/stand', { method: 'POST' });
+        if (!response.ok) {
+            throw new Error('Failed to stand');
+        }
         const result = await response.json();
         
         updateUI(result.state);
@@ -149,6 +171,9 @@ async function handleStand() {
 async function handleNewRound() {
     try {
         const response = await fetch('/api/new-round', { method: 'POST' });
+        if (!response.ok) {
+            throw new Error('Failed to start new round');
+        }
         const state = await response.json();
         updateUI(state);
         showMessage('Place your bet for the next round.', '');
