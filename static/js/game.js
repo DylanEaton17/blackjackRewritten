@@ -163,16 +163,19 @@ function handleGameOver(result) {
     const outcome = result.outcome;
     const message = result.message;
     
-    if (outcome.includes('Blackjack') && outcome.includes('Player')) {
+    // Determine message type based on outcome
+    const winOutcomes = ['Player Blackjack', 'Player Wins', 'Dealer Bust'];
+    const tieOutcomes = ['Tie', 'Tie Blackjack'];
+    const loseOutcomes = ['Dealer Blackjack', 'Dealer Wins', 'Player Bust'];
+    
+    if (winOutcomes.includes(outcome)) {
         showMessage(message, 'win');
-    } else if (outcome.includes('Wins') && outcome.includes('Player')) {
-        showMessage(message, 'win');
-    } else if (outcome.includes('Bust') && outcome.includes('Dealer')) {
-        showMessage(message, 'win');
-    } else if (outcome.includes('Tie')) {
+    } else if (tieOutcomes.includes(outcome)) {
         showMessage(message, 'tie');
-    } else {
+    } else if (loseOutcomes.includes(outcome)) {
         showMessage(message, 'lose');
+    } else {
+        showMessage(message, '');
     }
 }
 

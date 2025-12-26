@@ -12,39 +12,29 @@ class WebBlackjack:
     def __init__(self):
         self.balance = 50
         self.bet = 0
-        self.min_bet = 1
         self.deck = deckOfCards.Deck()
         self.player_hand = Hand("Player")
         self.dealer_hand = Hand("Dealer")
         self.game_phase = "betting"  # betting, playing, dealer_turn, game_over
         self.message = ""
         self.dealer_second_card_hidden = True
+        self.set_min_bet(self.balance)
         
     def new_game(self):
         """Start a new game with fresh balance"""
         self.balance = 50
         self.bet = 0
-        self.min_bet = 1
         self.deck.reset()
         self.player_hand = Hand("Player")
         self.dealer_hand = Hand("Dealer")
         self.game_phase = "betting"
         self.message = "Welcome! Place your bet to start."
         self.dealer_second_card_hidden = True
+        self.set_min_bet(self.balance)
         
     def set_min_bet(self, balance):
-        """Calculate minimum bet based on balance"""
-        balance_str = str(balance)
-        balance_len = len(balance_str)
-        if balance_len == 1:
-            self.min_bet = 1
-        elif balance_len == 2:
-            self.min_bet = int(balance_str[0])
-        else:
-            new_balance_str = balance_str[0] + balance_str[1]
-            for _ in range(balance_len - 3):
-                new_balance_str += "0"
-            self.min_bet = int(new_balance_str)
+        """Calculate minimum bet based on balance (10% rounded down, min $1)"""
+        self.min_bet = max(1, balance // 10)
     
     def place_bet(self, bet_amount):
         """Place a bet and validate it"""
