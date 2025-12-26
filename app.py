@@ -355,7 +355,13 @@ def get_game():
 
 @app.route('/')
 def index():
-    """Serve main game page"""
+    """Serve main game page (casino)"""
+    return render_template('game.html')
+
+
+@app.route('/casino')
+def casino():
+    """Direct route to casino"""
     return render_template('game.html')
 
 
@@ -423,6 +429,177 @@ def new_round():
     game = get_game()
     game.reset_for_new_round()
     return jsonify(game.get_state())
+
+
+# ===== Story Mode =====
+
+class StoryGame:
+    """Story mode game state"""
+    
+    def __init__(self, balance=50):
+        self.balance = balance
+        self.day = 1
+        self.time_of_day = "Morning"
+        self.health = 100
+        self.max_health = 100
+        self.inventory = []
+        self.conditions = []
+        self.location = "outside_casino"
+        
+    def get_state(self):
+        """Get current story state"""
+        return {
+            "balance": self.balance,
+            "day": self.day,
+            "timeOfDay": self.time_of_day,
+            "health": self.health,
+            "maxHealth": self.max_health,
+            "inventory": self.inventory,
+            "conditions": self.conditions,
+            "location": self.location
+        }
+    
+    def explore(self):
+        """Player explores the area"""
+        events = [
+            {
+                "title": "Desert Exploration",
+                "text": [
+                    "You walk around the parking lot, kicking up dust.",
+                    "The desert stretches endlessly in all directions.",
+                    "You find a crumpled $5 bill under a car!"
+                ]
+            },
+            {
+                "title": "Mysterious Stranger",
+                "text": [
+                    "An old man approaches you.",
+                    '"Good luck in there," he says with a knowing smile.',
+                    '"You\'re going to need it."'
+                ]
+            },
+            {
+                "title": "Hot Day",
+                "text": [
+                    "The sun beats down relentlessly.",
+                    "You feel your throat getting dry.",
+                    "Maybe you should head inside soon."
+                ]
+            }
+        ]
+        
+        event = random.choice(events)
+        
+        # Random chance to find money
+        if random.random() < 0.3:
+            found_money = random.choice([1, 5, 10])
+            self.balance += found_money
+            event["text"].append(f"You found ${found_money}!")
+        
+        return {
+            "title": event["title"],
+            "text": event["text"],
+            "state": self.get_state()
+        }
+    
+    def rest(self):
+        """Player rests"""
+        heal_amount = random.randint(5, 15)
+        self.health = min(self.max_health, self.health + heal_amount)
+        
+        # Advance time
+        if self.time_of_day == "Morning":
+            self.time_of_day = "Afternoon"
+        elif self.time_of_day == "Afternoon":
+            self.time_of_day = "Evening"
+        elif self.time_of_day == "Evening":
+            self.time_of_day = "Night"
+        else:
+            self.time_of_day = "Morning"
+            self.day += 1
+        
+        return {
+            "title": "Rest",
+            "text": [
+                "You find a shady spot and rest for a while.",
+                f"You recover {heal_amount} health.",
+                f"Time passes... It's now {self.time_of_day}."
+            ],
+            "state": self.get_state()
+        }
+    
+    def add_item(self, name, description=""):
+        """Add item to inventory"""
+        self.inventory.append({"name": name, "description": description})
+
+
+def get_story_game():
+    """Get or create story game from session"""
+    if 'story_game' not in session:
+        # Get balance from blackjack game if it exists
+        balance = 50
+        if 'game' in session:
+            game_data = session['game']
+            balance = game_data.get('balance', 50)
+        
+        story = StoryGame(balance)
+        session['story_game'] = story.__dict__
+    else:
+        story = StoryGame()
+        story.__dict__.update(session['story_game'])
+    
+    return story
+
+
+@app.route('/intro')
+def intro():
+    """Intro/welcome page"""
+    return render_template('intro.html')
+
+
+@app.route('/story')
+def story():
+    """Story mode page"""
+    return render_template('story.html')
+
+
+@app.route('/api/story/state', methods=['GET'])
+def get_story_state():
+    """Get current story state"""
+    story = get_story_game()
+    return jsonify(story.get_state())
+
+
+@app.route('/api/story/explore', methods=['POST'])
+def story_explore():
+    """Explore the area"""
+    story = get_story_game()
+    result = story.explore()
+    session['story_game'] = story.__dict__
+    return jsonify(result)
+
+
+@app.route('/api/story/rest', methods=['POST'])
+def story_rest():
+    """Rest to recover health"""
+    story = get_story_game()
+    result = story.rest()
+    session['story_game'] = story.__dict__
+    return jsonify(result)
+
+
+@app.route('/api/story/sync-balance', methods=['POST'])
+def sync_balance():
+    """Sync balance between casino and story mode"""
+    data = request.json
+    balance = data.get('balance', 50)
+    
+    # Update story game balance
+    story = get_story_game()
+    story.balance = balance
+    session['story_game'] = story.__dict__
+    
+    return jsonify({"success": True, "balance": balance})
 
 
 if __name__ == '__main__':

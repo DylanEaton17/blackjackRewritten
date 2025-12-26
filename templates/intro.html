@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Blackjack</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/intro.css') }}">
+</head>
+<body>
+    <div class="intro-container">
+        <div class="intro-content" id="intro-content">
+            <!-- Intro sequence will be displayed here -->
+            <h1 class="title">Welcome</h1>
+            <div class="story-text" id="story-text">
+                <p>The sun beats down on your dusty car as you pull into the parking lot.</p>
+                <p>You've got $50 in your pocket and a dream of making it big.</p>
+                <p>The neon sign flickers: "Lucky's Casino - Where Fortune Awaits"</p>
+                <p>This is it. Your chance to change everything.</p>
+            </div>
+            <div class="intro-buttons" id="intro-buttons">
+                <button class="btn btn-primary" id="start-journey-btn">Begin Your Journey</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/intro.js') }}"></script>
+</body>
+</html>

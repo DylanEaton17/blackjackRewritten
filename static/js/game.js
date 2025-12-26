@@ -22,6 +22,7 @@ const hitBtn = document.getElementById('hit-btn');
 const standBtn = document.getElementById('stand-btn');
 const newRoundBtn = document.getElementById('new-round-btn');
 const newGameBtn = document.getElementById('new-game-btn');
+const leaveCasinoBtn = document.getElementById('leave-casino-btn');
 
 // Stats elements
 const statsToggle = document.getElementById('stats-toggle');
@@ -45,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
     standBtn.addEventListener('click', handleStand);
     newRoundBtn.addEventListener('click', handleNewRound);
     newGameBtn.addEventListener('click', handleNewGame);
+    leaveCasinoBtn.addEventListener('click', handleLeaveCasino);
     
     // Stats toggle
     statsToggle.addEventListener('click', () => {
@@ -382,5 +384,26 @@ function showMessage(text, type) {
     messageEl.className = 'message';
     if (type) {
         messageEl.classList.add(type);
+    }
+}
+
+// Handle Leave Casino
+async function handleLeaveCasino() {
+    try {
+        // Sync balance to story mode
+        const balance = currentState ? currentState.balance : 50;
+        await fetch('/api/story/sync-balance', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ balance: balance })
+        });
+        
+        // Navigate to story page
+        window.location.href = '/story';
+    } catch (error) {
+        console.error('Error leaving casino:', error);
+        showMessage('Error leaving casino.', 'lose');
     }
 }
