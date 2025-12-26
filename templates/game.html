@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blackjack Game</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Blackjack</h1>
+        
+        <!-- Game Info Bar -->
+        <div class="info-bar">
+            <div class="balance">
+                Balance: <span id="balance">$50</span>
+            </div>
+            <div class="current-bet">
+                Current Bet: <span id="current-bet">$0</span>
+            </div>
+        </div>
+
+        <!-- Dealer's Hand -->
+        <div class="dealer-section">
+            <h2>Dealer's Hand</h2>
+            <div id="dealer-value" class="hand-value">Value: 0</div>
+            <div id="dealer-cards" class="cards-container">
+                <!-- Cards will be added here dynamically -->
+            </div>
+        </div>
+
+        <!-- Player's Hand -->
+        <div class="player-section">
+            <h2>Your Hand</h2>
+            <div id="player-value" class="hand-value">Value: 0</div>
+            <div id="player-cards" class="cards-container">
+                <!-- Cards will be added here dynamically -->
+            </div>
+        </div>
+
+        <!-- Game Messages -->
+        <div id="message" class="message">
+            Welcome! Click "New Game" to start.
+        </div>
+
+        <!-- Betting Interface -->
+        <div id="betting-section" class="betting-section">
+            <div class="bet-input-group">
+                <label for="bet-amount">Bet Amount:</label>
+                <input type="number" id="bet-amount" min="1" value="5">
+                <span id="min-bet-info" class="min-bet-info">Min: $1</span>
+            </div>
+            <button id="deal-btn" class="btn btn-primary">Place Bet & Deal</button>
+        </div>
+
+        <!-- Action Buttons -->
+        <div id="action-buttons" class="action-buttons" style="display: none;">
+            <button id="hit-btn" class="btn btn-success">Hit</button>
+            <button id="stand-btn" class="btn btn-warning">Stand</button>
+        </div>
+
+        <!-- New Round Button -->
+        <div id="new-round-section" class="new-round-section" style="display: none;">
+            <button id="new-round-btn" class="btn btn-primary">New Round</button>
+        </div>
+
+        <!-- New Game Button -->
+        <div class="new-game-section">
+            <button id="new-game-btn" class="btn btn-secondary">New Game (Reset Balance)</button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/game.js') }}"></script>
+</body>
+</html>
