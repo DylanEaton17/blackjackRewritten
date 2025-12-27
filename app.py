@@ -494,38 +494,122 @@ def get_start_night():
     return jsonify(result)
 
 
-@app.route('/api/story/end-day', methods=['POST'])
-def post_end_day():
+@app.route('/end-day')
+def end_day_page():
+    """End of day page"""
+    return render_template('end_day.html')
+
+
+@app.route('/start-day')
+def start_day_page():
+    """Start of day page"""
+    return render_template('start_day.html')
+
+
+@app.route('/afternoon')
+def afternoon_page():
+    """Afternoon page"""
+    return render_template('afternoon.html')
+
+
+@app.route('/api/story/end-day', methods=['GET', 'POST'])
+def api_end_day():
     """End of day sequence after casino"""
     player = get_player()
-    result = player.end_day()
+    
+    # Get quote from WebLists
+    from web_story import WebLists
+    lists = WebLists()
+    quote = lists.get_random_quote()
+    
+    result = {
+        "success": True,
+        "day": player.day,
+        "balance": player.balance,
+        "rank": player.get_rank_name(),
+        "health": player.health,
+        "quote": quote,
+        "message": f"Day {player.day} complete. You ended with ${player.balance}."
+    }
+    
+    # Increment day for next cycle
+    player.day += 1
     save_player(player)
+    
     return jsonify(result)
 
 
-@app.route('/api/story/end-day-stats', methods=['POST'])
-def post_end_day_stats():
-    """Display end of day statistics"""
-    player = get_player()
-    result = player.end_day_stats()
-    save_player(player)
-    return jsonify(result)
-
-
-@app.route('/api/story/start-day', methods=['POST'])
-def post_start_day():
+@app.route('/api/story/start-day', methods=['GET', 'POST'])
+def api_start_day():
     """Morning/start of day phase"""
     player = get_player()
-    result = player.start_day()
+    
+    # Trigger a day event
+    event_result = player.trigger_event('day')
+    
+    result = {
+        "success": True,
+        "message": f"Day {player.day} begins...",
+        "event": event_result if event_result else None
+    }
+    
     save_player(player)
     return jsonify(result)
 
 
-@app.route('/api/story/afternoon', methods=['POST'])
-def post_afternoon():
+@app.route('/api/story/afternoon', methods=['GET', 'POST'])
+def api_afternoon():
     """Afternoon phase"""
     player = get_player()
-    result = player.afternoon()
+    
+    # Get available shops based on rank
+    shops = []
+    rank = player.get_rank()
+    
+    # All players can access these
+    shops.append({"name": "Doctor", "id": "doctor", "locked": False})
+    shops.append({"name": "Marvin's Store", "id": "marvin", "locked": False})
+    
+    # Unlock based on rank
+    if rank >= 1:
+        shops.append({"name": "Witch", "id": "witch", "locked": False})
+        shops.append({"name": "Tom's Repair", "id": "tom", "locked": False})
+    else:
+        shops.append({"name": "Witch", "id": "witch", "locked": True})
+        shops.append({"name": "Tom's Repair", "id": "tom", "locked": True})
+    
+    if rank >= 2:
+        shops.append({"name": "Frank's Fix-It", "id": "frank", "locked": False})
+    else:
+        shops.append({"name": "Frank's Fix-It", "id": "frank", "locked": True})
+    
+    if rank >= 3:
+        shops.append({"name": "Oswald's Auto", "id": "oswald", "locked": False})
+    else:
+        shops.append({"name": "Oswald's Auto", "id": "oswald", "locked": True})
+    
+    result = {
+        "success": True,
+        "shops": shops
+    }
+    
+    save_player(player)
+    return jsonify(result)
+
+
+@app.route('/api/story/event-choice', methods=['POST'])
+def api_event_choice():
+    """Handle player choice in an event"""
+    player = get_player()
+    data = request.get_json()
+    choice = data.get('choice')
+    
+    # Process choice (simplified for now)
+    result = {
+        "success": True,
+        "continue_to_afternoon": True
+    }
+    
     save_player(player)
     return jsonify(result)
 
