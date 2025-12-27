@@ -1,0 +1,132 @@
+BLACKJACK STORY MODE - Standalone Edition
+==========================================
+
+SYSTEM REQUIREMENTS:
+- Windows 10 or higher (64-bit) / Linux / macOS
+- 100 MB free disk space
+- Modern web browser (Chrome, Firefox, Edge, Safari)
+- Internet connection NOT required (runs locally)
+
+QUICK START:
+1. Double-click the BlackjackStoryMode executable
+2. Wait for the browser to open automatically (1-2 seconds)
+3. Start playing!
+
+HOW TO PLAY:
+============
+
+GAME OBJECTIVE:
+- Start with $50 and try to reach $1,000,000
+- Survive through story events and casino nights
+- Make smart choices to maximize your chances
+
+GAMEPLAY FLOW:
+1. Casino Night - Play 3 rounds of blackjack (4 with Golden Watch)
+2. End of Day - Review your stats and see your progress
+3. Morning - Experience story events, meet NPCs
+4. Afternoon - Visit shops, buy items, or return to casino
+5. Repeat the cycle until you win or lose everything
+
+STORY SYSTEM:
+- 47 unique story events based on your wealth level
+- Events change as you progress from Poor → Nearly There
+- Choices affect your health, money, and available options
+- Random encounters keep each playthrough unique
+
+SHOPS & ITEMS:
+- Doctor's Office (always available) - Health treatments
+- Witch's Hut (unlocks at $1,000+) - Potions and magical items
+- Repair Shops - Fix broken items (unlock by meeting mechanics)
+- Auto Shops - Car maintenance services
+- Marvin's Store - General goods (unlock by finding Map)
+
+SPECIAL ITEMS:
+- Golden Watch: Grants +1 casino round per night
+- Health Indicator: Shows your exact health status
+- Delight Indicator: Reveals happiness levels
+- Flask of No Bust: Prevents blackjack busts
+- And more...
+
+GAME FEATURES:
+==============
+✓ Authentic blackjack gameplay with proper rules
+✓ Forced story progression (no skipping content)
+✓ Minimalist, creepy retro aesthetic
+✓ Hidden mechanics for mystery and discovery
+✓ Item durability system
+✓ NPC encounter system
+✓ Rank-based progression (6 wealth tiers)
+✓ Auto-save within gaming session
+
+CONTROLS:
+=========
+- Mouse: Click buttons to make choices
+- Betting: Use quick bet buttons or custom amount
+- Casino: Hit, Stand, or Deal buttons
+- Story: Click "Continue" to progress through events
+- Shops: Click items to purchase
+
+TIPS FOR SUCCESS:
+=================
+1. Manage your bankroll carefully in the casino
+2. Don't bet everything on one hand
+3. Visit the Doctor when health is low
+4. Buy items from shops to unlock bonuses
+5. Meet the mechanics early to unlock repair services
+6. Find the Map to access Marvin's store
+7. Save money for expensive but valuable items
+8. Watch for special events at higher wealth ranks
+
+TROUBLESHOOTING:
+================
+
+Browser doesn't open automatically:
+→ Manually navigate to http://127.0.0.1:5000/
+
+Port 5000 already in use:
+→ Close other applications using that port
+→ Or edit the port in the executable configuration
+
+Firewall warning:
+→ Allow the application through your firewall
+→ The app only listens on localhost (127.0.0.1)
+
+Game freezes or crashes:
+→ Refresh the browser page
+→ Your progress within the session will be lost
+→ Restart the executable to begin a new game
+
+Black screen in browser:
+→ Wait a few seconds for the server to fully start
+→ Try refreshing the page
+→ Check console window for error messages
+
+TECHNICAL DETAILS:
+==================
+- Runs a local Flask web server on your computer
+- All game data stored in temporary session (not saved to disk)
+- No internet connection required
+- No data collection or external connections
+- Safe to close by closing browser and console window
+
+TO EXIT THE GAME:
+=================
+1. Close the browser tab
+2. Close the console/terminal window
+   - Or press Ctrl+C in the console window
+
+CREDITS:
+========
+Original Terminal Game: DylanEaton17
+Web Adaptation: GitHub Copilot
+Framework: Flask (Python)
+Version: 1.0.0
+Build Date: December 2025
+
+ENJOY THE GAME!
+===============
+Experience the thrill of high-stakes blackjack combined with 
+intense survival storytelling. Every decision matters. Every 
+bet could change your fate. Can you reach $1,000,000?
+
+For support or bug reports, please visit the GitHub repository.
