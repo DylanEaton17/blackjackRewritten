@@ -2727,3 +2727,688 @@ class WebPlayer:
                 "continue": True,
                 "state": self.to_dict()
             }
+
+    # Rank 3 (Rich): $100,000 - $499,999
+    # DAY EVENTS
+    def left_trunk_open(self):
+        """Rich day event - trunk left open overnight"""
+        result = {
+            "title": "Left Trunk Open",
+            "text": [
+                "You wake up in the front seat, with a chill throughout the whole wagon.",
+                "",
+                "Had the trunk really been open all night?",
+                "",
+                "Hopefully nothing had gotten in.",
+                "",
+                "You get out of the car and close the trunk, just to be safe."
+            ],
+            "continue": True,
+            "state": self.to_dict()
+        }
+        
+        # Add dangers based on random chance
+        random_chance = random.randint(0, 5)
+        if random_chance < 2:
+            self.dangers.add("Rat")
+        elif random_chance < 4:
+            self.dangers.add("Termite")
+        
+        return result
+    
+    def rat_bite(self):
+        """Rich day event - rat bite (conditional on Rat danger)"""
+        # Skip if already has status or no danger
+        if "Rabies" in self.status_effects or "Rat" not in self.dangers or "Rat Bite" in self.status_effects:
+            return self.trigger_event('day')
+        
+        result_text = [
+            "You wake up to a sharp pain on your ankle!",
+            "",
+            "You look down to see a skinny gray rat nibbling your foot. You kick at it, but the little rodent runs under the seat.",
+            "",
+            "The rat jumps up onto your backseat, and begins to laugh at you. Now that's just cruel. This rat must be crazy.",
+            ""
+        ]
+        
+        if "Pest Control" in self.inventory:
+            result_text.extend([
+                f"You grab your **Pest Control** and spray the rat down.",
+                "",
+                "A cloud of white liquid covers the rat, and you watch as it spazzes out, and dies.",
+                "",
+                "Hopefully, that's it for your rat problems. Except for that bite. You might wanna get that checked out."
+            ])
+            # Remove dangers
+            self.dangers.discard("Rat")
+            self.dangers.discard("Termite")
+        else:
+            result_text.extend([
+                "You jump at the seat towards the rat, but it sneaks back under the passenger seat, and you can't find it.",
+                "",
+                "That damn rat. Hopefully, the bite isn't too serious, but it's probably worth getting checked out."
+            ])
+        
+        self.status_effects.add("Rat Bite")
+        
+        # 50% chance of rabies
+        if random.randint(0, 1) == 1:
+            self.status_effects.add("Rabies")
+        
+        return {
+            "title": "Rat Bite",
+            "text": result_text,
+            "continue": True,
+            "state": self.to_dict()
+        }
+    
+    def hungry_termites(self):
+        """Rich day event - termites eating money (conditional)"""
+        if random.randint(0, 1) != 0 or "Termite" not in self.dangers:
+            return self.trigger_event('day')
+        
+        result_text = [
+            "You wake up to a clicking sound. Looking around, you notice that it's coming from your pile of money.",
+            "",
+            "You jump up to check your cash, and you find a termite eating away at your cash.",
+            ""
+        ]
+        
+        if "Pest Control" in self.inventory:
+            result_text.extend([
+                f"You grab your **Pest Control** and spray in the direction of the termite.",
+                "",
+                "A cloud of white liquid covers the termite, and you watch as it slows down, twitches, and dies.",
+                "",
+                "Hopefully, that's the end of your termite problems.",
+                ""
+            ])
+            # Remove dangers
+            self.dangers.discard("Rat")
+            self.dangers.discard("Termite")
+        else:
+            result_text.extend([
+                "You attempt to swat it with your hand, but it falls under your car seat.",
+                "",
+                "You stick your head under the seat, but you aren't sure where the termite went, or if it has a family nearby. This is just brutal.",
+                ""
+            ])
+        
+        # Lose 20-50% of money
+        losses = int(self.balance * (random.randint(20, 50) / 100))
+        self.balance -= losses
+        
+        result_text.extend([
+            "The termite ate through a lot of your money.",
+            "",
+            f"You lost ${losses:,}."
+        ])
+        
+        return {
+            "title": "Hungry Termites",
+            "text": result_text,
+            "continue": True,
+            "state": self.to_dict()
+        }
+    
+    def starving_cow(self):
+        """Rich day event - Betsy's return with tractor (conditional)"""
+        if "Betsy" not in self.met_npcs or "Betsy Tractor" not in self.dangers:
+            return self.trigger_event('day')
+        
+        self.dangers.add("Betsy Army")
+        self.dangers.discard("Betsy Tractor")
+        
+        return {
+            "title": "Starving Cow",
+            "text": [
+                "You wake up to the sound of a tractor barreling closer. As you jump up from your seat, you see the tractor getting closer to your wagon.",
+                "",
+                "The tractor drives beside your vehicle, and pushes right up against you, grinding the paint off your car. That's just mean.",
+                "",
+                "You look up at the driver to see a beautiful black and white cow. Good god, it's Betsy. Why, Betsy, why. The cow moos at you aggressively, and you roll down the window.",
+                "",
+                "Betsy stares into your soul, then looks over at the seat next to you. It appears Betsy is interested in your pile of money."
+            ],
+            "choices": [
+                {"text": "Feed Betsy $10,000", "value": "feed"},
+                {"text": "Refuse to feed Betsy", "value": "refuse"}
+            ],
+            "state": self.to_dict()
+        }
+    
+    def starving_cow_choice(self, choice):
+        """Handle Betsy feeding choices"""
+        if choice == "feed":
+            if self.balance < 10000:
+                return {
+                    "title": "Not Enough Money",
+                    "text": [
+                        "You don't have enough money to feed Betsy!",
+                        "",
+                        "She moos angrily at you."
+                    ],
+                    "choices": [
+                        {"text": "Refuse to feed Betsy", "value": "refuse"}
+                    ],
+                    "state": self.to_dict()
+                }
+            
+            self.balance -= 10000
+            
+            # Check if Betsy is satisfied
+            if random.randint(0, 3) == 0 or self.balance < 50000:
+                return {
+                    "title": "Betsy is Satisfied",
+                    "text": [
+                        "You reach out your window, and put a stack of bills, worth $10,000 into Betsy's mouth. She chews them up, then spits them out into your wagon.",
+                        "",
+                        "Betsy moos, then smiles. She pulls away from the car, and drives the tractor down the road, happy as can be."
+                    ],
+                    "continue": True,
+                    "state": self.to_dict()
+                }
+            else:
+                return {
+                    "title": "Betsy Wants More",
+                    "text": [
+                        "You reach out your window, and put a stack of bills, worth $10,000 into Betsy's mouth. She chews them up, then spits them out into your wagon.",
+                        "",
+                        "Betsy moos, then stares you down. She doesn't seem to be done with you."
+                    ],
+                    "choices": [
+                        {"text": "Feed Betsy $10,000 again", "value": "feed"},
+                        {"text": "Refuse to feed Betsy", "value": "refuse"}
+                    ],
+                    "state": self.to_dict()
+                }
+        else:  # refuse
+            damage = random.randint(40, 60)
+            self.health = max(0, self.health - damage)
+            
+            return {
+                "title": "Betsy Attacks!",
+                "text": [
+                    "Betsy moos, then backs the tractor up. She then proceeds to step on the gas, and drives the tractor forward at your vehicle, slamming into the front of your wagon hard.",
+                    "",
+                    "She moos and moos and moos, pushing your car further back. The jolt of the vehicles smashing into each other kills, and your spine begins to fracture.",
+                    "",
+                    f"You take {damage} damage!",
+                    "",
+                    "Betsy finally backs away, satisfied with the destruction."
+                ],
+                "continue": True,
+                "state": self.to_dict()
+            }
+
+    # NIGHT EVENTS
+    def beach_swim(self):
+        """Rich night event - swimming at the beach"""
+        self.met_npcs.add("Beach Swim Event")
+        
+        event_type = random.choice(["jellyfish", "relaxation", "undertow"])
+        
+        if event_type == "jellyfish":
+            return {
+                "title": "Beach Swim",
+                "text": [
+                    "You slip into the moonlit surf, the water cool and alive around you. The ocean's pulse is steady, ancient, and you feel both small and infinite as you float beyond the breakers.",
+                    "",
+                    "A sudden, electric sting wraps around your leg—a jellyfish! The pain is sharp and immediate. Do you try to tough it out or rush back to shore?"
+                ],
+                "choices": [
+                    {"text": "Tough it out", "value": "tough"},
+                    {"text": "Rush to shore", "value": "shore"}
+                ],
+                "event_context": "jellyfish",
+                "state": self.to_dict()
+            }
+        elif event_type == "relaxation":
+            heal_amount = random.randint(15, 30)
+            self.health = min(100, self.health + heal_amount)
+            self.status_effects.add("Relaxed")
+            
+            return {
+                "title": "Beach Swim - Relaxation",
+                "text": [
+                    "You slip into the moonlit surf, the water cool and alive around you. The ocean's pulse is steady, ancient, and you feel both small and infinite as you float beyond the breakers.",
+                    "",
+                    "You float on your back, the stars spinning above you. The water cradles you, washing away your worries. For a moment, you are at peace, and the world feels kind.",
+                    "",
+                    f"You heal {heal_amount} health!"
+                ],
+                "continue": True,
+                "state": self.to_dict()
+            }
+        else:  # undertow
+            return {
+                "title": "Beach Swim - Undertow",
+                "text": [
+                    "You slip into the moonlit surf, the water cool and alive around you. The ocean's pulse is steady, ancient, and you feel both small and infinite as you float beyond the breakers.",
+                    "",
+                    "A sudden current tugs at your legs—the undertow! You struggle, panic rising. Do you fight the current or let it carry you?"
+                ],
+                "choices": [
+                    {"text": "Fight the current", "value": "fight"},
+                    {"text": "Let it carry you", "value": "carry"}
+                ],
+                "event_context": "undertow",
+                "state": self.to_dict()
+            }
+    
+    def beach_swim_choice(self, choice, event_context="jellyfish"):
+        """Handle beach swim choices"""
+        if event_context == "jellyfish":
+            if choice == "tough":
+                if random.random() < 0.5:
+                    self.status_effects.add("Resilient")
+                    return {
+                        "title": "Endured the Pain",
+                        "text": [
+                            "You grit your teeth and float, letting the pain ebb with the tide.",
+                            "",
+                            "Eventually, the sting fades, and you feel stronger for having endured it."
+                        ],
+                        "continue": True,
+                        "state": self.to_dict()
+                    }
+                else:
+                    damage = random.randint(15, 30)
+                    self.health = max(0, self.health - damage)
+                    return {
+                        "title": "Pain Intensifies",
+                        "text": [
+                            "The pain intensifies, your vision blurs, and you barely make it back to shore, shivering and weak.",
+                            "",
+                            f"You take {damage} damage!"
+                        ],
+                        "continue": True,
+                        "state": self.to_dict()
+                    }
+            else:  # shore
+                damage = random.randint(8, 18)
+                self.health = max(0, self.health - damage)
+                return {
+                    "title": "Rush to Shore",
+                    "text": [
+                        "You thrash for shore, each stroke agony. You collapse on the sand, breathless, but alive.",
+                        "",
+                        f"You take {damage} damage."
+                    ],
+                    "continue": True,
+                    "state": self.to_dict()
+                }
+        else:  # undertow
+            if choice == "fight":
+                if random.random() < 0.5:
+                    damage = random.randint(5, 10)
+                    self.health = max(0, self.health - damage)
+                    return {
+                        "title": "Escaped the Current",
+                        "text": [
+                            "You swim parallel to the shore, remembering old advice. The current releases you, and you stagger back to the beach, exhausted but safe.",
+                            "",
+                            f"You take {damage} damage."
+                        ],
+                        "continue": True,
+                        "state": self.to_dict()
+                    }
+                else:
+                    damage = random.randint(15, 25)
+                    self.health = max(0, self.health - damage)
+                    return {
+                        "title": "Swept Away",
+                        "text": [
+                            "You fight, but the current is too strong. You're swept far down the beach, losing time and energy.",
+                            "",
+                            f"You take {damage} damage."
+                        ],
+                        "continue": True,
+                        "state": self.to_dict()
+                    }
+            else:  # carry
+                self.status_effects.add("Oceanwise")
+                return {
+                    "title": "Trusting the Ocean",
+                    "text": [
+                        "You let the current carry you, trusting the ocean.",
+                        "",
+                        "Eventually, it spits you out far from where you started, but you're unharmed—and oddly exhilarated."
+                    ],
+                    "continue": True,
+                    "state": self.to_dict()
+                }
+    
+    def beach_dive(self):
+        """Rich night event - diving at the beach"""
+        self.met_npcs.add("Beach Dive Event")
+        
+        event_type = random.choice(["pearl", "treasure", "shark"])
+        
+        if event_type == "pearl":
+            self.inventory["Giant Pearl"] = 1
+            self.status_effects.add("Lucky")
+            
+            return {
+                "title": "Beach Dive - Pearl",
+                "text": [
+                    "You wade into the surf and dive beneath the waves, the world above replaced by a blue, sun-dappled silence. The ocean floor is a shifting landscape of sand, shells, and secrets.",
+                    "",
+                    "You spot a glimmer in the sand and dig with your hands. Your fingers close around a perfect, iridescent pearl, larger than any you've seen before.",
+                    "",
+                    "You surface, gasping, the pearl clutched in your hand. You feel luckier, as if the ocean itself has blessed you."
+                ],
+                "continue": True,
+                "state": self.to_dict()
+            }
+        elif event_type == "treasure":
+            return {
+                "title": "Beach Dive - Sunken Chest",
+                "text": [
+                    "You wade into the surf and dive beneath the waves, the world above replaced by a blue, sun-dappled silence. The ocean floor is a shifting landscape of sand, shells, and secrets.",
+                    "",
+                    "You find the rotting remains of a wooden chest, half-buried in the sand. Do you try to open it?"
+                ],
+                "choices": [
+                    {"text": "Open the chest", "value": "open"},
+                    {"text": "Leave it alone", "value": "leave"}
+                ],
+                "state": self.to_dict()
+            }
+        else:  # shark
+            if random.random() < 0.5:
+                return {
+                    "title": "Beach Dive - Shark Encounter",
+                    "text": [
+                        "You wade into the surf and dive beneath the waves, the world above replaced by a blue, sun-dappled silence. The ocean floor is a shifting landscape of sand, shells, and secrets.",
+                        "",
+                        "A shadow glides overhead—a massive shark, circling. You freeze, heart pounding, as it draws closer.",
+                        "",
+                        "You remain still, barely breathing, and the shark loses interest, vanishing into the blue."
+                    ],
+                    "continue": True,
+                    "state": self.to_dict()
+                }
+            else:
+                damage = random.randint(20, 40)
+                self.health = max(0, self.health - damage)
+                return {
+                    "title": "Beach Dive - Shark Attack!",
+                    "text": [
+                        "You wade into the surf and dive beneath the waves, the world above replaced by a blue, sun-dappled silence. The ocean floor is a shifting landscape of sand, shells, and secrets.",
+                        "",
+                        "A shadow glides overhead—a massive shark, circling. You freeze, heart pounding, as it draws closer.",
+                        "",
+                        "The shark lunges! You kick and punch, barely escaping with your life, blood swirling in the water.",
+                        "",
+                        f"You take {damage} damage!"
+                    ],
+                    "continue": True,
+                    "state": self.to_dict()
+                }
+    
+    def beach_dive_choice(self, choice):
+        """Handle beach dive treasure choices"""
+        if choice == "open":
+            loot_type = random.choice(["coins", "artifact", "trap"])
+            
+            if loot_type == "coins":
+                money = random.randint(1000, 3000)
+                self.balance += money
+                return {
+                    "title": "Treasure Found!",
+                    "text": [
+                        "Inside, you find gold coins and jeweled trinkets, their colors dulled by the sea. You stuff your pockets and swim for the surface.",
+                        "",
+                        f"You gain ${money:,}!"
+                    ],
+                    "continue": True,
+                    "state": self.to_dict()
+                }
+            elif loot_type == "artifact":
+                self.inventory["Ocean Relic"] = 1
+                return {
+                    "title": "Strange Artifact",
+                    "text": [
+                        "You find a strange, barnacle-encrusted artifact. As you touch it, you feel a surge of energy—and a whisper in your mind."
+                    ],
+                    "continue": True,
+                    "state": self.to_dict()
+                }
+            else:  # trap
+                damage = random.randint(15, 30)
+                self.health = max(0, self.health - damage)
+                return {
+                    "title": "Jellyfish Trap!",
+                    "text": [
+                        "A cloud of stinging jellyfish bursts from the chest! You thrash and swim away, your skin burning.",
+                        "",
+                        f"You take {damage} damage!"
+                    ],
+                    "continue": True,
+                    "state": self.to_dict()
+                }
+        else:  # leave
+            return {
+                "title": "Left Alone",
+                "text": [
+                    "You leave the chest alone, wary of curses and the weight of the deep."
+                ],
+                "continue": True,
+                "state": self.to_dict()
+            }
+    
+    def city_streets(self):
+        """Rich night event - wandering city streets"""
+        self.met_npcs.add("City Streets Event")
+        
+        event_type = random.choice(["drug_dealer", "stray_cat", "rent_bike", "none"])
+        
+        if event_type == "drug_dealer":
+            return {
+                "title": "City Streets - Drug Dealer",
+                "text": [
+                    "You wander the city's labyrinth of neon and shadow, where every alley whispers a different story. The air is thick with exhaust, music, and the promise of trouble. Tonight, the city feels alive—and hungry.",
+                    "",
+                    "A gaunt figure in a hoodie steps from a flickering doorway, eyes darting. 'Looking for a little edge?' he asks, holding out a small bag. The city seems to hold its breath. Do you accept?"
+                ],
+                "choices": [
+                    {"text": "Accept the offer", "value": "accept"},
+                    {"text": "Decline and move on", "value": "decline"}
+                ],
+                "event_context": "drug_dealer",
+                "state": self.to_dict()
+            }
+        elif event_type == "stray_cat":
+            return {
+                "title": "City Streets - Stray Cat",
+                "text": [
+                    "You wander the city's labyrinth of neon and shadow, where every alley whispers a different story. The air is thick with exhaust, music, and the promise of trouble. Tonight, the city feels alive—and hungry.",
+                    "",
+                    "A scruffy, one-eyed cat weaves between your legs, meowing with a raspy voice. Its fur is matted, but its gaze is sharp. Do you kneel to pet it?"
+                ],
+                "choices": [
+                    {"text": "Pet the cat", "value": "pet"},
+                    {"text": "Ignore it", "value": "ignore"}
+                ],
+                "event_context": "stray_cat",
+                "state": self.to_dict()
+            }
+        elif event_type == "rent_bike":
+            return {
+                "title": "City Streets - Rental Bikes",
+                "text": [
+                    "You wander the city's labyrinth of neon and shadow, where every alley whispers a different story. The air is thick with exhaust, music, and the promise of trouble. Tonight, the city feels alive—and hungry.",
+                    "",
+                    "You spot a row of battered rental bikes. The city's traffic is a snarl, but on two wheels, you could fly. Do you rent a bike and ride?"
+                ],
+                "choices": [
+                    {"text": "Rent a bike", "value": "rent"},
+                    {"text": "Walk instead", "value": "walk"}
+                ],
+                "event_context": "rent_bike",
+                "state": self.to_dict()
+            }
+        else:  # none
+            return {
+                "title": "City Streets",
+                "text": [
+                    "You wander the city's labyrinth of neon and shadow, where every alley whispers a different story. The air is thick with exhaust, music, and the promise of trouble. Tonight, the city feels alive—and hungry.",
+                    "",
+                    "Tonight, the city is just a city. You wander, lost in thought, as the world spins on around you. But you can't shake the feeling that you're being watched."
+                ],
+                "continue": True,
+                "state": self.to_dict()
+            }
+    
+    def city_streets_choice(self, choice, event_context):
+        """Handle city streets choices"""
+        if event_context == "drug_dealer":
+            if choice == "accept":
+                outcome = random.choice(["buff", "bad_trip", "police"])
+                
+                if outcome == "buff":
+                    self.status_effects.add("Energized")
+                    return {
+                        "title": "Enhanced",
+                        "text": [
+                            "You slip the contents under your tongue. The world sharpens—colors brighter, sounds clearer. For a while, you feel invincible, your luck uncanny."
+                        ],
+                        "continue": True,
+                        "state": self.to_dict()
+                    }
+                elif outcome == "bad_trip":
+                    damage = random.randint(15, 30)
+                    loss = random.randint(200, 800)
+                    self.health = max(0, self.health - damage)
+                    self.balance -= loss
+                    return {
+                        "title": "Bad Trip",
+                        "text": [
+                            "Your heart races, the world tilts, and you stagger into the street. You lose track of time—and some money.",
+                            "",
+                            "When you come to, your pockets are lighter and your head aches.",
+                            "",
+                            f"You take {damage} damage and lose ${loss:,}!"
+                        ],
+                        "continue": True,
+                        "state": self.to_dict()
+                    }
+                else:  # police
+                    loss = random.randint(100, 400)
+                    self.balance -= loss
+                    return {
+                        "title": "Police!",
+                        "text": [
+                            "Suddenly, blue lights flash. 'Police! Hands up!' You drop the bag and run, barely escaping.",
+                            "",
+                            f"You lose ${loss:,} in the chaos."
+                        ],
+                        "continue": True,
+                        "state": self.to_dict()
+                    }
+            else:  # decline
+                return {
+                    "title": "Declined",
+                    "text": [
+                        "You shake your head and move on, the dealer's gaze burning into your back. The city feels colder."
+                    ],
+                    "continue": True,
+                    "state": self.to_dict()
+                }
+        
+        elif event_context == "stray_cat":
+            if choice == "pet":
+                fate = random.choice(["lucky", "scratch", "ally"])
+                
+                if fate == "lucky":
+                    self.status_effects.add("Lucky")
+                    return {
+                        "title": "Lucky Whisker",
+                        "text": [
+                            "The cat purrs, rubbing its head against your hand. It leaves a whisker in your palm.",
+                            "",
+                            "You feel luckier, as if the city itself is watching over you."
+                        ],
+                        "continue": True,
+                        "state": self.to_dict()
+                    }
+                elif fate == "scratch":
+                    damage = random.randint(3, 10)
+                    self.health = max(0, self.health - damage)
+                    return {
+                        "title": "Scratched!",
+                        "text": [
+                            "The cat hisses and claws your hand before darting away. You wince, blood trickling from the scratch.",
+                            "",
+                            f"You take {damage} damage."
+                        ],
+                        "continue": True,
+                        "state": self.to_dict()
+                    }
+                else:  # ally
+                    self.inventory["Stray Cat"] = 1
+                    return {
+                        "title": "Furry Companion",
+                        "text": [
+                            "The cat follows you for blocks, scaring off a would-be pickpocket.",
+                            "",
+                            "You gain a furry companion for the night."
+                        ],
+                        "continue": True,
+                        "state": self.to_dict()
+                    }
+            else:  # ignore
+                return {
+                    "title": "Ignored",
+                    "text": [
+                        "You ignore the cat, but its eyes follow you, unblinking, as you disappear into the city's maze."
+                    ],
+                    "continue": True,
+                    "state": self.to_dict()
+                }
+        
+        else:  # rent_bike
+            if choice == "rent":
+                outcome = random.choice(["fast", "crash", "theft"])
+                
+                if outcome == "fast":
+                    self.status_effects.add("Refreshed")
+                    return {
+                        "title": "Exhilarating Ride",
+                        "text": [
+                            "You weave through traffic, the wind in your hair, dodging taxis and street vendors.",
+                            "",
+                            "You arrive at your next destination exhilarated and ahead of schedule."
+                        ],
+                        "continue": True,
+                        "state": self.to_dict()
+                    }
+                elif outcome == "crash":
+                    damage = random.randint(8, 18)
+                    loss = random.randint(50, 200)
+                    self.health = max(0, self.health - damage)
+                    self.balance -= loss
+                    return {
+                        "title": "Bike Crash!",
+                        "text": [
+                            "A pothole sends you flying. You limp away, bruised and battered, your wallet lighter from the repair fee.",
+                            "",
+                            f"You take {damage} damage and lose ${loss:,}!"
+                        ],
+                        "continue": True,
+                        "state": self.to_dict()
+                    }
+                else:  # theft
+                    loss = random.randint(200, 600)
+                    self.balance -= loss
+                    return {
+                        "title": "Bike Stolen!",
+                        "text": [
+                            "You stop for a snack, and when you return, the bike is gone—stolen.",
+                            "",
+                            f"You pay a hefty fine of ${loss:,} to the rental company."
+                        ],
+                        "continue": True,
+                        "state": self.to_dict()
+                    }
