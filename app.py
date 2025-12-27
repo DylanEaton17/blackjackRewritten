@@ -813,6 +813,18 @@ def check_end_night():
         })
 
 
+@app.route('/api/player/inventory', methods=['GET'])
+def get_inventory():
+    """Get player inventory"""
+    player = get_player()
+    
+    return jsonify({
+        "success": True,
+        "inventory": player.inventory,
+        "broken_inventory": list(player.broken_inventory) if hasattr(player, 'broken_inventory') else []
+    })
+
+
 if __name__ == '__main__':
     # Development server - DO NOT use in production
     # For production, use a WSGI server like gunicorn:

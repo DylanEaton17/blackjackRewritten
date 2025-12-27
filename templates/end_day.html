@@ -102,6 +102,43 @@
             font-size: 1.2em;
             color: #d4af37;
         }
+        
+        .inventory-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(40, 40, 60, 0.6);
+            border-radius: 10px;
+            border: 2px solid #555;
+        }
+        
+        .inventory-title {
+            color: #d4af37;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .inventory-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .inventory-item {
+            background: rgba(60, 60, 80, 0.8);
+            padding: 8px 15px;
+            border-radius: 5px;
+            border: 1px solid #666;
+            font-size: 0.9em;
+            color: #ccc;
+        }
+        
+        .no-items {
+            text-align: center;
+            color: #888;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -119,8 +156,12 @@
                 const response = await fetch('/api/story/end-day');
                 const data = await response.json();
                 
+                // Also fetch inventory
+                const invResponse = await fetch('/api/player/inventory');
+                const invData = await invResponse.json();
+                
                 if (data.success) {
-                    displayEndDay(data);
+                    displayEndDay(data, invData.inventory || []);
                 } else {
                     document.getElementById('content').innerHTML = '<p>Error loading end of day data.</p>';
                 }
@@ -130,7 +171,7 @@
             }
         }
         
-        function displayEndDay(data) {
+        function displayEndDay(data, inventory) {
             const content = document.getElementById('content');
             
             let html = `
@@ -149,6 +190,24 @@
                     </div>
                 </div>
             `;
+            
+            // Add inventory section if player has items
+            if (inventory && inventory.length > 0) {
+                html += `
+                    <div class="inventory-section">
+                        <div class="inventory-title">🎒 Inventory</div>
+                        <div class="inventory-items">
+                `;
+                
+                inventory.forEach(item => {
+                    html += `<div class="inventory-item">${item}</div>`;
+                });
+                
+                html += `
+                        </div>
+                    </div>
+                `;
+            }
             
             if (data.quote) {
                 html += `
