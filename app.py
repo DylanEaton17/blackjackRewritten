@@ -2,6 +2,7 @@ from flask import Flask, render_template, jsonify, request, session
 import os
 import random
 import deckOfCards
+from web_story import WebPlayer
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -433,122 +434,27 @@ def new_round():
 
 # ===== Story Mode =====
 
-class StoryGame:
-    """Story mode game state"""
-    
-    def __init__(self, balance=50):
-        self.balance = balance
-        self.day = 1
-        self.time_of_day = "Morning"
-        self.health = 100
-        self.max_health = 100
-        self.inventory = []
-        self.conditions = []
-        self.location = "outside_casino"
-        
-    def get_state(self):
-        """Get current story state"""
-        return {
-            "balance": self.balance,
-            "day": self.day,
-            "timeOfDay": self.time_of_day,
-            "health": self.health,
-            "maxHealth": self.max_health,
-            "inventory": self.inventory,
-            "conditions": self.conditions,
-            "location": self.location
-        }
-    
-    def explore(self):
-        """Player explores the area"""
-        events = [
-            {
-                "title": "Desert Exploration",
-                "text": [
-                    "You walk around the parking lot, kicking up dust.",
-                    "The desert stretches endlessly in all directions.",
-                    "You find a crumpled $5 bill under a car!"
-                ]
-            },
-            {
-                "title": "Mysterious Stranger",
-                "text": [
-                    "An old man approaches you.",
-                    '"Good luck in there," he says with a knowing smile.',
-                    '"You\'re going to need it."'
-                ]
-            },
-            {
-                "title": "Hot Day",
-                "text": [
-                    "The sun beats down relentlessly.",
-                    "You feel your throat getting dry.",
-                    "Maybe you should head inside soon."
-                ]
-            }
-        ]
-        
-        event = random.choice(events)
-        
-        # Random chance to find money
-        if random.random() < 0.3:
-            found_money = random.choice([1, 5, 10])
-            self.balance += found_money
-            event["text"].append(f"You found ${found_money}!")
-        
-        return {
-            "title": event["title"],
-            "text": event["text"],
-            "state": self.get_state()
-        }
-    
-    def rest(self):
-        """Player rests"""
-        heal_amount = random.randint(5, 15)
-        self.health = min(self.max_health, self.health + heal_amount)
-        
-        # Advance time
-        if self.time_of_day == "Morning":
-            self.time_of_day = "Afternoon"
-        elif self.time_of_day == "Afternoon":
-            self.time_of_day = "Evening"
-        elif self.time_of_day == "Evening":
-            self.time_of_day = "Night"
-        else:
-            self.time_of_day = "Morning"
-            self.day += 1
-        
-        return {
-            "title": "Rest",
-            "text": [
-                "You find a shady spot and rest for a while.",
-                f"You recover {heal_amount} health.",
-                f"Time passes... It's now {self.time_of_day}."
-            ],
-            "state": self.get_state()
-        }
-    
-    def add_item(self, name, description=""):
-        """Add item to inventory"""
-        self.inventory.append({"name": name, "description": description})
-
-
-def get_story_game():
-    """Get or create story game from session"""
-    if 'story_game' not in session:
+def get_player():
+    """Get or create player from session"""
+    if 'player' not in session:
         # Get balance from blackjack game if it exists
         balance = 50
         if 'game' in session:
             game_data = session['game']
             balance = game_data.get('balance', 50)
         
-        story = StoryGame(balance)
-        session['story_game'] = story.__dict__
+        player = WebPlayer()
+        player.balance = balance
+        session['player'] = player.to_dict()
     else:
-        story = StoryGame()
-        story.__dict__.update(session['story_game'])
+        player = WebPlayer.from_dict(session['player'])
     
-    return story
+    return player
+
+
+def save_player(player):
+    """Save player to session"""
+    session['player'] = player.to_dict()
 
 
 @app.route('/intro')
@@ -566,25 +472,61 @@ def story():
 @app.route('/api/story/state', methods=['GET'])
 def get_story_state():
     """Get current story state"""
-    story = get_story_game()
-    return jsonify(story.get_state())
+    player = get_player()
+    return jsonify(player.to_dict())
 
 
-@app.route('/api/story/explore', methods=['POST'])
-def story_explore():
-    """Explore the area"""
-    story = get_story_game()
-    result = story.explore()
-    session['story_game'] = story.__dict__
+@app.route('/api/story/opening', methods=['GET'])
+def get_opening():
+    """Get opening sequence"""
+    player = get_player()
+    result = player.opening_lines()
+    save_player(player)
     return jsonify(result)
 
 
-@app.route('/api/story/rest', methods=['POST'])
-def story_rest():
-    """Rest to recover health"""
-    story = get_story_game()
-    result = story.rest()
-    session['story_game'] = story.__dict__
+@app.route('/api/story/start-night', methods=['GET'])
+def get_start_night():
+    """Get start of night (casino) sequence"""
+    player = get_player()
+    result = player.start_night()
+    save_player(player)
+    return jsonify(result)
+
+
+@app.route('/api/story/end-day', methods=['POST'])
+def post_end_day():
+    """End of day sequence after casino"""
+    player = get_player()
+    result = player.end_day()
+    save_player(player)
+    return jsonify(result)
+
+
+@app.route('/api/story/end-day-stats', methods=['POST'])
+def post_end_day_stats():
+    """Display end of day statistics"""
+    player = get_player()
+    result = player.end_day_stats()
+    save_player(player)
+    return jsonify(result)
+
+
+@app.route('/api/story/start-day', methods=['POST'])
+def post_start_day():
+    """Morning/start of day phase"""
+    player = get_player()
+    result = player.start_day()
+    save_player(player)
+    return jsonify(result)
+
+
+@app.route('/api/story/afternoon', methods=['POST'])
+def post_afternoon():
+    """Afternoon phase"""
+    player = get_player()
+    result = player.afternoon()
+    save_player(player)
     return jsonify(result)
 
 
@@ -594,10 +536,10 @@ def sync_balance():
     data = request.json
     balance = data.get('balance', 50)
     
-    # Update story game balance
-    story = get_story_game()
-    story.balance = balance
-    session['story_game'] = story.__dict__
+    # Update player balance
+    player = get_player()
+    player.balance = balance
+    save_player(player)
     
     return jsonify({"success": True, "balance": balance})
 
