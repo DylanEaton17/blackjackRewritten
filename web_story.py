@@ -1986,3 +1986,744 @@ class WebPlayer:
             "continue": True,
             "state": self.to_dict()
         }
+    
+    # ======================
+    # RANK 2 (MODEST) EVENTS: $10,000 - $99,999
+    # ======================
+    
+    # RANK 2 DAY EVENTS
+    def left_door_open(self):
+        """Rank 2 day event - door left open overnight"""
+        result = {
+            "title": "Left Door Open",
+            "text": [
+                "You wake up in the front seat, with a chill throughout your body.",
+                "Had the passenger door really been open all night?",
+                "Hopefully nothing had gotten in.",
+                "",
+                "You reach over and close the door, just to be safe."
+            ],
+            "continue": True
+        }
+        
+        # Random chance of danger
+        chance = random.randint(0, 5)
+        if chance <= 2:
+            self.dangers.add("Spider")
+        elif chance == 3:
+            self.dangers.add("Squirrel")
+            
+        result["state"] = self.to_dict()
+        return result
+    
+    def another_spider_bite(self):
+        """Rank 2 day event - spider bite (conditional on Spider danger)"""
+        # Check prerequisites
+        if "Spider" not in self.dangers or "Spider Bite" in self.status_effects:
+            return self.day_event()
+        
+        result = {
+            "title": "Another Spider Bite!",
+            "text": [
+                "You wake up to a sharp pain on your neck!",
+                "Swinging your arm to scratch the pain, you watch as a spider jumps to the backseat."
+            ]
+        }
+        
+        if "Pest Control" in self.inventory:
+            self.inventory.pop("Pest Control")
+            result["text"].extend([
+                "",
+                "You grab your Pest Control and spray in the direction of the spider.",
+                "A cloud of white liquid covers the spider, and you watch as it slows, and dies.",
+                "",
+                "Hopefully, that's the end of your spider problems."
+            ])
+        else:
+            result["text"].extend([
+                "",
+                "The spider, now out of reach, crawls off the seat and onto the floor.",
+                "You stick your head out back, but you aren't sure where the spider went, or if it has a family nearby.",
+                "",
+                "This is unfortunate."
+            ])
+        
+        self.status_effects.add("Spider Bite")
+        result["continue"] = True
+        result["state"] = self.to_dict()
+        return result
+    
+    def squirrel_invasion(self):
+        """Rank 2 day event - squirrel invasion (conditional)"""
+        # Check prerequisites
+        if "Squirrel" not in self.dangers or "Squirrel Bite" in self.status_effects or "Rabies" in self.status_effects or "Squirrely" in self.inventory or "Squirrely" in self.met_people:
+            return self.day_event()
+        
+        self.dangers.discard("Squirrel")
+        
+        if "Bag of Acorns" in self.inventory:
+            self.inventory.pop("Bag of Acorns")
+            
+            if "Dead Squirrely" in self.met_people:
+                return {
+                    "title": "Squirrel Visitor",
+                    "text": [
+                        "You wake up to the sound of something rummaging through your car.",
+                        "Looking in the backseat, you notice a little squirrel, chewing through your Bag of Acorns.",
+                        "He looks pretty cute.",
+                        "",
+                        "The squirrel notices you, and jumps from the bag, and over to your center console.",
+                        "He peers up at you, but your eyes are filled with tears.",
+                        "",
+                        "Nothing can ever replace Squirrely.",
+                        "",
+                        "You pick up the squirrel, open the door, and let it free."
+                    ],
+                    "continue": True,
+                    "state": self.to_dict()
+                }
+            else:
+                self.inventory["Squirrely"] = {"durability": None}
+                self.met_people.add("Squirrely")
+                return {
+                    "title": "Squirrel Friend",
+                    "text": [
+                        "You wake up to the sound of something rummaging through your car.",
+                        "Looking in the backseat, you notice a little squirrel, chewing through your Bag of Acorns.",
+                        "He looks pretty cute.",
+                        "",
+                        "The squirrel notices you, and jumps from the bag, and over to your center console.",
+                        "He peers up at you, with an acorn in hand, holding it up in your direction.",
+                        "",
+                        "You stick your hand out, and the squirrel gives you the acorn.",
+                        "This must be a sign of peace.",
+                        "",
+                        "After an hour of watching the squirrel eat the acorns, climb around your car,",
+                        "and jump from your arm to the dashboard over and over,",
+                        "you decide that this squirrel is now yours.",
+                        "",
+                        "You name him 'Squirrely', in honor of him being a squirrel."
+                    ],
+                    "continue": True,
+                    "state": self.to_dict()
+                }
+        else:
+            # Squirrel bite
+            self.status_effects.add("Squirrel Bite")
+            if random.randint(0, 3) == 1:
+                self.status_effects.add("Rabies")
+                
+            return {
+                "title": "Squirrel Attack!",
+                "text": [
+                    "You wake up to a sharp pain on your leg!",
+                    "You swing the hurt leg, and you watch as a squirrel goes flying into the air.",
+                    "",
+                    "The little rodent starts climbing around your car, scurrying around the walls,",
+                    "desperately trying to get out.",
+                    "",
+                    "You open the backseat windows, and the squirrel jumps out, and darts into the woods.",
+                    "",
+                    "Hopefully, that bite isn't too serious."
+                ],
+                "continue": True,
+                "state": self.to_dict()
+            }
+    
+    def further_interrogation(self):
+        """Rank 2 day event - further interrogation (conditional)"""
+        if "Interrogator" not in self.met_people or "Further Interrogation" not in self.dangers:
+            return self.day_event()
+        
+        self.dangers.discard("Further Interrogation")
+        self.dangers.add("Even Further Interrogation")
+        
+        return {
+            "title": "Further Interrogation",
+            "text": [
+                "You wake up, and through your windshield, you see a car parked right in front of you.",
+                "Tired, and concerned, you sit up.",
+                "",
+                "As you open the door and get out of your car, you notice a man you've met before,",
+                "in his bright red suit, once again peering into your trunk.",
+                "",
+                "The man sees you, and walks up to you, with a clipboard in his hand.",
+                "",
+                "\"You. You're awake. Good. You see this clipboard? It says you can't be here.\"",
+                "",
+                "You begin to read the paper on the clipboard. It's a message, written in Comic Sans:",
+                "",
+                "'This offical message from the government and the military and the army says that you can't be here.",
+                "That's right, you, the person reading this message right now, living on this land right here.",
+                "It's not for you. It won't ever be for you. So, you can't live here.",
+                "You need to move right now, or I'll be very very angry.'",
+                "",
+                "\"Did you read it?\"",
+            ],
+            "choices": [
+                {"id": "yes", "text": "Yes"},
+                {"id": "no", "text": "No"}
+            ],
+            "state": self.to_dict()
+        }
+    
+    def handle_further_interrogation(self, choice):
+        """Handle further interrogation choice"""
+        if choice == "yes":
+            return {
+                "title": "Interrogation Response",
+                "text": [
+                    "\"Good, so you know that all these powerful people want yo- are demanding",
+                    "that you move from where you're currently living, right this instant!",
+                    "I'd suggest you do so. I certainly wouldn't want to upset the government.\"",
+                    "",
+                    "After the man tells you this, he looks up, and stares at the sun.",
+                    "And after about 25 seconds, he rubs his eyes, walks back to his car, and drives off."
+                ],
+                "continue": True,
+                "state": self.to_dict()
+            }
+        else:  # no
+            return {
+                "title": "Interrogation Response",
+                "text": [
+                    "\"You didn't read it? Come on, I worked so hard on it.",
+                    "You really should read a clipboard with words on it if someone asks you to.",
+                    "Regardless, it says that you need to move! Or the consequences will be scary!\"",
+                    "",
+                    "After the man tells you this, he looks up, and stares at the sun.",
+                    "And after about 25 seconds, he rubs his eyes, walks back to his car, and drives off."
+                ],
+                "continue": True,
+                "state": self.to_dict()
+            }
+    
+    # RANK 2 NIGHT EVENTS
+    def swamp_wade(self):
+        """Rank 2 night event - wade through swamp"""
+        self.met_people.add("Swamp Wade Event")
+        
+        event_type = random.choice(["leech", "nectar", "witch", "none"])
+        
+        if event_type == "leech":
+            damage = random.randint(10, 25)
+            self.health = max(0, self.health - damage)
+            return {
+                "title": "Swamp Wade - Leeches!",
+                "text": [
+                    "You wade waist-deep through the swamp, the water cold and thick with silt.",
+                    "Every step is a struggle, and unseen things brush against your legs.",
+                    "The air is heavy with the scent of decay and blooming lilies.",
+                    "",
+                    "You feel a dozen sharp stings—leeches!",
+                    "You thrash and claw at your skin, but they cling tight, draining your strength.",
+                    "",
+                    f"You lose {damage} health.",
+                    "",
+                    "You stagger out of the water, pale and shivering, vowing never to return."
+                ],
+                "continue": True,
+                "state": self.to_dict()
+            }
+        elif event_type == "nectar":
+            return {
+                "title": "Swamp Wade - Healing Nectar",
+                "text": [
+                    "You wade waist-deep through the swamp, the water cold and thick with silt.",
+                    "Every step is a struggle, and unseen things brush against your legs.",
+                    "The air is heavy with the scent of decay and blooming lilies.",
+                    "",
+                    "Your hand brushes against a jar tangled in roots.",
+                    "Inside is a glowing nectar, pulsing with golden light.",
+                    "",
+                    "Do you drink it?"
+                ],
+                "choices": [
+                    {"id": "drink", "text": "Drink the healing nectar"},
+                    {"id": "save", "text": "Save it for later"}
+                ],
+                "state": self.to_dict()
+            }
+        elif event_type == "witch":
+            return {
+                "title": "Swamp Wade - The Witch",
+                "text": [
+                    "You wade waist-deep through the swamp, the water cold and thick with silt.",
+                    "Every step is a struggle, and unseen things brush against your legs.",
+                    "The air is heavy with the scent of decay and blooming lilies.",
+                    "",
+                    "The swamp witch appears, gliding over the water on a raft of bones.",
+                    "She offers to read your fortune for a price.",
+                    "",
+                    "Her eyes are bottomless pits.",
+                    "",
+                    "Let her read your fortune?"
+                ],
+                "choices": [
+                    {"id": "yes", "text": "Yes, read my fortune"},
+                    {"id": "no", "text": "No, decline"}
+                ],
+                "state": self.to_dict()
+            }
+        else:  # none
+            return {
+                "title": "Swamp Wade",
+                "text": [
+                    "You wade waist-deep through the swamp, the water cold and thick with silt.",
+                    "Every step is a struggle, and unseen things brush against your legs.",
+                    "The air is heavy with the scent of decay and blooming lilies.",
+                    "",
+                    "You make it through, muddy but unharmed.",
+                    "The swamp seems to sigh as you leave."
+                ],
+                "continue": True,
+                "state": self.to_dict()
+            }
+    
+    def handle_swamp_wade_nectar(self, choice):
+        """Handle nectar choice in swamp wade"""
+        if choice == "drink":
+            heal_amount = random.randint(20, 40)
+            self.health = min(100, self.health + heal_amount)
+            self.status_effects.add("Invincible")
+            return {
+                "title": "Invincible!",
+                "text": [
+                    "Sweetness fills your mouth.",
+                    "You feel your wounds close and your spirit soar.",
+                    "",
+                    f"You heal {heal_amount} health!",
+                    "",
+                    "For a moment, you are invincible."
+                ],
+                "continue": True,
+                "state": self.to_dict()
+            }
+        else:  # save
+            self.inventory["Healing Nectar Jar"] = {"durability": None}
+            return {
+                "title": "Saved",
+                "text": [
+                    "You pocket the jar for later.",
+                    "",
+                    "Who knows when it might save your life?"
+                ],
+                "continue": True,
+                "state": self.to_dict()
+            }
+    
+    def handle_swamp_wade_fortune(self, choice):
+        """Handle witch fortune reading"""
+        if choice == "yes":
+            fate = random.choice(["good", "bad", "cryptic"])
+            if fate == "good":
+                self.status_effects.add("Lucky")
+                return {
+                    "title": "Fortune Favors You",
+                    "text": [
+                        "She smiles, revealing sharp teeth.",
+                        "",
+                        "'Fortune favors you.'",
+                        "",
+                        "You feel luckier, as if the world has tilted in your favor."
+                    ],
+                    "continue": True,
+                    "state": self.to_dict()
+                }
+            elif fate == "bad":
+                self.status_effects.add("Unlucky")
+                return {
+                    "title": "Dark Fortune",
+                    "text": [
+                        "She frowns.",
+                        "",
+                        "'Beware the next crossing.'",
+                        "",
+                        "You feel a chill in your bones, and the world seems darker."
+                    ],
+                    "continue": True,
+                    "state": self.to_dict()
+                }
+            else:  # cryptic
+                self.inventory["Cryptic Riddle"] = {"durability": None}
+                return {
+                    "title": "Cryptic Riddle",
+                    "text": [
+                        "She whispers a riddle you can't quite remember.",
+                        "",
+                        "It haunts your dreams, surfacing at odd moments."
+                    ],
+                    "continue": True,
+                    "state": self.to_dict()
+                }
+        else:  # no
+            return {
+                "title": "Declined",
+                "text": [
+                    "The witch vanishes, leaving only ripples in the water",
+                    "and a sense of foreboding."
+                ],
+                "continue": True,
+                "state": self.to_dict()
+            }
+    
+    def swamp_swim(self):
+        """Rank 2 night event - swim in swamp"""
+        self.met_people.add("Swamp Swim Event")
+        
+        event_type = random.choice(["alligator", "treasure", "witch", "none"])
+        
+        if event_type == "alligator":
+            if random.random() < 0.4:
+                return {
+                    "title": "Swamp Swim - Alligator Escape",
+                    "text": [
+                        "You dive into the deeper waters of the swamp, the surface closing above you.",
+                        "The world is muffled, green, and full of secrets.",
+                        "",
+                        "A pair of eyes breaks the surface—an alligator!",
+                        "It surges toward you, jaws wide. You thrash and kick, desperate to escape.",
+                        "",
+                        "You manage to scramble to safety, heart pounding, lungs burning.",
+                        "",
+                        "You vow never to swim here again."
+                    ],
+                    "continue": True,
+                    "state": self.to_dict()
+                }
+            else:
+                damage = random.randint(20, 40)
+                self.health = max(0, self.health - damage)
+                return {
+                    "title": "Swamp Swim - Alligator Attack!",
+                    "text": [
+                        "You dive into the deeper waters of the swamp, the surface closing above you.",
+                        "The world is muffled, green, and full of secrets.",
+                        "",
+                        "A pair of eyes breaks the surface—an alligator!",
+                        "It surges toward you, jaws wide. You thrash and kick, desperate to escape.",
+                        "",
+                        "The alligator snaps at you, its teeth grazing your leg.",
+                        "You escape, but not unscathed.",
+                        "",
+                        f"You lose {damage} health!",
+                        "",
+                        "Blood clouds the water behind you."
+                    ],
+                    "continue": True,
+                    "state": self.to_dict()
+                }
+        elif event_type == "treasure":
+            return {
+                "title": "Swamp Swim - Sunken Chest",
+                "text": [
+                    "You dive into the deeper waters of the swamp, the surface closing above you.",
+                    "The world is muffled, green, and full of secrets.",
+                    "Every movement stirs up clouds of silt, and the water is alive with unseen creatures.",
+                    "",
+                    "Your hand brushes something cold and metallic—a sunken chest, half-buried in the muck.",
+                    "",
+                    "Do you try to open it?"
+                ],
+                "choices": [
+                    {"id": "open", "text": "Open the chest"},
+                    {"id": "leave", "text": "Leave it undisturbed"}
+                ],
+                "state": self.to_dict()
+            }
+        elif event_type == "witch":
+            return {
+                "title": "Swamp Swim - Witch's Charm",
+                "text": [
+                    "You dive into the deeper waters of the swamp, the surface closing above you.",
+                    "The world is muffled, green, and full of secrets.",
+                    "",
+                    "The witch floats by on a log, humming a haunting tune.",
+                    "She offers you a charm woven from reeds and bone.",
+                    "",
+                    "'For protection,' she says, 'or perhaps for something else.'",
+                    "",
+                    "Buy the witch's charm?"
+                ],
+                "choices": [
+                    {"id": "buy", "text": "Buy the charm"},
+                    {"id": "decline", "text": "Decline"}
+                ],
+                "state": self.to_dict()
+            }
+        else:  # none
+            return {
+                "title": "Swamp Swim",
+                "text": [
+                    "You dive into the deeper waters of the swamp, the surface closing above you.",
+                    "The world is muffled, green, and full of secrets.",
+                    "Every movement stirs up clouds of silt, and the water is alive with unseen creatures.",
+                    "",
+                    "You swim back, heart pounding, but nothing happens.",
+                    "",
+                    "The swamp keeps its secrets—for now."
+                ],
+                "continue": True,
+                "state": self.to_dict()
+            }
+    
+    def handle_swamp_swim_chest(self, choice):
+        """Handle sunken chest choice"""
+        if choice == "open":
+            loot = random.choice(["coins", "artifact", "trap"])
+            if loot == "coins":
+                amount = random.randint(800, 2000)
+                self.balance += amount
+                return {
+                    "title": "Treasure Found!",
+                    "text": [
+                        "Inside, you find a trove of old coins and jewelry.",
+                        "",
+                        f"You gain ${amount:,}!",
+                        "",
+                        "You're richer, but you wonder who lost it—and why."
+                    ],
+                    "continue": True,
+                    "state": self.to_dict()
+                }
+            elif loot == "artifact":
+                self.inventory["Swamp Artifact"] = {"durability": None}
+                return {
+                    "title": "Strange Artifact",
+                    "text": [
+                        "You find a strange artifact, humming with energy.",
+                        "As you touch it, visions flash before your eyes—",
+                        "",
+                        "of the swamp, of danger, of destiny."
+                    ],
+                    "continue": True,
+                    "state": self.to_dict()
+                }
+            else:  # trap
+                damage = random.randint(10, 25)
+                self.health = max(0, self.health - damage)
+                return {
+                    "title": "Trapped!",
+                    "text": [
+                        "A cloud of noxious gas bursts out!",
+                        "You cough and swim away, your head spinning, your body weak.",
+                        "",
+                        f"You lose {damage} health!"
+                    ],
+                    "continue": True,
+                    "state": self.to_dict()
+                }
+        else:  # leave
+            return {
+                "title": "Left Undisturbed",
+                "text": [
+                    "You leave the chest undisturbed,",
+                    "wary of curses and the weight of history."
+                ],
+                "continue": True,
+                "state": self.to_dict()
+            }
+    
+    def handle_swamp_swim_charm(self, choice):
+        """Handle witch's charm purchase"""
+        if choice == "buy":
+            charm_type = random.choice(["protection", "misfortune"])
+            if charm_type == "protection":
+                self.status_effects.add("Protected")
+                return {
+                    "title": "Protected",
+                    "text": [
+                        "She ties the charm around your wrist.",
+                        "",
+                        "'No harm shall come to you—tonight.'",
+                        "",
+                        "You feel a strange warmth,",
+                        "as if the swamp itself is watching over you."
+                    ],
+                    "continue": True,
+                    "state": self.to_dict()
+                }
+            else:  # misfortune
+                self.status_effects.add("Cursed")
+                return {
+                    "title": "Cursed",
+                    "text": [
+                        "She grins wickedly.",
+                        "",
+                        "'Luck is a fickle thing.'",
+                        "",
+                        "You feel a cold shiver run down your spine."
+                    ],
+                    "continue": True,
+                    "state": self.to_dict()
+                }
+        else:  # decline
+            return {
+                "title": "Declined",
+                "text": [
+                    "The witch shrugs and disappears into the mist,",
+                    "her laughter echoing across the water."
+                ],
+                "continue": True,
+                "state": self.to_dict()
+            }
+    
+    def beach_stroll(self):
+        """Rank 2 night event - beach stroll"""
+        self.met_people.add("Beach Stroll Event")
+        
+        event_type = random.choice(["sandman", "shells", "bonfire", "none"])
+        
+        if event_type == "sandman":
+            return {
+                "title": "Beach Stroll - The Sandman",
+                "text": [
+                    "You walk the moonlit shoreline, the sand cool beneath your feet",
+                    "and the waves whispering secrets.",
+                    "The night is alive with possibility, and every step feels like a story waiting to happen.",
+                    "",
+                    "A tall, robed figure—the Sandman—appears, his eyes twinkling.",
+                    "",
+                    "'Help me collect shells for my collection,' he asks, his voice like the tide.",
+                    "",
+                    "Do you help?"
+                ],
+                "choices": [
+                    {"id": "help", "text": "Help the Sandman"},
+                    {"id": "decline", "text": "Decline"}
+                ],
+                "state": self.to_dict()
+            }
+        elif event_type == "shells":
+            self.inventory["Rare Shell"] = {"durability": None}
+            self.status_effects.add("Calm")
+            return {
+                "title": "Beach Stroll - Rare Shell",
+                "text": [
+                    "You walk the moonlit shoreline, the sand cool beneath your feet",
+                    "and the waves whispering secrets.",
+                    "",
+                    "You find a rare, perfect shell, its spiral gleaming in the moonlight.",
+                    "",
+                    "As you pick it up, a wave of calm and clarity washes over you."
+                ],
+                "continue": True,
+                "state": self.to_dict()
+            }
+        elif event_type == "bonfire":
+            return {
+                "title": "Beach Stroll - Bonfire",
+                "text": [
+                    "You walk the moonlit shoreline, the sand cool beneath your feet",
+                    "and the waves whispering secrets.",
+                    "",
+                    "A group of strangers invites you to join their bonfire.",
+                    "They share stories, laughter, and roasted marshmallows.",
+                    "",
+                    "Do you join them?"
+                ],
+                "choices": [
+                    {"id": "join", "text": "Join the bonfire"},
+                    {"id": "watch", "text": "Watch from a distance"}
+                ],
+                "state": self.to_dict()
+            }
+        else:  # none
+            return {
+                "title": "Beach Stroll",
+                "text": [
+                    "You walk the moonlit shoreline, the sand cool beneath your feet",
+                    "and the waves whispering secrets.",
+                    "The night is alive with possibility, and every step feels like a story waiting to happen.",
+                    "",
+                    "You walk for a while, lost in thought, the ocean breeze clearing your mind.",
+                    "",
+                    "The night is gentle, and you feel at peace."
+                ],
+                "continue": True,
+                "state": self.to_dict()
+            }
+    
+    def handle_beach_stroll_sandman(self, choice):
+        """Handle Sandman encounter"""
+        if choice == "help":
+            if random.random() < 0.7:
+                self.inventory["Dream Token"] = {"durability": None}
+                self.status_effects.add("Inspired")
+                return {
+                    "title": "Dream Token",
+                    "text": [
+                        "You gather a handful of beautiful shells.",
+                        "The Sandman thanks you, pressing a Dream Token into your palm.",
+                        "",
+                        "That night, your sleep is deep and full of strange, hopeful dreams."
+                    ],
+                    "continue": True,
+                    "state": self.to_dict()
+                }
+            else:
+                return {
+                    "title": "Empty Handed",
+                    "text": [
+                        "You search for shells but find only broken bits.",
+                        "The Sandman shrugs, fading into the mist.",
+                        "",
+                        "You feel a pang of disappointment."
+                    ],
+                    "continue": True,
+                    "state": self.to_dict()
+                }
+        else:  # decline
+            return {
+                "title": "Declined",
+                "text": [
+                    "You decline, and the Sandman's smile fades.",
+                    "He vanishes, leaving only footprints in the sand and a chill in the air."
+                ],
+                "continue": True,
+                "state": self.to_dict()
+            }
+    
+    def handle_beach_stroll_bonfire(self, choice):
+        """Handle bonfire encounter"""
+        if choice == "join":
+            if random.random() < 0.5:
+                heal_amount = random.randint(10, 20)
+                self.health = min(100, self.health + heal_amount)
+                self.status_effects.add("Happy")
+                return {
+                    "title": "New Friends",
+                    "text": [
+                        "You make new friends and leave with a full belly and a lighter heart.",
+                        "",
+                        f"You heal {heal_amount} health!",
+                        "",
+                        "The world feels a little less lonely."
+                    ],
+                    "continue": True,
+                    "state": self.to_dict()
+                }
+            else:
+                damage = random.randint(3, 8)
+                self.health = max(0, self.health - damage)
+                return {
+                    "title": "Too Many Marshmallows",
+                    "text": [
+                        "You eat too many marshmallows and wake up with a stomachache,",
+                        "but the memories are sweet.",
+                        "",
+                        f"You lose {damage} health."
+                    ],
+                    "continue": True,
+                    "state": self.to_dict()
+                }
+        else:  # watch
+            return {
+                "title": "From a Distance",
+                "text": [
+                    "You watch the fire from a distance,",
+                    "the warmth and laughter just out of reach."
+                ],
+                "continue": True,
+                "state": self.to_dict()
+            }
