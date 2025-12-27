@@ -557,6 +557,622 @@ class WebPlayer:
     def set_rounds(self, value):
         self.round_count = value
     
+    # ===== Item Durability Management =====
+    
+    def update_no_bust_durability(self, invincible=False):
+        """Update No Bust flask durability"""
+        if self.has_flask_effect("No Bust"):
+            if invincible:
+                self.flask_durability[0] = -1
+                return
+            
+            if self.flask_durability[0] > 0:
+                self.flask_durability[0] -= random.choice([1, 2])
+                if self.flask_durability[0] <= 0:
+                    self.flask_durability[0] = 0
+                    self.remove_flask_effect("No Bust")
+                    return {"broken": True, "item": "Flask of No Bust"}
+            
+            # Set initial durability
+            if self.flask_durability[0] == 0:
+                self.flask_durability[0] = 4
+        return None
+    
+    def update_delight_indicator_durability(self, invincible=False):
+        """Update Delight Indicator durability"""
+        if self.has_item("Delight Indicator"):
+            if invincible:
+                self.item_durability[0] = -1
+                return
+            
+            if self.item_durability[0] > 0:
+                self.item_durability[0] -= random.choice([1, 2, 3, 5])
+                if self.item_durability[0] <= 0:
+                    self.item_durability[0] = 0
+                    self.break_item("Delight Indicator")
+                    return {"broken": True, "item": "Delight Indicator"}
+            
+            # Set initial durability
+            if self.item_durability[0] == 0:
+                self.item_durability[0] = 45
+        return None
+    
+    def update_health_indicator_durability(self, invincible=False):
+        """Update Health Indicator durability"""
+        if self.has_item("Health Indicator"):
+            if invincible:
+                self.item_durability[1] = -1
+                return
+            
+            if self.item_durability[1] > 0:
+                self.item_durability[1] -= random.choice([1, 2, 3, 5])
+                if self.item_durability[1] <= 0:
+                    self.item_durability[1] = 0
+                    self.break_item("Health Indicator")
+                    return {"broken": True, "item": "Health Indicator"}
+            
+            # Set initial durability
+            if self.item_durability[1] == 0:
+                self.item_durability[1] = 30
+        return None
+    
+    def update_dirty_old_hat_durability(self, invincible=False):
+        """Update Dirty Old Hat durability"""
+        if self.has_item("Dirty Old Hat"):
+            if invincible:
+                self.item_durability[2] = -1
+                return
+            
+            if self.item_durability[2] > 0:
+                self.item_durability[2] -= random.choice([1, 2, 3, 5])
+                if self.item_durability[2] <= 0:
+                    self.item_durability[2] = 0
+                    self.break_item("Dirty Old Hat")
+                    return {"broken": True, "item": "Dirty Old Hat"}
+            
+            # Set initial durability
+            if self.item_durability[2] == 0:
+                self.item_durability[2] = 25
+        return None
+    
+    def update_golden_watch_durability(self, invincible=False):
+        """Update Golden Watch durability"""
+        if self.has_item("Golden Watch"):
+            if invincible:
+                self.item_durability[3] = -1
+                return
+            
+            if self.item_durability[3] > 0:
+                self.item_durability[3] -= random.choice([1, 2, 3, 5])
+                if self.item_durability[3] <= 0:
+                    self.item_durability[3] = 0
+                    self.break_item("Golden Watch")
+                    return {"broken": True, "item": "Golden Watch"}
+            
+            # Set initial durability
+            if self.item_durability[3] == 0:
+                self.item_durability[3] = 35
+        return None
+    
+    def update_sneaky_peeky_glasses_durability(self, invincible=False):
+        """Update Sneaky Peeky Glasses durability"""
+        if self.has_item("Sneaky Peeky Glasses"):
+            if invincible:
+                self.item_durability[4] = -1
+                return
+            
+            if self.item_durability[4] > 0:
+                self.item_durability[4] -= random.choice([1, 2, 3, 5])
+                if self.item_durability[4] <= 0:
+                    self.item_durability[4] = 0
+                    self.break_item("Sneaky Peeky Glasses")
+                    return {"broken": True, "item": "Sneaky Peeky Glasses"}
+            
+            # Set initial durability
+            if self.item_durability[4] == 0:
+                self.item_durability[4] = 20
+        return None
+    
+    def update_quiet_sneakers_durability(self, invincible=False):
+        """Update Quiet Sneakers durability"""
+        if self.has_item("Quiet Sneakers"):
+            if invincible:
+                self.item_durability[5] = -1
+                return
+            
+            if self.item_durability[5] > 0:
+                self.item_durability[5] -= random.choice([1, 2, 3, 5])
+                if self.item_durability[5] <= 0:
+                    self.item_durability[5] = 0
+                    self.break_item("Quiet Sneakers")
+                    return {"broken": True, "item": "Quiet Sneakers"}
+            
+            # Set initial durability
+            if self.item_durability[5] == 0:
+                self.item_durability[5] = 30
+        return None
+    
+    def update_faulty_insurance_durability(self, invincible=False):
+        """Update Faulty Insurance durability"""
+        if self.has_item("Faulty Insurance"):
+            if invincible:
+                self.item_durability[6] = -1
+                return
+            
+            if self.item_durability[6] > 0:
+                self.item_durability[6] -= random.choice([1, 2, 3, 5])
+                if self.item_durability[6] <= 0:
+                    self.item_durability[6] = 0
+                    self.break_item("Faulty Insurance")
+                    return {"broken": True, "item": "Faulty Insurance"}
+            
+            # Set initial durability
+            if self.item_durability[6] == 0:
+                self.item_durability[6] = 40
+        return None
+    
+    def has_pests(self):
+        """Check if player has any pest dangers"""
+        pests = {"Spider", "Cockroach", "Rat", "Termite", "Squirrel"}
+        return bool(self.dangers.intersection(pests))
+    
+    # ===== Shop Systems =====
+    
+    def get_available_shops(self):
+        """Get list of shops available based on prerequisites and conditions"""
+        shops = []
+        
+        # Doctor always available when sick or injured
+        if self.is_sick or self.is_injured or self.health < 100:
+            shops.append({
+                "id": "doctor",
+                "name": "Doctor's Office",
+                "description": "Get medical treatment"
+            })
+        
+        # Witch available at certain ranks
+        if self.rank >= 1:
+            shops.append({
+                "id": "witch",
+                "name": "Witch's Hut",
+                "description": "Buy magical potions and flasks"
+            })
+        
+        # Mechanics (Tom and Frank) - available when you have broken items
+        if len(self.broken_inventory) > 0 or len(self.repairing_inventory) > 0:
+            if "Tom" not in self.met:
+                shops.append({
+                    "id": "tom",
+                    "name": "Tom's Repair Shop",
+                    "description": "Get items repaired"
+                })
+            if "Frank" not in self.met:
+                shops.append({
+                    "id": "frank",
+                    "name": "Frank's Fix-It",
+                    "description": "Get items repaired"
+                })
+        
+        # Oswald (car mechanic) - available at higher ranks
+        if self.rank >= 2:
+            shops.append({
+                "id": "oswald",
+                "name": "Oswald's Auto Shop",
+                "description": "Car repairs and upgrades"
+            })
+        
+        # Marvin (convenience store) - always available after day 2
+        if self.day >= 2:
+            shops.append({
+                "id": "marvin",
+                "name": "Marvin's Store",
+                "description": "Buy general supplies"
+            })
+        
+        return shops
+    
+    def doctor_dialogue(self):
+        """Doctor shop interface"""
+        options = []
+        
+        # Treatment options based on condition
+        if self.is_sick:
+            options.append({
+                "id": "cure_sickness",
+                "text": "Cure Sickness ($100)",
+                "cost": 100
+            })
+        
+        if self.is_injured:
+            options.append({
+                "id": "heal_injury",
+                "text": "Treat Injuries ($150)",
+                "cost": 150
+            })
+        
+        if self.health < 100:
+            heal_amount = 100 - self.health
+            cost = max(50, heal_amount * 2)
+            options.append({
+                "id": "restore_health",
+                "text": f"Restore Health (+{heal_amount} HP) (${cost})",
+                "cost": cost
+            })
+        
+        return {
+            "title": "Doctor's Office",
+            "text": [
+                "The doctor looks up from his clipboard.",
+                "\"What seems to be the problem today?\""
+            ],
+            "options": options,
+            "state": self.to_dict()
+        }
+    
+    def witch_dialogue(self):
+        """Witch shop interface - sells potions and flasks"""
+        options = [
+            {
+                "id": "flask_no_bust",
+                "text": "Flask of No Bust ($500)",
+                "description": "Prevents busting in blackjack for a limited time",
+                "cost": 500
+            },
+            {
+                "id": "potion_healing",
+                "text": "Healing Potion ($200)",
+                "description": "Restores 50 health",
+                "cost": 200
+            },
+            {
+                "id": "potion_luck",
+                "text": "Luck Potion ($300)",
+                "description": "Increases your fortune temporarily",
+                "cost": 300
+            }
+        ]
+        
+        return {
+            "title": "Witch's Hut",
+            "text": [
+                "The witch stirs her cauldron, strange vapors rising.",
+                "\"Looking for something... special?\""
+            ],
+            "options": options,
+            "state": self.to_dict()
+        }
+    
+    def tom_dialogue(self):
+        """Tom's repair shop"""
+        self.met.add("Tom")
+        repairable_items = list(self.broken_inventory)
+        
+        options = []
+        for item in repairable_items:
+            cost = self._get_repair_cost(item)
+            options.append({
+                "id": f"repair_{item.replace(' ', '_').lower()}",
+                "text": f"Repair {item} (${cost})",
+                "cost": cost,
+                "item": item
+            })
+        
+        if len(self.repairing_inventory) > 0:
+            status_text = f"Tom is currently repairing {len(self.repairing_inventory)} item(s). Check back tomorrow."
+        else:
+            status_text = "What can I fix for you today?"
+        
+        return {
+            "title": "Tom's Repair Shop",
+            "text": [
+                "Tom wipes his hands on a greasy rag.",
+                f"\"{status_text}\""
+            ],
+            "options": options,
+            "state": self.to_dict()
+        }
+    
+    def frank_dialogue(self):
+        """Frank's repair shop - alternative to Tom"""
+        self.met.add("Frank")
+        repairable_items = list(self.broken_inventory)
+        
+        options = []
+        for item in repairable_items:
+            cost = self._get_repair_cost(item) + 50  # Frank is more expensive
+            options.append({
+                "id": f"repair_{item.replace(' ', '_').lower()}",
+                "text": f"Repair {item} (${cost})",
+                "cost": cost,
+                "item": item
+            })
+        
+        if len(self.repairing_inventory) > 0:
+            status_text = f"I've got {len(self.repairing_inventory)} of your items. They'll be ready tomorrow."
+        else:
+            status_text = "What needs fixing?"
+        
+        return {
+            "title": "Frank's Fix-It",
+            "text": [
+                "Frank looks up from his workbench.",
+                f"\"{status_text}\""
+            ],
+            "options": options,
+            "state": self.to_dict()
+        }
+    
+    def oswald_dialogue(self):
+        """Oswald's auto shop - car repairs"""
+        self.met.add("Oswald")
+        
+        options = [
+            {
+                "id": "oil_change",
+                "text": "Oil Change ($75)",
+                "cost": 75
+            },
+            {
+                "id": "tune_up",
+                "text": "Tune-Up ($150)",
+                "cost": 150
+            },
+            {
+                "id": "full_service",
+                "text": "Full Service ($300)",
+                "cost": 300
+            }
+        ]
+        
+        return {
+            "title": "Oswald's Auto Shop",
+            "text": [
+                "Oswald emerges from under a car hood, covered in grease.",
+                "\"Need some work done on your ride?\""
+            ],
+            "options": options,
+            "state": self.to_dict()
+        }
+    
+    def marvin_dialogue(self):
+        """Marvin's convenience store"""
+        self.met.add("Marvin")
+        
+        # Update inventory if needed
+        if not self.convenience_store_inventory:
+            self._update_convenience_store_inventory()
+        
+        options = []
+        for item in self.convenience_store_inventory:
+            options.append({
+                "id": f"buy_{item['id']}",
+                "text": f"{item['name']} (${item['cost']})",
+                "description": item.get('description', ''),
+                "cost": item['cost'],
+                "item": item['name']
+            })
+        
+        return {
+            "title": "Marvin's Convenience Store",
+            "text": [
+                "Marvin greets you with a friendly smile.",
+                "\"Welcome! What can I get you today?\""
+            ],
+            "options": options,
+            "state": self.to_dict()
+        }
+    
+    def _get_repair_cost(self, item):
+        """Calculate repair cost for an item"""
+        costs = {
+            "Delight Indicator": 200,
+            "Health Indicator": 150,
+            "Dirty Old Hat": 100,
+            "Golden Watch": 250,
+            "Sneaky Peeky Glasses": 175,
+            "Quiet Sneakers": 125,
+            "Faulty Insurance": 300
+        }
+        return costs.get(item, 150)
+    
+    def _update_convenience_store_inventory(self):
+        """Update convenience store inventory"""
+        base_items = [
+            {"id": "pest_control", "name": "Pest Control", "cost": 75, "description": "Spray to eliminate pests"},
+            {"id": "bandages", "name": "Bandages", "cost": 25, "description": "Minor healing"},
+            {"id": "energy_drink", "name": "Energy Drink", "cost": 15, "description": "Temporary energy boost"},
+            {"id": "snacks", "name": "Snacks", "cost": 10, "description": "Satisfy hunger"}
+        ]
+        
+        # Randomize some items for variety
+        available_items = random.sample(base_items, min(3, len(base_items)))
+        self.convenience_store_inventory = available_items
+    
+    def process_shop_purchase(self, shop_id, item_id, choice=None):
+        """Process a purchase from any shop"""
+        if shop_id == "doctor":
+            return self._process_doctor_purchase(item_id)
+        elif shop_id == "witch":
+            return self._process_witch_purchase(item_id)
+        elif shop_id in ["tom", "frank"]:
+            return self._process_mechanic_purchase(item_id, shop_id)
+        elif shop_id == "oswald":
+            return self._process_oswald_purchase(item_id)
+        elif shop_id == "marvin":
+            return self._process_marvin_purchase(item_id)
+        
+        return {"error": "Unknown shop"}
+    
+    def _process_doctor_purchase(self, item_id):
+        """Process doctor purchases"""
+        if item_id == "cure_sickness" and self.balance >= 100:
+            self.balance -= 100
+            self.is_sick = False
+            self.remove_status("Sick")
+            return {
+                "success": True,
+                "message": "The doctor prescribes medication. You feel better already.",
+                "state": self.to_dict()
+            }
+        elif item_id == "heal_injury" and self.balance >= 150:
+            self.balance -= 150
+            self.is_injured = False
+            self.injuries.clear()
+            return {
+                "success": True,
+                "message": "The doctor treats your injuries. You're patched up.",
+                "state": self.to_dict()
+            }
+        elif item_id == "restore_health":
+            heal_amount = 100 - self.health
+            cost = max(50, heal_amount * 2)
+            if self.balance >= cost:
+                self.balance -= cost
+                self.health = 100
+                return {
+                    "success": True,
+                    "message": f"The doctor restores your health. You feel refreshed! (+{heal_amount} HP)",
+                    "state": self.to_dict()
+                }
+        
+        return {
+            "success": False,
+            "message": "You don't have enough money for that.",
+            "state": self.to_dict()
+        }
+    
+    def _process_witch_purchase(self, item_id):
+        """Process witch purchases"""
+        if item_id == "flask_no_bust" and self.balance >= 500:
+            self.balance -= 500
+            self.add_flask_effect("No Bust")
+            self.flask_durability[0] = 4
+            return {
+                "success": True,
+                "message": "The witch hands you a glowing flask. \"This will protect you... for a time.\"",
+                "state": self.to_dict()
+            }
+        elif item_id == "potion_healing" and self.balance >= 200:
+            self.balance -= 200
+            self.heal(50)
+            return {
+                "success": True,
+                "message": "You drink the potion. Warmth spreads through your body. (+50 HP)",
+                "state": self.to_dict()
+            }
+        elif item_id == "potion_luck" and self.balance >= 300:
+            self.balance -= 300
+            self.add_status("Lucky")
+            return {
+                "success": True,
+                "message": "The potion tingles as you drink it. You feel fortune smiling upon you.",
+                "state": self.to_dict()
+            }
+        
+        return {
+            "success": False,
+            "message": "You lack the coin for such magic.",
+            "state": self.to_dict()
+        }
+    
+    def _process_mechanic_purchase(self, item_id, shop):
+        """Process mechanic repairs"""
+        # Extract item name from item_id (format: repair_item_name)
+        item_name = item_id.replace("repair_", "").replace("_", " ").title()
+        cost = self._get_repair_cost(item_name)
+        if shop == "frank":
+            cost += 50
+        
+        if item_name in self.broken_inventory and self.balance >= cost:
+            self.balance -= cost
+            self.repair_item(item_name)
+            mechanic = "Tom" if shop == "tom" else "Frank"
+            return {
+                "success": True,
+                "message": f"{mechanic} takes your {item_name}. \"I'll have this fixed up tomorrow.\"",
+                "state": self.to_dict()
+            }
+        
+        return {
+            "success": False,
+            "message": "You don't have enough money for that repair.",
+            "state": self.to_dict()
+        }
+    
+    def _process_oswald_purchase(self, item_id):
+        """Process Oswald auto shop purchases"""
+        costs = {"oil_change": 75, "tune_up": 150, "full_service": 300}
+        cost = costs.get(item_id, 0)
+        
+        if self.balance >= cost:
+            self.balance -= cost
+            # Remove some travel restrictions
+            if item_id == "full_service":
+                self.travel_restrictions.discard("Engine Trouble")
+                self.travel_restrictions.discard("Flat Tire")
+                message = "Oswald gives your car a complete overhaul. It purrs like new."
+            elif item_id == "tune_up":
+                self.travel_restrictions.discard("Engine Trouble")
+                message = "Oswald tunes up your engine. It runs much smoother now."
+            else:
+                message = "Oswald changes your oil. The engine sounds healthier."
+            
+            return {
+                "success": True,
+                "message": message,
+                "state": self.to_dict()
+            }
+        
+        return {
+            "success": False,
+            "message": "You don't have enough money for that service.",
+            "state": self.to_dict()
+        }
+    
+    def _process_marvin_purchase(self, item_id):
+        """Process Marvin convenience store purchases"""
+        # Find the item in inventory
+        item_data = None
+        for item in self.convenience_store_inventory:
+            if item['id'] == item_id.replace("buy_", ""):
+                item_data = item
+                break
+        
+        if not item_data:
+            return {
+                "success": False,
+                "message": "That item is not available.",
+                "state": self.to_dict()
+            }
+        
+        if self.balance >= item_data['cost']:
+            self.balance -= item_data['cost']
+            
+            # Add item to inventory
+            if item_data['id'] == "pest_control":
+                self.add_item("Pest Control")
+                message = "Marvin hands you a can of Pest Control. \"Should handle any critters.\""
+            elif item_data['id'] == "bandages":
+                self.heal(15)
+                message = "You apply the bandages. (+15 HP)"
+            elif item_data['id'] == "energy_drink":
+                self.add_status("Energized")
+                message = "You chug the energy drink. You feel revitalized!"
+            else:
+                message = f"You purchase {item_data['name']}."
+            
+            return {
+                "success": True,
+                "message": message,
+                "state": self.to_dict()
+            }
+        
+        return {
+            "success": False,
+            "message": "You don't have enough money for that.",
+            "state": self.to_dict()
+        }
+    
     # ===== Serialization =====
     
     def to_dict(self):
