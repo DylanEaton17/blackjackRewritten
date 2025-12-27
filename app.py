@@ -552,6 +552,123 @@ def afternoon_page():
     return render_template('afternoon.html')
 
 
+@app.route('/shop/<shop_id>')
+def shop_page(shop_id):
+    """Individual shop interface"""
+    player = get_player()
+    
+    # Get shop dialogue based on shop_id
+    shop_data = None
+    if shop_id == "doctor":
+        shop_data = player.doctor_dialogue()
+    elif shop_id == "witch":
+        shop_data = player.witch_dialogue()
+    elif shop_id == "tom":
+        shop_data = player.tom_dialogue()
+    elif shop_id == "frank":
+        shop_data = player.frank_dialogue()
+    elif shop_id == "oswald":
+        shop_data = player.oswald_dialogue()
+    elif shop_id == "marvin":
+        shop_data = player.marvin_dialogue()
+    
+    if not shop_data:
+        return render_template('afternoon.html')  # Redirect back if invalid shop
+    
+    return render_template('shop.html', shop_data=shop_data, shop_id=shop_id)
+
+
+@app.route('/api/shop/purchase', methods=['POST'])
+def shop_purchase():
+    """Process shop purchase"""
+    player = get_player()
+    data = request.get_json()
+    
+    item = data.get('item')
+    price = data.get('price')
+    shop_id = data.get('shop_id')
+    
+    # Check if player can afford
+    if player.balance < price:
+        return jsonify({"success": False, "message": "Not enough money!"})
+    
+    # Process purchase based on shop and item
+    success = False
+    message = ""
+    
+    if shop_id == "doctor":
+        if item == "cure_sickness":
+            player.sick = False
+            player.balance -= price
+            success = True
+            message = "You feel much better now."
+        elif item == "heal_injuries":
+            player.injured = False
+            player.balance -= price
+            success = True
+            message = "Your injuries have been treated."
+        elif item == "restore_health":
+            player.health = 100
+            player.balance -= price
+            success = True
+            message = "Your health has been fully restored."
+    
+    elif shop_id == "witch":
+        if item == "no_bust_flask":
+            player.inventory.append("Flask of No Bust")
+            player.flask = 4
+            player.balance -= price
+            success = True
+            message = "You acquired the mystical Flask of No Bust!"
+        elif item == "healing_potion":
+            player.health = min(100, player.health + 30)
+            player.balance -= price
+            success = True
+            message = "The potion heals you for 30 HP."
+    
+    elif shop_id in ["tom", "frank"]:
+        # Repair item
+        if item in player.broken_inventory:
+            player.broken_inventory.remove(item)
+            player.inventory.append(item)
+            player.balance -= price
+            success = True
+            message = f"{item} has been repaired!"
+    
+    elif shop_id == "oswald":
+        if item == "oil_change":
+            player.oil_change = True
+            player.balance -= price
+            success = True
+            message = "Oil changed. Your car runs smoother."
+        elif item == "tune_up":
+            player.tune_up = True
+            player.balance -= price
+            success = True
+            message = "Engine tuned up. Better performance!"
+        elif item == "full_service":
+            player.oil_change = True
+            player.tune_up = True
+            player.balance -= price
+            success = True
+            message = "Full service complete. Your car is in great shape!"
+    
+    elif shop_id == "marvin":
+        # Add item to inventory
+        player.inventory.append(item)
+        player.balance -= price
+        success = True
+        message = f"Purchased {item}!"
+    
+    save_player(player)
+    
+    return jsonify({
+        "success": success,
+        "message": message,
+        "balance": player.balance
+    })
+
+
 @app.route('/api/story/end-day', methods=['GET', 'POST'])
 def api_end_day():
     """End of day sequence after casino"""
@@ -606,9 +723,12 @@ def api_afternoon():
     shops = []
     rank = player.get_rank()
     
-    # All players can access these
+    # Always available
     shops.append({"name": "Doctor", "id": "doctor", "locked": False})
-    shops.append({"name": "Marvin's Store", "id": "marvin", "locked": False})
+    
+    # Marvin only if player has the Map
+    if player.has_item("Map"):
+        shops.append({"name": "Marvin's Store", "id": "marvin", "locked": False})
     
     # Unlock based on rank
     if rank >= 1:
