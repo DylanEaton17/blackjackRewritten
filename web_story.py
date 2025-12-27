@@ -971,10 +971,14 @@ class WebPlayer:
     def trigger_event(self, event_name, event_type="day"):
         """
         Trigger a specific story event
-        Returns event data
+        Returns event data by calling the event method
         """
-        # For now, return a placeholder
-        # TODO: Implement all 47 events
+        # Check if the event method exists and call it
+        if hasattr(self, event_name):
+            event_method = getattr(self, event_name)
+            return event_method()
+        
+        # Fallback if event not implemented yet
         return {
             "title": event_name.replace("_", " ").title(),
             "text": [
@@ -994,3 +998,405 @@ class WebPlayer:
         
         # Fallback
         return self.start_night()
+    
+    # ==================== STORY EVENT METHODS ====================
+    # All events extracted from story.py with authentic dialogue
+    # Organized by rank: Poor (0), Cheap (1), Modest (2), Rich (3), Doughman (4), Nearly There (5)
+    
+    # RANK 0 (POOR: $1-$999) DAY EVENTS
+    
+    def seat_cash(self):
+        """Find money in car seat"""
+        bill = random.choice([5, 10, 20, 50, 100])
+        return {
+            "title": "Found Money",
+            "text": [
+                "You wake up in the front seat, covered in sweat.",
+                "As the sun shines through the car window, you notice a bright green bill tucked between the seat cushions. Must be your lucky day.",
+                "",
+                f"That's another ${bill} dollars."
+            ],
+            "balance_change": bill,
+            "continue": True,
+            "state": self.to_dict()
+        }
+    
+    def left_window_down(self):
+        """Window left open overnight"""
+        random_chance = random.randrange(5)
+        if random_chance == 0:
+            self.add_danger("Spider")
+        elif random_chance == 1:
+            self.add_danger("Cockroach")
+        
+        return {
+            "title": "Open Window",
+            "text": [
+                "You wake up in the front seat, with a chill going down your spine.",
+                "Had the window really been open all night?",
+                "Hopefully nothing had gotten in.",
+                "You roll the window up, just to be safe."
+            ],
+            "continue": True,
+            "state": self.to_dict()
+        }
+    
+    def estranged_dog(self):
+        """Encounter with friendly dog"""
+        heal_amount = random.choice([5, 10])
+        text_lines = [
+            "You wake up to the sound of barking outside your car. You get up, to see a golden retriever licking your window.",
+            "You open the door, and pet the doggo on the head. He seems happy. You're happy, too.",
+            ""
+        ]
+        
+        if self.has_item("Dog Treat"):
+            self.use_item("Dog Treat")
+            text_lines.extend([
+                "You throw your Dog Treat into the air, and the dog jumps up, and catches it in his mouth. He wags his tail in excitement. It's super cute.",
+                ""
+            ])
+            heal_amount = random.choice([15, 20])
+        
+        text_lines.append("Before you get a chance to check the dog's collar to see where it came from, the dog bolts down the road, eager to cheer up someone else. It was a good dog.")
+        
+        return {
+            "title": "Friendly Dog",
+            "text": text_lines,
+            "health_change": heal_amount,
+            "continue": True,
+            "state": self.to_dict()
+        }
+    
+    def freight_truck(self):
+        """Rude trucker wakes you up"""
+        return {
+            "title": "Rude Awakening",
+            "text": [
+                "You are jolted awake by the sound of a horn blaring outside your car. Looking out your window, you see a man, in a bright red hat, inside of a freight truck that's parked just outside of your vehicle.",
+                "",
+                "\"Hey, you. Wake the fuck up! Hahahaha!\"",
+                "",
+                "You watch as the man honks his horn one more time, laughs, and drives off into the distance. What a jerk."
+            ],
+            "continue": True,
+            "state": self.to_dict()
+        }
+    
+    def sore_throat(self):
+        """Develop sore throat"""
+        if self.has_status("Sore Throat"):
+            # Skip this event, trigger another
+            return self.trigger_day_event()
+        
+        text_lines = [
+            "You wake up, and begin to have a coughing fit. Your throat is dry, and super sore."
+        ]
+        
+        if self.has_item("Cough Drops"):
+            self.use_item("Cough Drops")
+            text_lines.extend([
+                "Luckily, you have some Cough Drops on hand, and you empty the box into your mouth. Almost like magic, your throat doesn't hurt anymore."
+            ])
+        else:
+            self.add_status("Sore Throat")
+            self.mark_day("Sore Throat")
+            text_lines.extend([
+                "You cough, and cough, and cough some more, but the burning itch in your throat just won't go away."
+            ])
+        
+        return {
+            "title": "Sore Throat",
+            "text": text_lines,
+            "continue": True,
+            "state": self.to_dict()
+        }
+    
+    def spider_bite(self):
+        """Spider bite event"""
+        if not self.has_danger("Spider") or self.has_status("Spider Bite"):
+            return self.trigger_day_event()
+        
+        text_lines = [
+            "You wake up to a sharp pain on your arm!",
+            "Swinging your arm to scratch the pain, you watch as a spider jumps to your dashboard."
+        ]
+        
+        if self.has_item("Pest Control"):
+            self.kill_pests()
+            text_lines.extend([
+                "You grab your Pest Control and spray in the direction of the spider.",
+                "A cloud of white liquid covers the spider, and you watch as it slows, and dies.",
+                "Hopefully, that's the end of your spider problems."
+            ])
+        else:
+            text_lines.append("You attempt to swat it with your hand, but it sneaks into your heater.")
+            self.add_status("Spider Bite")
+            self.mark_day("Spider Bite")
+            text_lines.extend([
+                "",
+                "Later, you notice a red bump on your arm. The bite left a nasty mark.",
+                "You should get that checked out."
+            ])
+        
+        return {
+            "title": "Spider Bite",
+            "text": text_lines,
+            "continue": True,
+            "state": self.to_dict()
+        }
+    
+    def hungry_cockroach(self):
+        """Cockroach eating food"""
+        if not self.has_danger("Cockroach") or self.has_status("Cockroach Illness"):
+            return self.trigger_day_event()
+        
+        text_lines = [
+            "You wake up to the sight of a cockroach munching on some of the food you left out.",
+            "Disgusting."
+        ]
+        
+        if self.has_item("Pest Control"):
+            self.kill_pests()
+            text_lines.extend([
+                "You grab your Pest Control and chase the cockroach around your car.",
+                "Eventually, you corner it, and spray. The cockroach twitches, then stops moving.",
+                "Good riddance."
+            ])
+        else:
+            self.add_status("Cockroach Illness")
+            self.mark_day("Cockroach Illness")
+            text_lines.extend([
+                "You try to stomp on it, but it scurries away into a crack in your car.",
+                "",
+                "Later, you eat some of that same food. You immediately regret it.",
+                "Your stomach churns. This isn't good."
+            ])
+        
+        return {
+            "title": "Cockroach",
+            "text": text_lines,
+            "continue": True,
+            "state": self.to_dict()
+        }
+    
+    def lone_cowboy(self):
+        """Encounter with mysterious cowboy"""
+        return {
+            "title": "The Cowboy",
+            "text": [
+                "You wake up to the sound of hooves clopping on pavement.",
+                "Looking out your window, you see a man on horseback, wearing a wide-brimmed hat and a poncho.",
+                "He tips his hat at you as he rides by.",
+                "",
+                "\"Morning, stranger. Fine day for it.\"",
+                "",
+                "You wave back, confused. Where did he come from? Where's he going?",
+                "Before you can ask, he's already disappeared down the road.",
+                "Strange encounter."
+            ],
+            "continue": True,
+            "state": self.to_dict()
+        }
+    
+    def whats_my_name(self):
+        """Existential moment"""
+        return {
+            "title": "Reflection",
+            "text": [
+                "You wake up, and for a moment, you can't remember your name.",
+                "You sit there, staring at the ceiling of your car, trying to recall.",
+                "",
+                "Then it comes to you. Of course.",
+                "",
+                f"Your name is {self.name if self.name else 'You'}.",
+                "",
+                "How could you forget something like that?",
+                "This whole situation is really getting to you."
+            ],
+            "continue": True,
+            "state": self.to_dict()
+        }
+    
+    def interrogation(self):
+        """First interrogation from mysterious figure"""
+        if self.prereqs_done[0]:
+            return self.trigger_day_event()
+        
+        self.prereqs[0] = True
+        
+        return {
+            "title": "Interrogation",
+            "text": [
+                "You wake up to a sharp knock on your window.",
+                "Standing outside is a figure in a dark coat. You can't make out their face.",
+                "",
+                "\"You lost?\" they ask.",
+                "",
+                "You nod, unsure what else to say.",
+                "",
+                "\"Figures. Everyone who comes here is lost.\"",
+                "",
+                "The figure pauses, looking you up and down.",
+                "",
+                "\"Word of advice: don't get too comfortable. This place has a way of keeping people.\"",
+                "",
+                "Before you can respond, they turn and walk away, disappearing into the desert heat."
+            ],
+            "continue": True,
+            "state": self.to_dict()
+        }
+    
+    # RANK 0 (POOR) NIGHT EVENTS
+    
+    def ditched_wallet(self):
+        """Find wallet on the road"""
+        random_chance = random.randrange(2)
+        if random_chance == 0:
+            worth = random.randint(65, 120)
+        else:
+            worth = random.randint(7, 50)
+        
+        return {
+            "title": "Found Wallet",
+            "text": [
+                "Bored out of your mind, you decide to wander along the side of the road, just to get a change of scenery from the dusty leather seats of your wagon.",
+                "As you take step after step over the asphalt, you notice a ditched wallet, just laying there. I guess it's yours now.",
+                "",
+                f"Inside the wallet, you find ${worth} dollars."
+            ],
+            "balance_change": worth,
+            "continue": True,
+            "state": self.to_dict()
+        }
+    
+    def went_jogging(self):
+        """Go jogging - can result in injury or healing"""
+        random_chance = random.randrange(3)
+        
+        text_lines = [
+            "After spending an hour sitting in your car doing nothing, you feel like you should get some exercise. You get out of the wagon, and begin to jog down the road.",
+            "",
+            "A couple hours go by, and while jogging back, you see the wagon in the distance."
+        ]
+        
+        if random_chance == 0:
+            heal_amount = random.choice([5, 10, 15])
+            text_lines.extend([
+                "But, right as you get to your car, you trip over a stone on the ground, and scrape your knee hard. Blood begins to drip down your leg. That's a bummer."
+            ])
+            self.add_injury("Scraped Knee")
+            return {
+                "title": "Jogging Accident",
+                "text": text_lines,
+                "health_change": -heal_amount,
+                "continue": True,
+                "state": self.to_dict()
+            }
+        else:
+            heal_amount = random.choice([5, 10, 15])
+            text_lines.extend([
+                "You get back to the car, and get in, out of breath from your trip. You start the wagon and run the AC, and you feel good inside."
+            ])
+            return {
+                "title": "Good Jog",
+                "text": text_lines,
+                "health_change": heal_amount,
+                "continue": True,
+                "state": self.to_dict()
+            }
+    
+    def woodlands_path(self):
+        """Explore woodland path with multiple outcomes"""
+        random_chance = random.randrange(3)
+        
+        base_text = [
+            "After wandering from your vehicle, you find yourself deep in the woods. Squirrels run by and up into the trees. The sun hits every branch and casts a shadow below. And you wander on a natural path, journeying into the unknown.",
+            ""
+        ]
+        
+        if random_chance == 0:
+            # Deer encounter
+            return {
+                "title": "Woodland Path - Deer",
+                "text": base_text + [
+                    "As you walk along the path, you find a mother deer, with two children, walking the path towards you. As you get closer, the mother appears cautious, but then runs in your direction, before stopping before you.",
+                    "Her two children follow behind, and before you know it, the three of them wait in front of you.",
+                    "",
+                    "You put your hand out, and pet the mother deer. She makes a happy squeak noise, and wags her tail. She touches her head to yours, then continues down the path, with her two children following.",
+                    "",
+                    "Eventually, you get to the end of the path, and find the main road. You follow it back to your wagon, and take a seat, to rest for a moment."
+                ],
+                "continue": True,
+                "state": self.to_dict()
+            }
+        elif random_chance == 1:
+            # Dead body encounter - needs choice
+            return {
+                "title": "Woodland Path - Discovery",
+                "text": base_text + [
+                    "As you walk along the path, you notice someone leaning against a tree in front of you. As you get closer, you notice that the person's face is blue, their eyes are bloodshot, and they don't appear to be breathing.",
+                    "",
+                    "You begin to panic, before thinking through the situation. They're already dead, so there's nothing you can do to help them. Maybe they had some money on them? I mean, they're not gonna use it. Why shouldn't you?"
+                ],
+                "choices": [
+                    {"text": "Search the body", "action": "search_body"},
+                    {"text": "Leave them alone", "action": "leave_body"}
+                ],
+                "state": self.to_dict()
+            }
+        else:
+            # Uneventful walk
+            return {
+                "title": "Woodland Path",
+                "text": base_text + [
+                    "You walk, and walk, and walk further down the path, before the forest opens up to the main road. You follow the road back to your wagon, wondering if there was anything you missed. At least you made it back safe and sound."
+                ],
+                "continue": True,
+                "state": self.to_dict()
+            }
+    
+    def handle_search_body(self):
+        """Handle the choice to search the dead body"""
+        random_chance = random.randrange(4)
+        
+        if random_chance == 0:
+            self.add_status("Hepatitis")
+            return {
+                "title": "Body Search - Infected!",
+                "text": [
+                    "You rummage through the pockets, trying to find anything worthwhile.",
+                    "As you do so, you notice the body begin to move. It looks up at you, screams, then coughs blood all over you. You freak out, before running back down the path the way you came.",
+                    "",
+                    "You make it back to your car, and find some old clothes to wipe the blood off your face. Great, just great. You already start to feel under the weather."
+                ],
+                "continue": True,
+                "state": self.to_dict()
+            }
+        else:
+            worth = random.randint(100, 150)
+            return {
+                "title": "Body Search - Success",
+                "text": [
+                    "After a minute of digging, you manage to find a wallet. Score!",
+                    "",
+                    f"Inside the wallet, you find ${worth} dollars.",
+                    "You leave the dead body, and continue down the path, until the forest opens up to the main road. You follow the road back to your wagon, with your winnings in hand."
+                ],
+                "balance_change": worth,
+                "continue": True,
+                "state": self.to_dict()
+            }
+    
+    def handle_leave_body(self):
+        """Handle the choice to leave the body alone"""
+        return {
+            "title": "Body Left Alone",
+            "text": [
+                "While this body might be the body of a rich man, judging by the situation, it's very unlikely. Plus, dead bodies tend to be unsanitary. No, this body was simply not worth searching.",
+                "",
+                "You continue down the path, before the forest opens up to the main road. You follow the road back to your wagon, and sit. You rest for a while."
+            ],
+            "continue": True,
+            "state": self.to_dict()
+        }
