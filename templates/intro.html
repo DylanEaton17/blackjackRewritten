@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Blackjack</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/intro.css') }}">
+</head>
+<body>
+    <div class="intro-container">
+        <div class="intro-content" id="intro-content">
+            <!-- Intro sequence will be displayed here -->
+            <h1 class="title">Blackjack</h1>
+            <div class="story-text" id="story-text">
+                <p>"Ugh, not again," you spout as the old wagon shutters, then dies.</p>
+                <p>Stranded on the road again, but this time, your money has gone dry.</p>
+                <p>All but your 50 dollar bill that Grandma gave you on her last Christmas.</p>
+                <p>You've been saving it for when you needed it most, but surely, it won't be enough.</p>
+                <p></p>
+                <p>The door creaks open, and you step out into the night sky, coughing up the smoke from your fried vehicle.</p>
+                <p>After pushing your car off the road and between the trees, there isn't much else left for you to do, so you begin to wander down the dark, lonely street.</p>
+                <p></p>
+                <p>But at the end of the road, where concrete turned to stone turned to dirt, you notice a light up ahead, on the top of a hill.</p>
+                <p></p>
+                <p>As you waltz into the old, wooden shack, your eyes begin to light up with the fire of a thousand suns.</p>
+                <p>Roulette wheels! Poker tables! And in a dark corner of the abandoned casino, sits a dealer, shuffling cards for a new round of Blackjack.</p>
+                <p>That 50 dollars might just come in handy after all. Thanks, Grandma!</p>
+                <p></p>
+                <p>As you go to sit down at the table, you hear the Dealer cough, then watch as he sits up.</p>
+                <p></p>
+                <p>In a deep, and yet strained voice, the Dealer, cloaked in darkness, poses a question to you.</p>
+            </div>
+            <div class="intro-buttons" id="intro-buttons">
+                <button class="btn btn-primary" id="start-journey-btn">Enter the Casino</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/intro.js') }}"></script>
+</body>
+</html>

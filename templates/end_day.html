@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>End of Day - Blackjack</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #eee;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(30, 30, 50, 0.9);
+            border: 3px solid #d4af37;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #d4af37;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: rgba(50, 50, 70, 0.6);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #555;
+        }
+        
+        .stat-label {
+            color: #aaa;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            color: #d4af37;
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+        
+        .quote-box {
+            background: rgba(70, 70, 90, 0.6);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #d4af37;
+            margin: 30px 0;
+            font-style: italic;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+        
+        .continue-btn {
+            width: 100%;
+            padding: 15px 30px;
+            font-size: 1.3em;
+            background: linear-gradient(135deg, #d4af37 0%, #c5a028 100%);
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+        
+        .continue-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2em;
+            color: #d4af37;
+        }
+        
+        .inventory-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(40, 40, 60, 0.6);
+            border-radius: 10px;
+            border: 2px solid #555;
+        }
+        
+        .inventory-title {
+            color: #d4af37;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .inventory-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .inventory-item {
+            background: rgba(60, 60, 80, 0.8);
+            padding: 8px 15px;
+            border-radius: 5px;
+            border: 1px solid #666;
+            font-size: 0.9em;
+            color: #ccc;
+        }
+        
+        .no-items {
+            text-align: center;
+            color: #888;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌙 End of Day</h1>
+        
+        <div id="content" class="loading">
+            Loading...
+        </div>
+    </div>
+
+    <script>
+        async function loadEndDayData() {
+            try {
+                const response = await fetch('/api/story/end-day');
+                const data = await response.json();
+                
+                // Also fetch inventory
+                const invResponse = await fetch('/api/player/inventory');
+                const invData = await invResponse.json();
+                
+                if (data.success) {
+                    displayEndDay(data, invData.inventory || []);
+                } else {
+                    document.getElementById('content').innerHTML = '<p>Error loading end of day data.</p>';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('content').innerHTML = '<p>Error loading end of day data.</p>';
+            }
+        }
+        
+        function displayEndDay(data, inventory) {
+            const content = document.getElementById('content');
+            
+            let html = `
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Day</div>
+                        <div class="stat-value">${data.day}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Balance</div>
+                        <div class="stat-value">$${data.balance}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Rank</div>
+                        <div class="stat-value">${data.rank}</div>
+                    </div>
+                </div>
+            `;
+            
+            // Add inventory section if player has items
+            if (inventory && inventory.length > 0) {
+                html += `
+                    <div class="inventory-section">
+                        <div class="inventory-title">🎒 Inventory</div>
+                        <div class="inventory-items">
+                `;
+                
+                inventory.forEach(item => {
+                    html += `<div class="inventory-item">${item}</div>`;
+                });
+                
+                html += `
+                        </div>
+                    </div>
+                `;
+            }
+            
+            if (data.quote) {
+                html += `
+                    <div class="quote-box">
+                        "${data.quote}"
+                    </div>
+                `;
+            }
+            
+            if (data.message) {
+                html += `<p style="text-align: center; margin: 20px 0; font-size: 1.1em;">${data.message}</p>`;
+            }
+            
+            html += `
+                <button class="continue-btn" onclick="continueToStartDay()">
+                    Continue to New Day →
+                </button>
+            `;
+            
+            content.innerHTML = html;
+        }
+        
+        function continueToStartDay() {
+            window.location.href = '/start-day';
+        }
+        
+        // Load data on page load
+        loadEndDayData();
+    </script>
+</body>
+</html>
