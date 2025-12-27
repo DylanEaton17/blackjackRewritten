@@ -1400,3 +1400,589 @@ class WebPlayer:
             "continue": True,
             "state": self.to_dict()
         }
+    
+    # ===================
+    # RANK 1: CHEAP ($1,000 - $9,999) - Day Events
+    # ===================
+    
+    def sun_visor_bills(self):
+        """Day event - Finding money in sun visor"""
+        self.meet("Sun Visor Bills Event")
+        bills = random.choice([3, 15, 30, 60, 150, 300])
+        self.change_balance(bills)
+        
+        return {
+            "title": "Hidden Money",
+            "text": [
+                "You wake up in the front seat, dripping in sweat.",
+                "",
+                "As the sun shines through the car window, you notice a few bright green bills above you, peeking out of the sun visor. How long have they been there?",
+                "",
+                f"That's another ${bills} dollars."
+            ],
+            "continue": True,
+            "state": self.to_dict()
+        }
+    
+    def strong_winds(self):
+        """Day event - Bad weather forces staying in"""
+        self.meet("Strong Winds Event")
+        self.add_travel_restriction("Wind")
+        
+        return {
+            "title": "Dangerous Weather",
+            "text": [
+                "You wake up to a loud snap above you, followed by a massive branch crashing down from the treetops and into the street. The wind echoes throughout the trees around you, and many of them look to be on the verge of falling.",
+                "",
+                "With the weather being this bad, you make the executive decision to just chill in the wagon for the day."
+            ],
+            "continue": True,
+            "state": self.to_dict()
+        }
+    
+    def got_a_cold(self):
+        """Day event - Catch a cold (conditional)"""
+        if self.has_status("Cold"):
+            return self.day_event()
+        
+        self.meet("Got a Cold Event")
+        self.add_status("Cold")
+        self.mark_day("Cold")
+        
+        return {
+            "title": "Feeling Sick",
+            "text": [
+                "You wake up to a sneeze, followed by your nose running, droplets falling down from your chin and onto your shirt.",
+                "",
+                "Damn, must be a cold."
+            ],
+            "continue": True,
+            "state": self.to_dict()
+        }
+    
+    def turn_to_god(self):
+        """Day event - Father Ezekiel offers bible (one-time)"""
+        if self.has_met("Ezekiel"):
+            return self.day_event()
+        
+        self.meet("Ezekiel")
+        
+        return {
+            "title": "A Spiritual Visitor",
+            "text": [
+                "You wake up to someone knocking on your window. You sit up, and see a man, holding a bible, and wearing a cross on a chain around his neck.",
+                "",
+                '"Hello! I\'m Father Ezekiel. You seem to be in a tough spot, living in your car? I was just wondering if you wanted me to give you my copy of The Bible. It has the word of God, and I hope it could help you understand that you aren\'t alone on this journey of life."',
+                "",
+                '"Do you accept my offer, and Jesus as your savior?"'
+            ],
+            "choices": [
+                {"id": "accept_jesus", "text": "Accept the Bible"},
+                {"id": "decline_jesus", "text": "Politely decline"}
+            ],
+            "state": self.to_dict()
+        }
+    
+    def handle_accept_jesus(self):
+        """Handle accepting Father Ezekiel's offer"""
+        self.is_religious = True
+        
+        return {
+            "title": "Blessed",
+            "text": [
+                '"Why, that\'s wonderful!"',
+                "",
+                "Father Ezekiel hands you his bible.",
+                "",
+                '"I will pray for you, and I know that Jesus will always be with you. Amen."',
+                "",
+                "And with that, Father Ezekiel walks down the road, and out of sight."
+            ],
+            "continue": True,
+            "state": self.to_dict()
+        }
+    
+    def handle_decline_jesus(self):
+        """Handle declining Father Ezekiel's offer"""
+        return {
+            "title": "Respected Choice",
+            "text": [
+                '"Well, to each their own. I certainly cast no judgments."',
+                "",
+                '"I will pray for you, and I know that Jesus will always be with you. Amen."',
+                "",
+                "And with that, Father Ezekiel walks down the road, and out of sight."
+            ],
+            "continue": True,
+            "state": self.to_dict()
+        }
+    
+    def hungry_cow(self):
+        """Day event - Betsy the cow demands money (one-time)"""
+        if self.has_met("Betsy"):
+            return self.day_event()
+        
+        self.meet("Betsy")
+        self.add_danger("Betsy Tractor")
+        
+        return {
+            "title": "An Aggressive Visitor",
+            "text": [
+                "You wake up to your whole car shaking. As you jump up from your seat, you see a beautiful black and white cow, staring you down through your window.",
+                "",
+                "The cow moos at you aggressively, and you open the door. On its back is a note that reads 'This is Betsy. Betsy gets hungry. Please feed Betsy.'",
+                "",
+                "Betsy stares into your soul, then looks over at the seat next to you. It appears Betsy is interested in your pile of money.",
+                "",
+                "Do you feed Betsy?"
+            ],
+            "choices": [
+                {"id": "feed_betsy", "text": "Feed Betsy $100"},
+                {"id": "refuse_betsy", "text": "Refuse"}
+            ],
+            "state": self.to_dict()
+        }
+    
+    def handle_feed_betsy(self):
+        """Handle feeding Betsy the cow"""
+        self.change_balance(-100)
+        
+        # Betsy might want more
+        random_chance = random.randrange(4)
+        if (random_chance == 0) or (self.balance < 500):
+            return {
+                "title": "Satisfied Cow",
+                "text": [
+                    "You put a $100 dollar bill into Betsy's mouth. She chews it up, then spits it out in front of you.",
+                    "",
+                    "Betsy moos, then smiles. She walks down the road, happy as can be."
+                ],
+                "continue": True,
+                "state": self.to_dict()
+            }
+        else:
+            return {
+                "title": "Still Hungry",
+                "text": [
+                    "You put a $100 dollar bill into Betsy's mouth. She chews it up, then spits it out in front of you.",
+                    "",
+                    "Betsy moos, then stares you down. She doesn't seem to be done with you.",
+                    "",
+                    "Do you feed Betsy again?"
+                ],
+                "choices": [
+                    {"id": "feed_betsy", "text": "Feed Betsy another $100"},
+                    {"id": "refuse_betsy", "text": "No more"}
+                ],
+                "state": self.to_dict()
+            }
+    
+    def handle_refuse_betsy(self):
+        """Handle refusing to feed Betsy"""
+        damage = random.randint(30, 50)
+        self.hurt(damage)
+        
+        return {
+            "title": "Angry Cow",
+            "text": [
+                "You refuse to feed Betsy. She gets angry.",
+                "",
+                "Betsy charges at you, ramming into your car and you with incredible force. You're thrown back, badly hurt.",
+                "",
+                f"You take {damage} damage!",
+                "",
+                "Eventually, Betsy calms down and wanders off, leaving you bruised and battered."
+            ],
+            "continue": True,
+            "state": self.to_dict()
+        }
+    
+    # ===================
+    # RANK 1: CHEAP ($1,000 - $9,999) - Night Events
+    # ===================
+    
+    def woodlands_river(self):
+        """Night event - River bear encounter"""
+        self.meet("Woodlands River Event")
+        
+        random_chance = random.randrange(3)
+        if random_chance == 0:
+            # Bear encounter
+            if self.has_item("Quiet Sneakers"):
+                self.update_quiet_sneakers_durability()
+                return {
+                    "title": "Close Call",
+                    "text": [
+                        "After wandering from your vehicle, you find yourself deep in the woods. Deer dart by you. Tree branches sway back and forth. And you wander along a river, journeying into the unknown.",
+                        "",
+                        "As you walk further, you stumble across a large brown bear, bathing in the river.",
+                        "",
+                        "Thank goodness you're wearing your Quiet Sneakers!",
+                        "",
+                        "You turn and run back up the riverbank, never looking back. Eventually, you make it out of the woods, and return to your car, safe and sound."
+                    ],
+                    "continue": True,
+                    "state": self.to_dict()
+                }
+            else:
+                # Bear attack chance
+                random_chance_2 = random.randrange(2)
+                if random_chance_2 == 0:
+                    self.hurt(75)
+                    self.add_injury("Severed Skin")
+                    return {
+                        "title": "Bear Attack",
+                        "text": [
+                            "After wandering from your vehicle, you find yourself deep in the woods. Deer dart by you. Tree branches sway back and forth. And you wander along a river, journeying into the unknown.",
+                            "",
+                            "As you walk further, you stumble across a large brown bear, bathing in the river.",
+                            "",
+                            "Right as you're about to turn around, you step on a branch, which makes a loud crunching noise.",
+                            "",
+                            "The bear sits up from the water, and glares at you. Before you get a chance to react, the bear charges at you. He swipes at your leg. He bites your arm. He punches your neck. My, what a beating he gave you.",
+                            "",
+                            "Thankfully, you're able to play dead, just long enough for the bear to walk away without killing you. Somehow, you get up, and limp your way back to your wagon.",
+                            "",
+                            "The damage inflicted from the bear is serious and severe. It's probably a good idea to see the doctor tomorrow, when they're open again. In the meantime, you wrap yourself up with spare clothes, and go on with your life."
+                        ],
+                        "continue": True,
+                        "state": self.to_dict()
+                    }
+                else:
+                    return {
+                        "title": "Lucky Escape",
+                        "text": [
+                            "After wandering from your vehicle, you find yourself deep in the woods. Deer dart by you. Tree branches sway back and forth. And you wander along a river, journeying into the unknown.",
+                            "",
+                            "As you walk further, you stumble across a large brown bear, bathing in the river.",
+                            "",
+                            "Right as you're about to turn around, you step on a branch, which makes a loud crunching noise.",
+                            "",
+                            "The bear looks up, but seems disinterested. It goes back to bathing. You slowly back away and return to safety."
+                        ],
+                        "continue": True,
+                        "state": self.to_dict()
+                    }
+        else:
+            # Peaceful river walk
+            return {
+                "title": "Peaceful Walk",
+                "text": [
+                    "After wandering from your vehicle, you find yourself deep in the woods. Deer dart by you. Tree branches sway back and forth. And you wander along a river, journeying into the unknown.",
+                    "",
+                    "The night is calm and beautiful. You enjoy the peaceful sounds of nature before returning to your wagon."
+                ],
+                "continue": True,
+                "state": self.to_dict()
+            }
+    
+    def woodlands_field(self):
+        """Night event - Field with fox, duffle, or campsite"""
+        self.meet("Woodlands Field Event")
+        
+        event = random.choice(["fox", "duffle", "campsite", "none"])
+        
+        if event == "fox":
+            if random.random() < 0.5:
+                reward = random.randint(200, 600)
+                self.change_balance(reward)
+                return {
+                    "title": "Mischievous Fox",
+                    "text": [
+                        "You step into a vast, golden field at dusk. The wild grass is waist-high, swaying in the wind, and the sky is painted with streaks of orange and violet. The air is thick with the scent of earth and distant rain.",
+                        "",
+                        "A sudden rustle in the grass makes you freeze. A sleek, red fox emerges, its eyes glinting with mischief. It circles you, then snatches a shiny object from your bag and bolts into the tall grass.",
+                        "",
+                        "You give chase, heart pounding, the grass slapping your legs. The fox leads you on a wild run, then vanishes. In its place, you find a hollow with your item—and a stash of old, silver coins, half-buried in the dirt.",
+                        "",
+                        f"You recover your item and pocket the coins (+${reward}), feeling the thrill of the hunt."
+                    ],
+                    "continue": True,
+                    "state": self.to_dict()
+                }
+            else:
+                return {
+                    "title": "Clever Thief",
+                    "text": [
+                        "You step into a vast, golden field at dusk. The wild grass is waist-high, swaying in the wind, and the sky is painted with streaks of orange and violet. The air is thick with the scent of earth and distant rain.",
+                        "",
+                        "A sudden rustle in the grass makes you freeze. A sleek, red fox emerges, its eyes glinting with mischief. It circles you, then snatches a shiny object from your bag and bolts into the tall grass.",
+                        "",
+                        "You lose sight of the fox. Whatever it took is gone, and you're left with only the sound of your own breath and the wind. The field feels emptier now."
+                    ],
+                    "continue": True,
+                    "state": self.to_dict()
+                }
+        
+        elif event == "duffle":
+            outcome = random.choice(["cash", "note", "trap"])
+            
+            if outcome == "cash":
+                reward = random.randint(500, 1500)
+                self.change_balance(reward)
+                return {
+                    "title": "Hidden Treasure",
+                    "text": [
+                        "You step into a vast, golden field at dusk. The wild grass is waist-high, swaying in the wind, and the sky is painted with streaks of orange and violet.",
+                        "",
+                        "Your foot strikes something hard. You kneel and uncover a battered duffle bag, caked in mud. The zipper is stuck, but with effort, you force it open.",
+                        "",
+                        f"Inside, you find bundles of cash, waterlogged but real. You count quickly, nerves tingling, and pocket your find (+${reward}) before anyone can see."
+                    ],
+                    "continue": True,
+                    "state": self.to_dict()
+                }
+            
+            elif outcome == "note":
+                self.add_item("Cryptic Note")
+                return {
+                    "title": "Mysterious Message",
+                    "text": [
+                        "You step into a vast, golden field at dusk. The wild grass is waist-high, swaying in the wind, and the sky is painted with streaks of orange and violet.",
+                        "",
+                        "Your foot strikes something hard. You kneel and uncover a battered duffle bag, caked in mud. The zipper is stuck, but with effort, you force it open.",
+                        "",
+                        "Inside, you find a single, bloodstained note: 'The roots run deep where the sun never shines. Trust no one.'",
+                        "",
+                        "You shiver and pocket the note, feeling watched."
+                    ],
+                    "continue": True,
+                    "state": self.to_dict()
+                }
+            
+            else:  # trap
+                damage = random.randint(10, 25)
+                self.hurt(damage)
+                return {
+                    "title": "Painful Surprise",
+                    "text": [
+                        "You step into a vast, golden field at dusk. The wild grass is waist-high, swaying in the wind, and the sky is painted with streaks of orange and violet.",
+                        "",
+                        "Your foot strikes something hard. You kneel and uncover a battered duffle bag, caked in mud. The zipper is stuck, but with effort, you force it open.",
+                        "",
+                        f"As you dig deeper, a swarm of angry hornets bursts from the bag! You sprint away, stung and cursing, your skin burning. (-{damage} health)"
+                    ],
+                    "continue": True,
+                    "state": self.to_dict()
+                }
+        
+        elif event == "campsite":
+            return {
+                "title": "Abandoned Camp",
+                "text": [
+                    "You step into a vast, golden field at dusk. The wild grass is waist-high, swaying in the wind, and the sky is painted with streaks of orange and violet.",
+                    "",
+                    "You stumble upon an old campsite, the fire long cold. Someone left in a hurry—a tent still stands, flapping in the wind.",
+                    "",
+                    "You search the tent but find nothing of value. The field keeps its secrets."
+                ],
+                "continue": True,
+                "state": self.to_dict()
+            }
+        
+        else:  # none
+            return {
+                "title": "Quiet Evening",
+                "text": [
+                    "You step into a vast, golden field at dusk. The wild grass is waist-high, swaying in the wind, and the sky is painted with streaks of orange and violet. The air is thick with the scent of earth and distant rain. You feel both exposed and alive, as if the world is holding its breath.",
+                    "",
+                    "You wander for a while, lost in thought. The night is gentle, and you return to your wagon with a clear mind."
+                ],
+                "continue": True,
+                "state": self.to_dict()
+            }
+    
+    def swamp_stroll(self):
+        """Night event - Swamp with snake, frog, or witch"""
+        self.meet("Swamp Stroll Event")
+        
+        event = random.choice(["snake", "frog", "witch", "none"])
+        
+        if event == "snake":
+            return {
+                "title": "Serpent Path",
+                "text": [
+                    "You pick your way along a narrow, winding path through the swamp. The air is thick with mist and the croak of unseen frogs. Every step is a gamble—roots twist underfoot, and the water hides secrets.",
+                    "",
+                    "A sudden hiss makes you freeze. A massive snake, thick as your arm, slithers across your path, its eyes fixed on you.",
+                    "",
+                    "Do you try to catch it?"
+                ],
+                "choices": [
+                    {"id": "catch_snake", "text": "Try to catch the snake"},
+                    {"id": "avoid_snake", "text": "Back away slowly"}
+                ],
+                "state": self.to_dict()
+            }
+        
+        elif event == "frog":
+            return {
+                "title": "The Riddle Frog",
+                "text": [
+                    "You pick your way along a narrow, winding path through the swamp. The air is thick with mist and the croak of unseen frogs.",
+                    "",
+                    "A luminous green frog sits on a log, watching you with ancient, golden eyes. It croaks, and you feel compelled to listen.",
+                    "",
+                    "The frog speaks: 'Answer my riddle and I shall grant you a boon. Fail, and you shall be cursed.'",
+                    "",
+                    "'What has roots as nobody sees, is taller than trees, up, up it goes, and yet never grows?'"
+                ],
+                "choices": [
+                    {"id": "answer_mountain", "text": "A mountain"},
+                    {"id": "answer_tree", "text": "A tree"},
+                    {"id": "answer_skip", "text": "Refuse to answer"}
+                ],
+                "state": self.to_dict()
+            }
+        
+        elif event == "witch":
+            return {
+                "title": "Swamp Witch",
+                "text": [
+                    "You pick your way along a narrow, winding path through the swamp. The air is thick with mist and the croak of unseen frogs.",
+                    "",
+                    "A figure emerges from the mist—a witch, her eyes glowing faintly. She offers you a choice: a curse or a blessing.",
+                    "",
+                    "Do you accept her offer?"
+                ],
+                "choices": [
+                    {"id": "accept_witch", "text": "Accept"},
+                    {"id": "refuse_witch", "text": "Refuse"}
+                ],
+                "state": self.to_dict()
+            }
+        
+        else:  # none
+            return {
+                "title": "Misty Path",
+                "text": [
+                    "You pick your way along a narrow, winding path through the swamp. The air is thick with mist and the croak of unseen frogs. Every step is a gamble—roots twist underfoot, and the water hides secrets.",
+                    "",
+                    "Tonight, the swamp is quiet. You make your way through safely and return to your wagon."
+                ],
+                "continue": True,
+                "state": self.to_dict()
+            }
+    
+    def handle_catch_snake(self):
+        """Handle trying to catch the snake"""
+        if random.random() < 0.4:
+            self.add_item("Rare Snakeskin")
+            return {
+                "title": "Successful Capture",
+                "text": [
+                    "You lunge and grab the snake behind the head. It writhes, but you hold firm.",
+                    "",
+                    "Eventually, it calms, and you harvest its skin—a valuable prize."
+                ],
+                "continue": True,
+                "state": self.to_dict()
+            }
+        else:
+            damage = random.randint(15, 30)
+            self.hurt(damage)
+            self.add_status("Poisoned")
+            return {
+                "title": "Snake Bite",
+                "text": [
+                    "The snake strikes, sinking its fangs into your arm. You stagger back, dizzy, as venom burns through your veins.",
+                    "",
+                    f"You take {damage} damage and are now poisoned!"
+                ],
+                "continue": True,
+                "state": self.to_dict()
+            }
+    
+    def handle_avoid_snake(self):
+        """Handle backing away from the snake"""
+        return {
+            "title": "Wise Choice",
+            "text": [
+                "You back away, heart pounding, and let the snake disappear into the shadows.",
+                "",
+                "Sometimes, caution is the better part of valor."
+            ],
+            "continue": True,
+            "state": self.to_dict()
+        }
+    
+    def handle_answer_mountain(self):
+        """Handle correct answer to riddle"""
+        self.add_status("Lucky")
+        return {
+            "title": "Wisdom Rewarded",
+            "text": [
+                "The frog nods. 'Wisdom is yours.'",
+                "",
+                "You feel luckier, as if the swamp itself is on your side."
+            ],
+            "continue": True,
+            "state": self.to_dict()
+        }
+    
+    def handle_answer_tree(self):
+        """Handle wrong answer to riddle"""
+        self.add_status("Cursed")
+        return {
+            "title": "Wrong Answer",
+            "text": [
+                "The frog croaks angrily. 'Foolish mortal!'",
+                "",
+                "You feel a dark weight settle over you. You have been cursed."
+            ],
+            "continue": True,
+            "state": self.to_dict()
+        }
+    
+    def handle_answer_skip(self):
+        """Handle refusing to answer riddle"""
+        return {
+            "title": "Avoided",
+            "text": [
+                "You back away from the frog, unwilling to play its game.",
+                "",
+                "It watches you leave, its golden eyes unblinking."
+            ],
+            "continue": True,
+            "state": self.to_dict()
+        }
+    
+    def handle_accept_witch(self):
+        """Handle accepting witch's offer"""
+        if random.random() < 0.5:
+            self.add_status("Protected")
+            return {
+                "title": "Blessed",
+                "text": [
+                    "The witch smiles and touches your forehead. You feel a warm energy flow through you.",
+                    "",
+                    "You have been blessed with protection."
+                ],
+                "continue": True,
+                "state": self.to_dict()
+            }
+        else:
+            self.add_status("Cursed")
+            return {
+                "title": "Cursed",
+                "text": [
+                    "She grins wickedly. 'Luck is a fickle thing.'",
+                    "",
+                    "You feel a cold shiver run down your spine. You have been cursed."
+                ],
+                "continue": True,
+                "state": self.to_dict()
+            }
+    
+    def handle_refuse_witch(self):
+        """Handle refusing witch's offer"""
+        return {
+            "title": "Declined",
+            "text": [
+                "The witch shrugs and disappears into the mist, her laughter echoing across the water.",
+                "",
+                "You return to your wagon, wondering what might have been."
+            ],
+            "continue": True,
+            "state": self.to_dict()
+        }
