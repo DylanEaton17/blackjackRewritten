@@ -20,6 +20,9 @@ class WebBlackjack:
         self.message = ""
         self.dealer_second_card_hidden = True
         self.set_min_bet(self.balance)
+        # Round tracking for forced progression
+        self.rounds_played = 0
+        self.max_rounds_per_night = 3  # Base limit, can be increased by Golden Watch
         # Statistics tracking
         self.stats = {
             "hands_played": 0,
@@ -43,6 +46,8 @@ class WebBlackjack:
         self.message = "Welcome! Place your bet to start."
         self.dealer_second_card_hidden = True
         self.set_min_bet(self.balance)
+        self.rounds_played = 0
+        self.max_rounds_per_night = 3
         # Reset statistics
         self.stats = {
             "hands_played": 0,
@@ -257,7 +262,10 @@ class WebBlackjack:
             "message": self.message,
             "player_hand": self.player_hand.to_dict(),
             "dealer_hand": self.dealer_hand.to_dict(hide_second=self.dealer_second_card_hidden),
-            "stats": self.stats
+            "stats": self.stats,
+            "rounds_played": self.rounds_played,
+            "rounds_remaining": self.get_rounds_remaining(),
+            "round_limit_reached": self.check_round_limit()
         }
     
     def reset_for_new_round(self):
@@ -266,8 +274,29 @@ class WebBlackjack:
         self.player_hand = Hand("Player")
         self.dealer_hand = Hand("Dealer")
         self.game_phase = "betting"
-        self.message = "Place your bet for the next round."
         self.dealer_second_card_hidden = True
+        
+        # Increment rounds played
+        self.rounds_played += 1
+        
+        # Check if max rounds reached
+        if self.rounds_played >= self.max_rounds_per_night:
+            self.message = f"You've played {self.rounds_played} rounds. Time to leave the casino..."
+        else:
+            rounds_left = self.max_rounds_per_night - self.rounds_played
+            self.message = f"Place your bet for the next round. ({rounds_left} rounds remaining)"
+    
+    def check_round_limit(self):
+        """Check if maximum rounds per night has been reached"""
+        return self.rounds_played >= self.max_rounds_per_night
+    
+    def get_rounds_remaining(self):
+        """Get number of rounds remaining"""
+        return max(0, self.max_rounds_per_night - self.rounds_played)
+    
+    def set_max_rounds(self, has_golden_watch):
+        """Set maximum rounds based on Golden Watch ownership"""
+        self.max_rounds_per_night = 4 if has_golden_watch else 3
 
 
 class Hand:
@@ -362,7 +391,18 @@ def index():
 
 @app.route('/casino')
 def casino():
-    """Direct route to casino"""
+    """Direct route to casino - integrate with player state for round limits"""
+    player = get_player()
+    game = get_game()
+    
+    # Set max rounds based on Golden Watch ownership
+    has_watch = player.has_item("Golden Watch")
+    game.set_max_rounds(has_watch)
+    
+    # Sync balance from story mode
+    if hasattr(player, 'balance'):
+        game.balance = player.balance
+    
     return render_template('game.html')
 
 
@@ -626,6 +666,31 @@ def sync_balance():
     save_player(player)
     
     return jsonify({"success": True, "balance": balance})
+
+
+@app.route('/api/casino/check-end-night', methods=['GET'])
+def check_end_night():
+    """Check if casino session should end and redirect to end_day"""
+    game = get_game()
+    player = get_player()
+    
+    if game.check_round_limit():
+        # Sync balance back to story mode
+        player.balance = game.balance
+        save_player(player)
+        
+        return jsonify({
+            "should_end": True,
+            "rounds_played": game.rounds_played,
+            "final_balance": game.balance,
+            "redirect_to": "/end-day"
+        })
+    else:
+        return jsonify({
+            "should_end": False,
+            "rounds_remaining": game.get_rounds_remaining(),
+            "rounds_played": game.rounds_played
+        })
 
 
 if __name__ == '__main__':

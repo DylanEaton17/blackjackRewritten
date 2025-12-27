@@ -279,6 +279,17 @@ function updateUI(state) {
     minBetInfo.textContent = `Min: $${state.min_bet}`;
     betAmountInput.min = state.min_bet;
     
+    // Update round counter
+    const roundNumberEl = document.getElementById('round-number');
+    const maxRoundsEl = document.getElementById('max-rounds');
+    if (roundNumberEl && state.rounds_played !== undefined) {
+        roundNumberEl.textContent = state.rounds_played;
+    }
+    if (maxRoundsEl && state.rounds_remaining !== undefined) {
+        const maxRounds = state.rounds_played + state.rounds_remaining;
+        maxRoundsEl.textContent = maxRounds;
+    }
+    
     // Update statistics
     if (state.stats) {
         updateStats(state.stats);
@@ -298,6 +309,11 @@ function updateUI(state) {
     
     // Update UI sections based on game phase
     updateButtonStates(state.game_phase);
+    
+    // Check if round limit reached
+    if (state.round_limit_reached) {
+        checkEndNight();
+    }
 }
 
 // Display hand of cards
@@ -405,5 +421,33 @@ async function handleLeaveCasino() {
     } catch (error) {
         console.error('Error leaving casino:', error);
         showMessage('Error leaving casino.', 'lose');
+    }
+}
+
+// Check if casino night should end (3 rounds played)
+async function checkEndNight() {
+    try {
+        const response = await fetch('/api/casino/check-end-night');
+        if (!response.ok) {
+            throw new Error('Failed to check end night');
+        }
+        
+        const result = await response.json();
+        
+        if (result.should_end) {
+            // Disable all buttons
+            dealBtn.disabled = true;
+            newRoundBtn.disabled = true;
+            
+            // Show message about night ending
+            showMessage(`Casino closes! You played ${result.rounds_played} rounds. Final balance: $${result.final_balance}`, 'win');
+            
+            // Redirect to end_day after 3 seconds
+            setTimeout(() => {
+                window.location.href = result.redirect_to;
+            }, 3000);
+        }
+    } catch (error) {
+        console.error('Error checking end night:', error);
     }
 }
