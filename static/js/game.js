@@ -279,17 +279,6 @@ function updateUI(state) {
     minBetInfo.textContent = `Min: $${state.min_bet}`;
     betAmountInput.min = state.min_bet;
     
-    // Update round counter
-    const roundNumberEl = document.getElementById('round-number');
-    const maxRoundsEl = document.getElementById('max-rounds');
-    if (roundNumberEl && state.rounds_played !== undefined) {
-        roundNumberEl.textContent = state.rounds_played;
-    }
-    if (maxRoundsEl && state.rounds_remaining !== undefined) {
-        const maxRounds = state.rounds_played + state.rounds_remaining;
-        maxRoundsEl.textContent = maxRounds;
-    }
-    
     // Update statistics
     if (state.stats) {
         updateStats(state.stats);
