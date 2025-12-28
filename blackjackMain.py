@@ -5,7 +5,7 @@ def main():
     player = story.Player()
     blackjackGame = blackjack.Blackjack(player)
     # player.first_setup()
-    # player.opening_lines()
+    player.opening_lines()
     while(True):
         blackjackGame.play_round()
         player.end_day()

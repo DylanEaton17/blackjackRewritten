@@ -38,7 +38,7 @@ def bright(text):
 
 
 class Blackjack:
-    __slots__=["__balance", "__bet", "__min_bet", "__dealer_happiness", "__deck", "__hand", "__dealer_hand", "__player", "__used_peak", "__dealer_warning", "__free_hand"]
+    __slots__=["__balance", "__bet", "__min_bet", "__dealer_happiness", "__deck", "__hand", "__dealer_hand", "__player", "__used_peak", "__dealer_warning", "__free_hand", "__used_second_chance", "__used_pocket_aces", "__lucky_coin_triggered"]
 
     def __init__(self, player):
         self.__balance = 50
@@ -52,13 +52,22 @@ class Blackjack:
         self.__used_peak = False
         self.__dealer_warning = False
         self.__free_hand = False
+        self.__used_second_chance = False
+        self.__used_pocket_aces = False
+        self.__lucky_coin_triggered = False
 
     def update_player(self):
         self.__balance = self.__player.get_balance()
         self.__player.update_rank()
         if self.__player.has_item("Golden Watch"):
             self.__player.set_rounds(4)
+        elif self.__player.has_item("Pocket Watch"):
+            random_chance = random.randrange(3)
+            if random_chance < 2:  # 66% chance
+                self.__player.set_rounds(4)
         self.__used_peak = False
+        self.__used_second_chance = False
+        self.__used_pocket_aces = False
 
     def play_round(self, count=None):
         # Updates the player
@@ -71,6 +80,20 @@ class Blackjack:
         # Resets the deck
         self.hard_reset()
 
+        # Broken state effects at start of gambling session
+        if self.__player.is_broken():
+            broken_effects = [
+                "The cards are looking at you. All of them. Even the ones still in the deck.",
+                "You sit down. Or did you? You're sitting. You think.",
+                "The felt on the table is the wrong color. It was green. Now it's green. But differently.",
+                "The Dealer has too many hands. Count them. One. Two. One. Just one.",
+                "You can hear your heartbeat in the cards. Thump. Thump. Hit. Stand. Thump.",
+                "Time is moving wrong. The clock says one thing. Your body says another.",
+                "Everything is fine. Everything is fine. Everything is fine. Is everything fine?"
+            ]
+            type.fast(red(random.choice(broken_effects)))
+            print("\n")
+
         # Tells player that their golden watch is noticed by the Dealer
         if self.__player.has_item("Golden Watch"):
             type.fast("Your " + bright(magenta("Golden Watch")) + " glistens in the light hanging above the betting table. The Dealer will let you play an extra round.")
@@ -78,6 +101,23 @@ class Blackjack:
 
         if self.__player.has_item("Dirty Old Hat"):
             type.fast("The " + bright(magenta("Dirty Old Hat")) + " on your head sends dust in the air, and reeks of poverty. Minimum bets are lowered.")
+            print("\n")
+
+        if self.__player.has_item("Pocket Watch") and self.__player.get_rounds() == 4:
+            type.fast("Your " + bright(magenta("Pocket Watch")) + " ticks slowly, buying you extra time. The Dealer lets you play an extra round.")
+            print("\n")
+            self.__player.update_pocket_watch_durability()
+
+        if self.__player.has_item("Worn Gloves"):
+            type.fast("Your " + bright(magenta("Worn Gloves")) + " fit snugly on your hands. You feel more in tune with the cards.")
+            print("\n")
+
+        if self.__player.has_item("Tattered Cloak"):
+            type.fast("Your " + bright(magenta("Tattered Cloak")) + " rustles quietly. The Dealer barely notices you.")
+            print("\n")
+
+        if self.__player.has_item("Lucky Coin"):
+            type.fast("Your " + bright(magenta("Lucky Coin")) + " feels warm in your pocket.")
             print("\n")
 
         # Makes the dealer a bit happier, as a new day has started
@@ -308,6 +348,17 @@ class Blackjack:
 
 
     def first_deal(self):
+        # Pocket Aces effect: guarantee first card is an Ace
+        if self.__player.has_flask_effect("Pocket Aces") and not self.__used_pocket_aces:
+            # Find an ace in the deck and move it to the top
+            ace_found = self.__deck.find_and_move_ace_to_top()
+            if ace_found:
+                type.fast(magenta(bright("Your Pocket Aces potion tingles... You feel lucky!")))
+                print()
+                self.__used_pocket_aces = True
+                # Remove the effect after use (one-time use)
+                self.__player.remove_flask_effect("Pocket Aces")
+        
         # Deal first card to Player
         card = self.draw(self.__hand)
         self.print_draw("Player", "first", card)
@@ -385,7 +436,22 @@ class Blackjack:
     def hit(self):
         # Hits a player's hand, then types their hand's value
         print()
+        
+        # Worn Gloves effect: occasionally redraw if the card would bust
         card = self.draw(self.__hand)
+        if self.__player.has_item("Worn Gloves"):
+            # Check if this card would cause a bust
+            if self.__hand.value() > 21:
+                random_chance = random.randrange(4)
+                if random_chance < 1:  # 25% chance to redraw
+                    # Remove the card that was just drawn
+                    self.__hand.remove_last_card()
+                    # Draw a new card
+                    card = self.draw(self.__hand)
+                    type.fast(magenta(bright("Your Worn Gloves tingle as the cards shift in your favor!")))
+                    print()
+                    self.__player.update_worn_gloves_durability()
+        
         self.print_draw("Player", "next", card)
         if self.__hand.has_ace():
             time.sleep(PAUSE)
@@ -396,13 +462,24 @@ class Blackjack:
     def dealer_hit(self):
         # Checks if the dealer has a hand that can be hit (value less than 17)
         # if it can, the hand will be hit, and the value will be typed
-        if(self.__dealer_hand.value()>=17):
+        
+        # Dealer's Hesitation effect: force dealer to hit once more when they would normally stand
+        hesitation_forced_hit = False
+        if self.__player.has_flask_effect("Dealer's Hesitation") and self.__dealer_hand.value() >= 17 and self.__dealer_hand.value() < 21:
+            random_chance = random.randrange(3)
+            if random_chance < 2:  # 66% chance to force extra hit
+                hesitation_forced_hit = True
+                type.fast(magenta(bright("Your Dealer's Hesitation potion kicks in! The Dealer hesitates and draws another card!")))
+                print()
+                self.__player.update_dealers_hesitation_durability()
+        
+        if(self.__dealer_hand.value()>=17) and not hesitation_forced_hit:
             self.__dealer_hand.get_final_value()
             print()
             type.fast(red("The Dealer stands at " + bright(str(self.__dealer_hand.value()))))
             print()
             return True
-        elif(self.__dealer_hand.possible_hands()==2):
+        elif(self.__dealer_hand.possible_hands()==2) and not hesitation_forced_hit:
             if(self.__dealer_hand.ace_value()>=17):
                 self.__dealer_hand.get_final_value()
                 print()
@@ -459,6 +536,24 @@ class Blackjack:
     def end_round(self, status):
         print()
         message = random.randrange(5)
+
+        # Lucky Coin effect: occasionally turn a loss into a push/tie
+        if self.__player.has_item("Lucky Coin") and status in ["Dealer Wins", "Dealer Blackjack", "Player Bust"]:
+            random_chance = random.randrange(5)
+            if random_chance < 1:  # 20% chance
+                type.fast(magenta(bright("Your Lucky Coin glows! The loss turns into a push!")))
+                print("\n")
+                self.__player.update_lucky_coin_durability()
+                self.__lucky_coin_triggered = True
+                status = "Tie"
+        
+        # Tattered Cloak effect: dealer sometimes forgets to collect losing bet
+        tattered_cloak_saved = False
+        if self.__player.has_item("Tattered Cloak") and status in ["Dealer Wins", "Dealer Blackjack", "Player Bust"]:
+            random_chance = random.randrange(4)
+            if random_chance < 1:  # 25% chance
+                tattered_cloak_saved = True
+                self.__player.update_tattered_cloak_durability()
 
         match status:
             case "Player Blackjack": 
@@ -601,8 +696,16 @@ class Blackjack:
                 print("\n")
                 type.fast(cyan(bright("Your balance is still " + green("${:,}".format(self.__balance)))))
 
+        # Tattered Cloak effect: refund the bet if triggered
+        if tattered_cloak_saved and status in ["Dealer Wins", "Dealer Blackjack", "Player Bust"]:
+            print("\n")
+            type.fast(magenta(bright("Your Tattered Cloak rustles... The Dealer seems to have forgotten to collect your bet!")))
+            self.__balance += self.__bet  # Refund the bet
+            print()
+            type.fast(magenta(bright("Your balance is restored to " + green("${:,}".format(self.__balance)))))
 
         self.__player.set_balance(self.__balance)
+        self.__player.gambling_result(status, self.__bet)  # Sanity effects from gambling
         self.__player.status()
         self.end_round_dealer_happiness(status)
 
@@ -826,3 +929,24 @@ class Hand:
             return self.__value[1]
         else:
             return 0
+
+    def remove_last_card(self):
+        # Remove the last card from the hand and recalculate value
+        if len(self.__cards) > 0:
+            removed_card = self.__cards.pop()
+            # Recalculate the hand value from scratch
+            self.__value = [0]
+            for card in self.__cards:
+                self.__value[0] += card.value()
+                if(len(self.__value)==2):
+                    self.__value[1] += card.value()
+                if((card.value()==1) & (len(self.__value)==1) & (self.__value[0]<12)):
+                    self.__value.append(self.__value[0] + 10)
+                if(len(self.__value)==2):
+                    if(self.__value[1] > 21):
+                        self.__value.pop()
+                    elif(self.__value[1] == 21):
+                        self.__value.pop()
+                        self.__value[0] = 21
+            return removed_card
+        return None

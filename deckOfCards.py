@@ -79,6 +79,17 @@ class Deck:
         i = len(self) - 1
         return self.__deck[i]
     
+    def find_and_move_ace_to_top(self):
+        # Find an ace in the deck and move it to the top
+        for i, card in enumerate(self.__deck):
+            if card.value() == 1:  # Ace has value 1
+                # Remove the ace from its current position
+                ace = self.__deck.pop(i)
+                # Add it to the top of the deck (end of list since we pop from end)
+                self.__deck.append(ace)
+                return True
+        return False
+    
 class Card:
     __slots__ = ["__name", "__suit", "__value"]
 

@@ -44,14 +44,26 @@ class Lists:
         a_list.append("left_window_down")
         a_list.append("estranged_dog")
         a_list.append("freight_truck")
+        a_list.append("morning_stretch")
+        a_list.append("ant_invasion")
+        a_list.append("bird_droppings")
+        a_list.append("flat_tire")
+        a_list.append("mysterious_note")
+        a_list.append("radio_static")
         # Conditional
         a_list.append("sore_throat")
         a_list.append("spider_bite")
         a_list.append("hungry_cockroach")
+        a_list.append("ant_bite")
         # One-Time
         a_list.append("lone_cowboy")
         a_list.append("whats_my_name")
         a_list.append("interrogation")
+        a_list.append("old_man_jenkins")
+        a_list.append("the_mime")
+        # Secret Events
+        a_list.append("midnight_visitor")
+        a_list.append("perfect_hand")
         random.shuffle(a_list)
         return a_list
     
@@ -60,6 +72,8 @@ class Lists:
         a_list.append("ditched_wallet")
         a_list.append("went_jogging")
         a_list.append("woodlands_path")
+        # One-Time (Rabbit)
+        a_list.append("chase_the_rabbit")
         random.shuffle(a_list)
         return a_list
 
@@ -69,11 +83,37 @@ class Lists:
         # Everytime
         a_list.append("sun_visor_bills")
         a_list.append("strong_winds")
+        a_list.append("morning_fog")
+        a_list.append("car_wont_start")
+        a_list.append("raccoon_raid")
+        a_list.append("beautiful_sunrise")
+        # Item-Using Events
+        a_list.append("mosquito_swarm")
+        a_list.append("scorching_sun")
+        a_list.append("sudden_downpour")
+        a_list.append("freezing_night")
+        a_list.append("car_smell")
+        a_list.append("roadside_breakdown")
+        a_list.append("broken_belonging")
+        a_list.append("social_encounter")
+        a_list.append("rubber_band_save")
+        a_list.append("penny_luck")
         # Conditional
         a_list.append("got_a_cold")
+        a_list.append("cold_gets_worse")
         # One-Time
         a_list.append("turn_to_god")
         a_list.append("hungry_cow")
+        a_list.append("ice_cream_truck")
+        a_list.append("kid_on_bike")
+        a_list.append("lost_tourist")
+        # One-Time Conditional (Dreams)
+        a_list.append("remember_rebecca")
+        a_list.append("dealers_anger")
+        a_list.append("casino_bar")
+        # Secret Events
+        a_list.append("deja_vu")
+        a_list.append("exactly_1111")
         random.shuffle(a_list)
         return a_list
     
@@ -82,6 +122,10 @@ class Lists:
         a_list.append("woodlands_river")
         a_list.append("woodlands_field")
         a_list.append("swamp_stroll")
+        # One-Time Conditional (Suzy)
+        a_list.append("whats_my_favorite_color")
+        # One-Time (Rabbit)
+        a_list.append("chase_the_second_rabbit")
         random.shuffle(a_list)
         return a_list
     
@@ -90,11 +134,30 @@ class Lists:
         a_list = []
         # Everytime
         a_list.append("left_door_open")
+        a_list.append("street_performer")
+        a_list.append("power_outage_area")
+        a_list.append("construction_noise")
+        # Item-Using Events
+        a_list.append("important_document")
+        a_list.append("caught_fishing")
+        a_list.append("robbery_attempt")
+        a_list.append("photo_opportunity")
+        a_list.append("need_fire")
         # Conditional
         a_list.append("another_spider_bite")
         a_list.append("squirrel_invasion")
+        a_list.append("homeless_network")
+        # One-Time
+        a_list.append("the_photographer")
+        a_list.append("the_food_truck")
         # One-Time Conditional
         a_list.append("further_interrogation")
+        # One-Time Conditional (Dreams)
+        a_list.append("remember_nathan")
+        a_list.append("dealers_scar")
+        a_list.append("casino_table")
+        # Secret Events
+        a_list.append("exactly_50000")
         random.shuffle(a_list)
         return a_list
     
@@ -103,6 +166,8 @@ class Lists:
         a_list.append("swamp_wade")
         a_list.append("swamp_swim")
         a_list.append("beach_stroll")
+        # One-Time (Rabbit)
+        a_list.append("chase_the_third_rabbit")
         random.shuffle(a_list)
         return a_list
     
@@ -112,11 +177,32 @@ class Lists:
         a_list = []
         # Everytime
         a_list.append("left_trunk_open")
+        a_list.append("luxury_car_passes")
+        a_list.append("paparazzi_mistake")
+        a_list.append("investment_opportunity")
+        a_list.append("expensive_taste")
+        a_list.append("news_van")
+        # Item-Using Events (Premium)
+        a_list.append("classy_encounter")
+        a_list.append("wine_and_dine")
+        a_list.append("cigar_circle")
+        a_list.append("lucky_rabbit_encounter")
         # Conditional
         a_list.append("rat_bite")
         a_list.append("hungry_termites")
+        a_list.append("wealth_anxiety")
+        a_list.append("tax_man")
+        # One-Time
+        a_list.append("the_rival")
+        a_list.append("the_bodyguard_offer")
+        a_list.append("high_roller_invitation")
+        a_list.append("old_friend_recognition")
+        a_list.append("grimy_gus_discovery")
         # One-Time Conditional
         a_list.append("starving_cow")
+        # Secret Events
+        a_list.append("exactly_250000")
+        a_list.append("dealer_in_dreams")
         random.shuffle(a_list)
         return a_list
     
@@ -125,6 +211,10 @@ class Lists:
         a_list.append("beach_swim")
         a_list.append("beach_dive")
         a_list.append("city_streets")
+        # One-Time Conditional (Suzy)
+        a_list.append("whats_my_favorite_animal")
+        # One-Time (Rabbit)
+        a_list.append("chase_the_fourth_rabbit")
         random.shuffle(a_list)
         return a_list
 
@@ -134,10 +224,25 @@ class Lists:
         a_list = []
         # Everytime
         a_list.append("thunderstorm")
+        a_list.append("high_stakes_feeling")
+        a_list.append("casino_security")
+        a_list.append("wealthy_doubts")
+        a_list.append("people_watching")
+        # Conditional
+        a_list.append("the_temptation")
         # One-Time Events
         a_list.append("likely_death")
+        a_list.append("the_veteran")
+        a_list.append("the_journalist")
+        a_list.append("the_offer_refused")
         # One-Time Conditional
         a_list.append("even_further_interrogation")
+        # One-Time Conditional (Dreams)
+        a_list.append("remember_johnathan")
+        a_list.append("dealers_revolver")
+        a_list.append("casino_riches")
+        # Secret Events
+        a_list.append("exactly_777777")
         random.shuffle(a_list)
         return a_list
     
@@ -145,15 +250,36 @@ class Lists:
         a_list = []
         a_list.append("city_stroll")
         a_list.append("city_park")
+        # One-Time (Rabbit)
+        a_list.append("chase_the_fifth_rabbit")
         random.shuffle(a_list)
         return a_list
 
 # Nearly There Events (900,000 +)
     def make_nearly_day_events_list(self):
         a_list = []
+        # Everytime
+        a_list.append("almost_there")
+        a_list.append("the_weight_of_wealth")
+        a_list.append("casino_knows")
+        a_list.append("last_stretch")
+        a_list.append("strange_visitors")
+        # Conditional
+        a_list.append("too_close_to_quit")
+        a_list.append("victoria_returns")
+        # One-Time
+        a_list.append("the_warning")
+        a_list.append("the_celebration")
+        a_list.append("final_dream")
+        a_list.append("the_offer")
         # One-Time Conditional
         a_list.append("cow_army")
         a_list.append("final_interrogation")
+        # One-Time Conditional (Suzy Finale)
+        a_list.append("gift_from_suzy")
+        # Secret Events
+        a_list.append("exactly_999999")
+        a_list.append("all_dreams_complete")
         random.shuffle(a_list)
         return a_list
     
@@ -164,6 +290,8 @@ class Lists:
         a_list.append("beach_adventure")
         a_list.append("underwater_adventure")
         a_list.append("city_adventure")
+        # One-Time (Rabbit Finale)
+        a_list.append("chase_the_last_rabbit")
         random.shuffle(a_list)
         return a_list
     
@@ -240,20 +368,149 @@ class Lists:
         a_list.append("Convenience Store")
         if(self.__player.has_item("Map")):
             a_list.append("Marvin's Mystical Merchandise")
+        # Pawn Shop - unlocked by meeting Grimy Gus
+        if(self.__player.has_met("Grimy Gus")):
+            a_list.append("Grimy Gus's Pawn Emporium")
+        # Phone calls - only show if you have at least one number
+        if(self.__player.has_item("Grandma's Number") or 
+           self.__player.has_item("Beach Romance Number") or 
+           self.__player.has_item("Rich Friend's Number")):
+            a_list.append("Make a Phone Call")
+        # Airport unlocks when you're a millionaire
+        if(self.__player.get_balance() >= 1000000):
+            a_list.append("Airport")
         return a_list
 
     def make_convenience_store_inventory(self):
         a_list = []
-        a_list.append(("Candy Bar", 5))
-        a_list.append(("Bag of Chips", 8))
-        a_list.append(("Turkey Sandwich", 15))
-        a_list.append(("Deck of Cards", 9))
-        a_list.append(("Pest Control", 25))
-        a_list.append(("LifeAlert", 120))
-        if self.__player.get_rank() == 1:
-            a_list.append(("Necronomicon", 666))
-        if self.__player.get_rank() == 2:
-            a_list.append(("Bag of Acorns", 10))
+        rank = self.__player.get_rank()
+        
+        # === FOOD ITEMS (Always available, rotating selection) ===
+        food_items = [
+            ("Candy Bar", 5), ("Bag of Chips", 8), ("Turkey Sandwich", 15),
+            ("Energy Drink", 12), ("Beef Jerky", 10), ("Cup Noodles", 7),
+            ("Granola Bar", 6), ("Hot Dog", 8), ("Microwave Burrito", 9)
+        ]
+        random.shuffle(food_items)
+        for i in range(min(3, len(food_items))):  # 3 random food items
+            a_list.append(food_items[i])
+        
+        # === COMMON ITEMS (Always available) ===
+        if not self.__player.has_item("Pest Control"):
+            a_list.append(("Pest Control", 25))
+        if not self.__player.has_item("Deck of Cards"):
+            a_list.append(("Deck of Cards", 9))
+        
+        # === UNCOMMON ITEMS (Random chance to appear) ===
+        if random.randrange(3) == 0 and not self.__player.has_item("Cough Drops"):
+            a_list.append(("Cough Drops", 15))
+        if random.randrange(3) == 0 and not self.__player.has_item("Dog Treat"):
+            a_list.append(("Dog Treat", 8))
+        if random.randrange(4) == 0 and not self.__player.has_item("Spare Tire"):
+            a_list.append(("Spare Tire", 75))
+        if random.randrange(3) == 0 and not self.__player.has_item("Flashlight"):
+            a_list.append(("Flashlight", 20))
+        if random.randrange(3) == 0 and not self.__player.has_item("First Aid Kit"):
+            a_list.append(("First Aid Kit", 45))
+        if random.randrange(4) == 0 and not self.__player.has_item("Umbrella"):
+            a_list.append(("Umbrella", 18))
+        if random.randrange(4) == 0 and not self.__player.has_item("Sunglasses"):
+            a_list.append(("Sunglasses", 22))
+        if random.randrange(5) == 0 and not self.__player.has_item("Lighter"):
+            a_list.append(("Lighter", 5))
+        if random.randrange(4) == 0 and not self.__player.has_item("Duct Tape"):
+            a_list.append(("Duct Tape", 12))
+        if random.randrange(5) == 0 and not self.__player.has_item("Pocket Knife"):
+            a_list.append(("Pocket Knife", 35))
+        
+        # === RANK 0 (Poor): Basic survival items ===
+        if rank == 0:
+            if random.randrange(3) == 0 and not self.__player.has_item("Lottery Ticket"):
+                a_list.append(("Lottery Ticket", 5))
+            if random.randrange(4) == 0 and not self.__player.has_item("Lucky Penny"):
+                a_list.append(("Lucky Penny", 1))
+            if random.randrange(3) == 0 and not self.__player.has_item("Cheap Sunscreen"):
+                a_list.append(("Cheap Sunscreen", 8))
+            if random.randrange(4) == 0 and not self.__player.has_item("Plastic Poncho"):
+                a_list.append(("Plastic Poncho", 6))
+            if random.randrange(3) == 0 and not self.__player.has_item("Breath Mints"):
+                a_list.append(("Breath Mints", 3))
+            if random.randrange(4) == 0 and not self.__player.has_item("Rubber Bands"):
+                a_list.append(("Rubber Bands", 2))
+        
+        # === RANK 1 (Cheap): More options ===
+        if rank == 1:
+            if random.randrange(3) == 0 and not self.__player.has_item("Bag of Acorns"):
+                a_list.append(("Bag of Acorns", 10))
+            if random.randrange(5) == 0 and not self.__player.has_item("Necronomicon"):
+                a_list.append(("Necronomicon", 666))  # TRAP ITEM
+            if random.randrange(4) == 0 and not self.__player.has_item("Can of Tuna"):
+                a_list.append(("Can of Tuna", 8))
+            if random.randrange(3) == 0 and not self.__player.has_item("Bug Spray"):
+                a_list.append(("Bug Spray", 15))
+            if random.randrange(4) == 0 and not self.__player.has_item("Disposable Camera"):
+                a_list.append(("Disposable Camera", 20))
+            if random.randrange(3) == 0 and not self.__player.has_item("Road Flares"):
+                a_list.append(("Road Flares", 25))
+            if random.randrange(4) == 0 and not self.__player.has_item("Air Freshener"):
+                a_list.append(("Air Freshener", 7))
+        
+        # === RANK 2 (Modest): Quality items ===
+        if rank == 2:
+            if random.randrange(3) == 0 and not self.__player.has_item("LifeAlert"):
+                a_list.append(("LifeAlert", 120))
+            if random.randrange(4) == 0 and not self.__player.has_item("Binoculars"):
+                a_list.append(("Binoculars", 65))
+            if random.randrange(4) == 0 and not self.__player.has_item("Lettuce"):
+                a_list.append(("Lettuce", 4))
+            if random.randrange(3) == 0 and not self.__player.has_item("Padlock"):
+                a_list.append(("Padlock", 30))
+            if random.randrange(4) == 0 and not self.__player.has_item("Fishing Line"):
+                a_list.append(("Fishing Line", 18))
+            if random.randrange(3) == 0 and not self.__player.has_item("Super Glue"):
+                a_list.append(("Super Glue", 12))
+            if random.randrange(4) == 0 and not self.__player.has_item("Hand Warmers"):
+                a_list.append(("Hand Warmers", 10))
+        
+        # === RANK 3 (Rich): Premium items ===
+        if rank == 3:
+            if random.randrange(3) == 0 and not self.__player.has_item("Expensive Cologne"):
+                a_list.append(("Expensive Cologne", 150))
+            if random.randrange(4) == 0 and not self.__player.has_item("Fancy Cigars"):
+                a_list.append(("Fancy Cigars", 200))
+            if random.randrange(5) == 0 and not self.__player.has_item("Gold Chain"):
+                a_list.append(("Gold Chain", 500))
+            if random.randrange(3) == 0 and not self.__player.has_item("Leather Gloves"):
+                a_list.append(("Leather Gloves", 180))
+            if random.randrange(4) == 0 and not self.__player.has_item("Silver Flask"):
+                a_list.append(("Silver Flask", 250))
+            if random.randrange(4) == 0 and not self.__player.has_item("Fancy Pen"):
+                a_list.append(("Fancy Pen", 120))
+        
+        # === RANK 4+ (Doughman/Nearly): Exclusive items ===
+        if rank >= 4:
+            if random.randrange(3) == 0 and not self.__player.has_item("Vintage Wine"):
+                a_list.append(("Vintage Wine", 800))
+            if random.randrange(4) == 0 and not self.__player.has_item("Lucky Rabbit Foot"):
+                a_list.append(("Lucky Rabbit Foot", 1000))
+            if random.randrange(5) == 0 and not self.__player.has_item("Cursed Coin"):
+                a_list.append(("Cursed Coin", 13))  # TRAP ITEM - cheap but cursed
+            if random.randrange(3) == 0 and not self.__player.has_item("Silk Handkerchief"):
+                a_list.append(("Silk Handkerchief", 350))
+            if random.randrange(4) == 0 and not self.__player.has_item("Monogrammed Lighter"):
+                a_list.append(("Monogrammed Lighter", 500))
+            if random.randrange(5) == 0 and not self.__player.has_item("Antique Pocket Watch"):
+                a_list.append(("Antique Pocket Watch", 1200))
+        
+        # === RARE SPECIAL ITEMS (Very low chance, any rank) ===
+        if random.randrange(20) == 0 and not self.__player.has_item("Mysterious Envelope"):
+            a_list.append(("Mysterious Envelope", 50))
+        if random.randrange(25) == 0 and not self.__player.has_item("Old Photograph"):
+            a_list.append(("Old Photograph", 25))
+        if random.randrange(30) == 0 and not self.__player.has_item("Broken Compass"):
+            a_list.append(("Broken Compass", 15))
+        
+        random.shuffle(a_list)
         return a_list
     
     def make_witch_inventory(self):
@@ -290,6 +547,22 @@ class Lists:
         if(random_chance < 2) and (not self.__player.has_flask_effect("Fortunate Night")):
             a_list.append("Fortunate Night")
 
+        random_chance = random.randrange(3)
+        if(random_chance < 2) and (not self.__player.has_flask_effect("Second Chance")):
+            a_list.append("Second Chance")
+
+        random_chance = random.randrange(3)
+        if(random_chance < 2) and (not self.__player.has_flask_effect("Split Serum")):
+            a_list.append("Split Serum")
+
+        random_chance = random.randrange(3)
+        if(random_chance < 2) and (not self.__player.has_flask_effect("Dealer's Hesitation")):
+            a_list.append("Dealer's Hesitation")
+
+        random_chance = random.randrange(3)
+        if(random_chance < 2) and (not self.__player.has_flask_effect("Pocket Aces")):
+            a_list.append("Pocket Aces")
+
         return a_list
 
     def make_broken_items_list(self):
@@ -308,6 +581,16 @@ class Lists:
             a_list.append("Sneaky Peeky Shades")
         if(self.__player.has_broken_item("Quiet Sneakers")):
             a_list.append("Quiet Sneakers")
+        if(self.__player.has_broken_item("Lucky Coin")):
+            a_list.append("Lucky Coin")
+        if(self.__player.has_broken_item("Worn Gloves")):
+            a_list.append("Worn Gloves")
+        if(self.__player.has_broken_item("Tattered Cloak")):
+            a_list.append("Tattered Cloak")
+        if(self.__player.has_broken_item("Rusty Compass")):
+            a_list.append("Rusty Compass")
+        if(self.__player.has_broken_item("Pocket Watch")):
+            a_list.append("Pocket Watch")
         return a_list
     
     def make_repairing_items_list(self):
@@ -326,6 +609,16 @@ class Lists:
             a_list.append("Sneaky Peeky Shades")
         if(self.__player.is_repairing_item("Quiet Sneakers")):
             a_list.append("Quiet Sneakers")
+        if(self.__player.is_repairing_item("Lucky Coin")):
+            a_list.append("Lucky Coin")
+        if(self.__player.is_repairing_item("Worn Gloves")):
+            a_list.append("Worn Gloves")
+        if(self.__player.is_repairing_item("Tattered Cloak")):
+            a_list.append("Tattered Cloak")
+        if(self.__player.is_repairing_item("Rusty Compass")):
+            a_list.append("Rusty Compass")
+        if(self.__player.is_repairing_item("Pocket Watch")):
+            a_list.append("Pocket Watch")
         return a_list
 
     def make_marvin_inventory(self):
@@ -361,6 +654,26 @@ class Lists:
         random_chance = random.randrange(5)
         if (random_chance<=1) and (not self.__player.has_item("Quiet Sneakers")):
             a_list.append("Quiet Sneakers")
+
+        random_chance = random.randrange(5)
+        if (random_chance<=1) and (not self.__player.has_item("Lucky Coin")):
+            a_list.append("Lucky Coin")
+
+        random_chance = random.randrange(5)
+        if (random_chance<=1) and (not self.__player.has_item("Worn Gloves")):
+            a_list.append("Worn Gloves")
+
+        random_chance = random.randrange(5)
+        if (random_chance<=1) and (not self.__player.has_item("Tattered Cloak")):
+            a_list.append("Tattered Cloak")
+
+        random_chance = random.randrange(5)
+        if (random_chance<=1) and (not self.__player.has_item("Rusty Compass")):
+            a_list.append("Rusty Compass")
+
+        random_chance = random.randrange(5)
+        if (random_chance<=1) and (not self.__player.has_item("Pocket Watch")):
+            a_list.append("Pocket Watch")
 
         random.shuffle(a_list)
         return a_list
@@ -646,7 +959,7 @@ class Lists:
         a_list.append("You've got a unique path, and honestly, it's thrilling to watch it unfold.")
         a_list.append("Keep pushing the boundaries, even if it's just by a little every day.")
         a_list.append("Oh, look at you, making small changes like you're actually going to finish something. Adorable.")
-        a_list.append("Look at you, using your full potential — just kidding, but seriously, nice effort today.")
+        a_list.append("Look at you, using your full potential - just kidding, but seriously, nice effort today.")
         a_list.append("You might not be winning the race, but at least you're in the running, right? Sort of?")
         a_list.append("Your unique approach to life's challenges is so...inspiring? Yeah, let's go with that.")
         random.shuffle(a_list)
